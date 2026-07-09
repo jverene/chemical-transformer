@@ -47,6 +47,8 @@ class Config:
     # Chemical state
     chemical_dim: int = 16
     update_alpha: float = 0.3
+    sparsity_lambda: float = 1e-2   # L1 penalty on mean FFN gate
+    mod_threshold: float = 0.5      # threshold for the process-rate readout
 
     # Training
     batch_size: int = 32
@@ -59,6 +61,7 @@ class Config:
     # Task
     problems_target: int = 10
     test_seqs: int = 256
+    eval_batches: int = 5
 
 CFG = Config()
 
@@ -175,26 +178,25 @@ def get_eval_batch(batch_size: int) -> Tuple[torch.Tensor, torch.Tensor, torch.T
     return x, y, diffs
 
 # ============================================================================
-# FLOPS COUNTER
+# FLOPS COUNTER (dynamic: counts ops actually performed)
 # ============================================================================
+# Static shape formulas counted the same FLOPs regardless of input. Now FFN ops
+# are scaled by the per-token gate, so skipped/gated tokens contribute less.
 
 class FLOPsCounter:
-    """Simple FLOPs counter for transformer operations."""
     @staticmethod
-    def count_attention(batch: int, seq: int, d_model: int, n_heads: int) -> int:
-        qkv = 3 * batch * seq * d_model * d_model
-        scores = batch * n_heads * seq * seq * (d_model // n_heads)
-        apply = batch * n_heads * seq * seq * (d_model // n_heads)
-        out = batch * seq * d_model * d_model
+    def attention(B: int, S: int, D: int, H: int) -> int:
+        Dh = D // H
+        qkv = 3 * B * S * D * D               # QKV projections
+        scores = B * H * S * S * Dh           # score matrix
+        apply = B * H * S * S * Dh            # weights @ V
+        out = B * S * D * D                   # output projection
         return qkv + scores + apply + out
 
     @staticmethod
-    def count_ffn(batch: int, seq: int, d_model: int, d_ff: int) -> int:
-        return 2 * batch * seq * d_model * d_ff * 2
-
-    @staticmethod
-    def count_layer(batch: int, seq: int, d_model: int, d_ff: int, n_heads: int) -> int:
-        return FLOPsCounter.count_attention(batch, seq, d_model, n_heads) + FLOPsCounter.count_ffn(batch, seq, d_model, d_ff)
+    def ffn_per_token(D: int, d_ff: int) -> int:
+        # two linear layers, MACs -> 2x
+        return 2 * (D * d_ff + d_ff * D) * 2
 
 # ============================================================================
 # MASK HELPER
@@ -210,96 +212,125 @@ def make_causal_mask(S: int, device, dtype) -> torch.Tensor:
 # MODELS
 # ============================================================================
 
+def _manual_attention(x, q_p, k_p, v_p, o_p, n_heads, causal_mask):
+    """Multi-head attention returning weights (needed for the entropy signal)."""
+    B, S, D = x.shape
+    H, Dh = n_heads, D // n_heads
+    q = q_p(x).view(B, S, H, Dh).transpose(1, 2)
+    k = k_p(x).view(B, S, H, Dh).transpose(1, 2)
+    v = v_p(x).view(B, S, H, Dh).transpose(1, 2)
+    scores = torch.matmul(q, k.transpose(-2, -1)) / math.sqrt(Dh)
+    scores = scores + causal_mask                 # broadcast (S,S) -> (B,H,S,S)
+    weights = torch.softmax(scores, dim=-1)       # (B,H,S,S)
+    out = torch.matmul(weights, v)                # (B,H,S,Dh)
+    out = out.transpose(1, 2).contiguous().view(B, S, D)
+    return o_p(out), weights
+
 class ChemicalLayer(nn.Module):
     """
-    Transformer layer with allostatic chemical state modulation.
-    The chemical state flows from layer to layer, updated by attention entropy.
+    Transformer layer with allostatic, per-position chemical state.
+
+    Per-position attention entropy (a "stress" signal) drives a chemical state
+    that flows layer-to-layer. The chemical state gates the FFN per token
+    (Mixture-of-Depths): low-stress (easy) tokens attenuate/skip the FFN,
+    high-stress (hard) tokens keep it. This makes per-token FLOPs input-dependent.
     """
-    def __init__(self, d_model: int, n_heads: int, d_ff: int, dropout: float = 0.1):
+    def __init__(self, d_model: int, n_heads: int, d_ff: int, chemical_dim: int,
+                 dropout: float = 0.1, chemical_off: bool = False):
         super().__init__()
         self.d_model = d_model
         self.n_heads = n_heads
+        self.chemical_off = chemical_off
 
-        self.attn = nn.MultiheadAttention(d_model, n_heads, dropout=dropout, batch_first=True)
+        # Manual MHA so we can read attention weights for the entropy signal.
+        self.q_proj = nn.Linear(d_model, d_model)
+        self.k_proj = nn.Linear(d_model, d_model)
+        self.v_proj = nn.Linear(d_model, d_model)
+        self.o_proj = nn.Linear(d_model, d_model)
+
         self.ffn = nn.Sequential(
             nn.Linear(d_model, d_ff),
             nn.GELU(),
             nn.Dropout(dropout),
             nn.Linear(d_ff, d_model),
-            nn.Dropout(dropout)
+            nn.Dropout(dropout),
         )
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
 
-        # Secretion: attention entropy -> predicted load (chemical state update)
+        # Secretion: per-position entropy -> chemical state update
         self.secretion = nn.Sequential(
-            nn.Linear(1, 32),
-            nn.ReLU(),
-            nn.Linear(32, CFG.chemical_dim)
+            nn.Linear(1, 32), nn.ReLU(), nn.Linear(32, chemical_dim)
         )
+        # Receptor: chemical state -> per-token FFN gate logit.
+        # Zero-init weights + bias 0 -> initial gate sigmoid(0)=0.5, so the model
+        # starts neutral and can learn the easy/hard asymmetry rather than
+        # collapsing to all-skip (or all-process) at init.
+        self.router = nn.Linear(chemical_dim, 1)
+        nn.init.zeros_(self.router.weight)
+        nn.init.zeros_(self.router.bias)
 
-        # Receptor: chemical state -> modulation knobs
-        self.receptor = nn.Sequential(
-            nn.Linear(CFG.chemical_dim, 32),
-            nn.ReLU(),
-            nn.Linear(32, 2)  # [temperature, gain]
+        if chemical_off:
+            for p in self.secretion.parameters(): p.requires_grad = False
+            for p in self.router.parameters(): p.requires_grad = False
+
+    def forward(self, x, prev_chemical, causal_mask, pad_mask):
+        B, S, D = x.shape
+
+        attn_out, weights = _manual_attention(
+            x, self.q_proj, self.k_proj, self.v_proj, self.o_proj,
+            self.n_heads, causal_mask
         )
+        x2 = self.norm1(x + attn_out)
 
-    def forward(self, x: torch.Tensor, prev_chemical: Optional[torch.Tensor] = None,
-                causal_mask: Optional[torch.Tensor] = None,
-                return_flops: bool = False) -> Tuple[torch.Tensor, torch.Tensor, int]:
-        batch, seq, d = x.shape
+        if self.chemical_off:
+            # Ablation: gate fixed at 1.0 (full compute). Chemical pathway inert.
+            g = torch.ones(B, S, device=x.device, dtype=x.dtype)
+            chemical = prev_chemical if prev_chemical is not None else \
+                torch.zeros(B, S, CFG.chemical_dim, device=x.device, dtype=x.dtype)
+        else:
+            # Per-position attention entropy, averaged over heads: (B, S)
+            ent = -(weights * torch.log(weights + 1e-10)).sum(dim=-1).mean(dim=1)
+            # Normalize by log(num_attended_positions) to remove the trivial
+            # "later positions have more candidates -> higher entropy" bias.
+            norm = torch.clamp(torch.log(torch.arange(1, S + 1, device=x.device, dtype=ent.dtype)),
+                               min=1e-3)
+            stress = (ent / norm).unsqueeze(-1)                  # (B, S, 1)
+            new_chem = self.secretion(stress)                    # (B, S, chemical_dim)
+            if prev_chemical is None:
+                chemical = new_chem
+            else:
+                a = CFG.update_alpha
+                chemical = (1 - a) * prev_chemical + a * new_chem
+            g = torch.sigmoid(self.router(chemical).squeeze(-1))  # (B, S)
 
-        # Attention (now WITH causal mask to stop label leakage)
-        attn_out, attn_weights = self.attn(x, x, x, attn_mask=causal_mask,
-                                           need_weights=True, average_attn_weights=False)
+        ffn_out = self.ffn(x2) * g.unsqueeze(-1)
+        x3 = self.norm2(x2 + ffn_out)
 
-        # Compute attention entropy as "stress signal"
-        entropy = -(attn_weights * torch.log(attn_weights + 1e-10)).sum(dim=-1).mean(dim=(1, 2))
-        mean_entropy = entropy.mean().unsqueeze(0)
+        # dynamic FLOPs: attention runs for all tokens; FFN only "gated" portion
+        g_real = g[pad_mask] if pad_mask is not None else g.flatten()
+        processed = g_real.sum().item()
+        flops = FLOPsCounter.attention(B, S, D, self.n_heads) + \
+                FLOPsCounter.ffn_per_token(D, self.ffn[0].out_features) * processed
 
-        # Secretion: predict load from entropy
-        chemical = self.secretion(mean_entropy).unsqueeze(0).expand(batch, -1)
-
-        # Allostatic update
-        if prev_chemical is not None:
-            alpha = CFG.update_alpha
-            chemical = (1 - alpha) * prev_chemical + alpha * chemical
-
-        mods = self.receptor(chemical)
-        temp = mods[:, 0].sigmoid() * 2 + 0.5
-        gain = mods[:, 1].sigmoid() * 2
-
-        attn_out = attn_out / temp.view(batch, 1, 1)
-        x = self.norm1(x + attn_out)
-
-        ffn_out = self.ffn(x)
-        ffn_out = ffn_out * gain.view(batch, 1, 1)
-        x = self.norm2(x + ffn_out)
-
-        flops = 0
-        if return_flops:
-            flops = FLOPsCounter.count_layer(batch, seq, d, self.ffn[0].out_features, self.n_heads)
-
-        return x, chemical, flops
+        return x3, chemical, g, flops
 
 
 class ChemicalTransformer(nn.Module):
-    """Transformer with allostatic chemical state modulation."""
-    def __init__(self):
+    """Transformer with allostatic chemical state + MoD FFN gating."""
+    def __init__(self, chemical_off: bool = False):
         super().__init__()
+        self.chemical_off = chemical_off
         self.token_emb = nn.Embedding(CFG.vocab_size, CFG.d_model)
         self.pos_emb = nn.Embedding(CFG.max_len, CFG.d_model)
         self.dropout = nn.Dropout(CFG.dropout)
-
         self.layers = nn.ModuleList([
-            ChemicalLayer(CFG.d_model, CFG.n_heads, CFG.d_ff, CFG.dropout)
+            ChemicalLayer(CFG.d_model, CFG.n_heads, CFG.d_ff, CFG.chemical_dim,
+                          CFG.dropout, chemical_off=chemical_off)
             for _ in range(CFG.n_layers)
         ])
-
         self.norm = nn.LayerNorm(CFG.d_model)
         self.head = nn.Linear(CFG.d_model, CFG.vocab_size)
-
         self._init_weights()
 
     def _init_weights(self):
@@ -307,33 +338,44 @@ class ChemicalTransformer(nn.Module):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
-    def forward(self, x: torch.Tensor, return_flops: bool = False) -> Tuple[torch.Tensor, int]:
-        batch, seq = x.shape
-        pos = torch.arange(seq, device=x.device).unsqueeze(0)
+    def forward(self, x, pad_mask=None):
+        B, S = x.shape
+        pos = torch.arange(S, device=x.device).unsqueeze(0)
         x = self.dropout(self.token_emb(x) + self.pos_emb(pos))
-        causal_mask = make_causal_mask(seq, x.device, x.dtype)
+        causal_mask = make_causal_mask(S, x.device, x.dtype)
 
         chemical = None
         total_flops = 0
-
+        gates: List[torch.Tensor] = []
         for layer in self.layers:
-            x, chemical, flops = layer(x, chemical, causal_mask=causal_mask,
-                                       return_flops=return_flops)
+            x, chemical, g, flops = layer(x, chemical, causal_mask, pad_mask)
             total_flops += flops
+            gates.append(g)
 
         x = self.norm(x)
         logits = self.head(x)
 
-        if return_flops:
-            return logits, total_flops
-        return logits, 0
+        if self.chemical_off or pad_mask is None:
+            sparsity = torch.tensor(0.0, device=x.device)
+        else:
+            stack = torch.stack(gates, dim=0)            # (L, B, S)
+            sparsity = stack[:, pad_mask].mean()          # mean gate over real tokens+layers
 
-    def count_params(self):
+        info = {
+            'flops': total_flops,
+            'sparsity_penalty': sparsity,
+            'gate_mean': (None if self.chemical_off else torch.stack(gates, dim=0).mean(dim=0)),  # (B,S)
+        }
+        return logits, info
+
+    def count_params(self, trainable_only=False):
+        if trainable_only:
+            return sum(p.numel() for p in self.parameters() if p.requires_grad)
         return sum(p.numel() for p in self.parameters())
 
 
 class BaselineLayer(nn.Module):
-    """Standard transformer layer with NO chemical modulation."""
+    """Standard transformer layer, full FFN on every token, no modulation."""
     def __init__(self, d_model: int, n_heads: int, d_ff: int, dropout: float = 0.1):
         super().__init__()
         self.attn = nn.MultiheadAttention(d_model, n_heads, dropout=dropout, batch_first=True)
@@ -346,23 +388,24 @@ class BaselineLayer(nn.Module):
         )
         self.norm1 = nn.LayerNorm(d_model)
         self.norm2 = nn.LayerNorm(d_model)
+        self.n_heads = n_heads
 
     def forward(self, x: torch.Tensor, causal_mask: Optional[torch.Tensor] = None,
-                return_flops: bool = False) -> Tuple[torch.Tensor, int]:
+                pad_mask: Optional[torch.Tensor] = None) -> Tuple[torch.Tensor, int]:
         attn_out, _ = self.attn(x, x, x, attn_mask=causal_mask, need_weights=False)
-        x = self.norm1(x + attn_out)
-        ffn_out = self.ffn(x)
-        x = self.norm2(x + ffn_out)
+        x2 = self.norm1(x + attn_out)
+        ffn_out = self.ffn(x2)
+        x3 = self.norm2(x2 + ffn_out)
 
-        flops = 0
-        if return_flops:
-            batch, seq, d = x.shape
-            flops = FLOPsCounter.count_layer(batch, seq, d, self.ffn[0].out_features, self.attn.num_heads)
-        return x, flops
+        B, S, D = x.shape
+        real = int(pad_mask.sum().item()) if pad_mask is not None else B * S
+        flops = FLOPsCounter.attention(B, S, D, self.n_heads) + \
+                FLOPsCounter.ffn_per_token(D, self.ffn[0].out_features) * real
+        return x3, flops
 
 
 class BaselineTransformer(nn.Module):
-    """Standard transformer for comparison."""
+    """Standard transformer for comparison (full compute, no chemical state)."""
     def __init__(self):
         super().__init__()
         self.token_emb = nn.Embedding(CFG.vocab_size, CFG.d_model)
@@ -384,25 +427,26 @@ class BaselineTransformer(nn.Module):
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)
 
-    def forward(self, x: torch.Tensor, return_flops: bool = False) -> Tuple[torch.Tensor, int]:
-        batch, seq = x.shape
-        pos = torch.arange(seq, device=x.device).unsqueeze(0)
+    def forward(self, x: torch.Tensor, pad_mask: Optional[torch.Tensor] = None):
+        B, S = x.shape
+        pos = torch.arange(S, device=x.device).unsqueeze(0)
         x = self.dropout(self.token_emb(x) + self.pos_emb(pos))
-        causal_mask = make_causal_mask(seq, x.device, x.dtype)
+        causal_mask = make_causal_mask(S, x.device, x.dtype)
 
         total_flops = 0
         for layer in self.layers:
-            x, flops = layer(x, causal_mask=causal_mask, return_flops=return_flops)
+            x, flops = layer(x, causal_mask=causal_mask, pad_mask=pad_mask)
             total_flops += flops
 
         x = self.norm(x)
         logits = self.head(x)
+        info = {'flops': total_flops, 'sparsity_penalty': torch.tensor(0.0, device=x.device),
+                'gate_mean': None}
+        return logits, info
 
-        if return_flops:
-            return logits, total_flops
-        return logits, 0
-
-    def count_params(self):
+    def count_params(self, trainable_only=False):
+        if trainable_only:
+            return sum(p.numel() for p in self.parameters() if p.requires_grad)
         return sum(p.numel() for p in self.parameters())
 
 
@@ -427,9 +471,11 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
     for step in range(steps):
         model.train()
         x, y, diffs = get_batch(CFG.batch_size)
+        pad_mask = (x != TOKENIZER.pad_id)
 
-        logits, _ = model(x)
-        loss = F.cross_entropy(logits.view(-1, CFG.vocab_size), y.view(-1), ignore_index=TOKENIZER.pad_id)
+        logits, info = model(x, pad_mask=pad_mask)
+        ce = F.cross_entropy(logits.view(-1, CFG.vocab_size), y.view(-1), ignore_index=TOKENIZER.pad_id)
+        loss = ce + CFG.sparsity_lambda * info['sparsity_penalty']
 
         optimizer.zero_grad()
         loss.backward()
@@ -440,7 +486,8 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
             model.eval()
             with torch.no_grad():
                 x_eval, y_eval, diffs_eval = get_eval_batch(CFG.batch_size)
-                logits_eval, flops = model(x_eval, return_flops=True)
+                eval_pad = (x_eval != TOKENIZER.pad_id)
+                logits_eval, eval_info = model(x_eval, pad_mask=eval_pad)
 
                 preds = logits_eval.argmax(dim=-1)
                 mask = y_eval != TOKENIZER.pad_id
@@ -455,7 +502,7 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
                 hard_acc = (preds[hard_mask] == y_eval[hard_mask]).float().mean().item() if hard_mask.sum() > 0 else 0
 
                 total_tokens = mask.sum().item()
-                flops_per_token = flops / total_tokens if total_tokens > 0 else 0
+                flops_per_token = eval_info['flops'] / total_tokens if total_tokens > 0 else 0
 
                 elapsed = time.time() - start_time
 
