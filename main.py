@@ -451,6 +451,72 @@ class BaselineTransformer(nn.Module):
 
 
 # ============================================================================
+# EVALUATION
+# ============================================================================
+
+def np_std(xs):
+    import numpy as np
+    return float(np.std(xs))
+
+@torch.no_grad()
+def evaluate(model: nn.Module, k: int = CFG.eval_batches) -> dict:
+    """Evaluate on the held-out set over k batches; return mean (+std for flops)."""
+    model.eval()
+    overall, balanced = [], []
+    easy_a, med_a, hard_a = [], [], []
+    flops_tok = []
+    easy_p, med_p, hard_p = [], [], []
+
+    for _ in range(k):
+        x, y, diffs = get_eval_batch(CFG.batch_size)
+        pad_mask = (x != TOKENIZER.pad_id)
+        logits, info = model(x, pad_mask=pad_mask)
+        preds = logits.argmax(dim=-1)
+
+        m = pad_mask
+        overall.append((preds[m] == y[m]).float().mean().item())
+
+        per_diff_acc = {}
+        for d, store in [(0, easy_a), (1, med_a), (2, hard_a)]:
+            dm = m & (diffs == d)
+            acc = (preds[dm] == y[dm]).float().mean().item() if dm.sum() > 0 else float('nan')
+            store.append(acc)
+            per_diff_acc[d] = acc
+        valid = [v for v in per_diff_acc.values() if not math.isnan(v)]
+        balanced.append((sum(valid) / len(valid)) if valid else 0.0)
+
+        real_tokens = int(m.sum().item())
+        flops_tok.append(info['flops'] / real_tokens if real_tokens > 0 else 0.0)
+
+        gm = info.get('gate_mean')
+        if gm is not None:
+            # Mean FFN gate per difficulty (continuous in [0,1]). This is what
+            # actually drives FLOPs and directly answers "does the model spend
+            # more compute on Hard?". A hard threshold is brittle (the gate
+            # distribution often centers below 0.5) so we read the mean instead.
+            for d, store in [(0, easy_p), (1, med_p), (2, hard_p)]:
+                dm = m & (diffs == d)
+                store.append(gm[dm].mean().item() if dm.sum() > 0 else float('nan'))
+
+    def mean(xs):
+        xs = [x for x in xs if not (isinstance(x, float) and math.isnan(x))]
+        return float('nan') if not xs else sum(xs) / len(xs)
+
+    return {
+        'overall_acc': mean(overall),
+        'balanced_acc': mean(balanced),
+        'easy_acc': mean(easy_a),
+        'med_acc': mean(med_a),
+        'hard_acc': mean(hard_a),
+        'flops_mean': sum(flops_tok) / len(flops_tok),
+        'flops_std': (float(np_std(flops_tok)) if len(flops_tok) > 1 else 0.0),
+        'easy_proc': mean(easy_p) if easy_p else float('nan'),
+        'med_proc': mean(med_p) if med_p else float('nan'),
+        'hard_proc': mean(hard_p) if hard_p else float('nan'),
+    }
+
+
+# ============================================================================
 # TRAINING
 # ============================================================================
 
@@ -463,7 +529,8 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
 
     print(f"\n{'='*60}")
     print(f"Training {name}")
-    print(f"Parameters: {model.count_params():,}")
+    print(f"Parameters: {model.count_params():,} "
+          f"(trainable: {model.count_params(trainable_only=True):,})")
     print(f"{'='*60}")
 
     start_time = time.time()
@@ -483,40 +550,18 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
         optimizer.step()
 
         if step % CFG.eval_every == 0:
-            model.eval()
-            with torch.no_grad():
-                x_eval, y_eval, diffs_eval = get_eval_batch(CFG.batch_size)
-                eval_pad = (x_eval != TOKENIZER.pad_id)
-                logits_eval, eval_info = model(x_eval, pad_mask=eval_pad)
-
-                preds = logits_eval.argmax(dim=-1)
-                mask = y_eval != TOKENIZER.pad_id
-                acc = (preds[mask] == y_eval[mask]).float().mean().item()
-
-                easy_mask = mask & (diffs_eval == 0)
-                med_mask = mask & (diffs_eval == 1)
-                hard_mask = mask & (diffs_eval == 2)
-
-                easy_acc = (preds[easy_mask] == y_eval[easy_mask]).float().mean().item() if easy_mask.sum() > 0 else 0
-                med_acc = (preds[med_mask] == y_eval[med_mask]).float().mean().item() if med_mask.sum() > 0 else 0
-                hard_acc = (preds[hard_mask] == y_eval[hard_mask]).float().mean().item() if hard_mask.sum() > 0 else 0
-
-                total_tokens = mask.sum().item()
-                flops_per_token = eval_info['flops'] / total_tokens if total_tokens > 0 else 0
-
-                elapsed = time.time() - start_time
-
-                print(f"Step {step:5d} | Loss: {loss.item():.4f} | Acc: {acc:.3f} | "
-                      f"Easy: {easy_acc:.3f} | Med: {med_acc:.3f} | Hard: {hard_acc:.3f} | "
-                      f"FLOPs/tok: {flops_per_token/1e6:.1f}M | Time: {elapsed:.1f}s")
-
-                history['step'].append(step)
-                history['loss'].append(loss.item())
-                history['acc'].append(acc)
-                history['easy_acc'].append(easy_acc)
-                history['med_acc'].append(med_acc)
-                history['hard_acc'].append(hard_acc)
-                history['flops_per_token'].append(flops_per_token)
+            m = evaluate(model)
+            el = time.time() - start_time
+            proc_str = (f" | proc E/M/H: {m['easy_proc']:.2f}/{m['med_proc']:.2f}/{m['hard_proc']:.2f}"
+                        if not math.isnan(m['easy_proc']) else "")
+            print(f"step {step:5d} | ce {ce.item():.4f} | acc {m['overall_acc']:.3f} "
+                  f"(bal {m['balanced_acc']:.3f}) | E {m['easy_acc']:.3f} M {m['med_acc']:.3f} "
+                  f"H {m['hard_acc']:.3f} | flops/tok {m['flops_mean']/1e6:.2f}M"
+                  f"±{m['flops_std']/1e6:.2f}{proc_str} | {el:.0f}s")
+            for k_, v_ in m.items():
+                history[k_].append(v_)
+            history['step'].append(step)
+            history['train_ce'].append(ce.item())
 
     return dict(history)
 
@@ -525,37 +570,63 @@ def train_model(model: nn.Module, name: str, steps: int = CFG.n_steps) -> dict:
 # PLOTTING
 # ============================================================================
 
-def plot_comparison(chem_hist: dict, base_hist: dict, save_path: str = "comparison.png"):
-    """Plot comparison between chemical and baseline models."""
-    fig, axes = plt.subplots(2, 2, figsize=(14, 10))
+def plot_comparison(hists: dict, save_path: str = "comparison.png"):
+    """6-panel comparison across all models."""
+    COLORS = {'Chemical': 'tab:blue', 'Chemical-off': 'tab:green', 'Baseline': 'tab:orange'}
+    fig, axes = plt.subplots(2, 3, figsize=(20, 11))
 
+    # (0,0) train CE
     ax = axes[0, 0]
-    ax.plot(chem_hist['step'], chem_hist['loss'], label='Chemical', linewidth=2)
-    ax.plot(base_hist['step'], base_hist['loss'], label='Baseline', linewidth=2)
-    ax.set_xlabel('Step'); ax.set_ylabel('Loss'); ax.set_title('Training Loss')
-    ax.legend(); ax.grid(True, alpha=0.3)
+    for name, h in hists.items():
+        ax.plot(h['step'], h['train_ce'], label=name, linewidth=2, color=COLORS[name])
+    ax.set_title('Train Cross-Entropy'); ax.set_xlabel('step'); ax.set_ylabel('CE')
+    ax.grid(True, alpha=0.3); ax.legend()
 
+    # (0,1) overall held-out acc
     ax = axes[0, 1]
-    ax.plot(chem_hist['step'], chem_hist['acc'], label='Chemical', linewidth=2)
-    ax.plot(base_hist['step'], base_hist['acc'], label='Baseline', linewidth=2)
-    ax.set_xlabel('Step'); ax.set_ylabel('Accuracy'); ax.set_title('Overall Accuracy')
-    ax.legend(); ax.grid(True, alpha=0.3)
+    for name, h in hists.items():
+        ax.plot(h['step'], h['overall_acc'], label=name, linewidth=2, color=COLORS[name])
+    ax.set_title('Held-out Overall Accuracy'); ax.set_xlabel('step'); ax.set_ylabel('acc')
+    ax.grid(True, alpha=0.3); ax.legend()
 
+    # (0,2) balanced acc
+    ax = axes[0, 2]
+    for name, h in hists.items():
+        ax.plot(h['step'], h['balanced_acc'], label=name, linewidth=2, color=COLORS[name])
+    ax.set_title('Held-out Balanced Accuracy (macro)'); ax.set_xlabel('step'); ax.set_ylabel('acc')
+    ax.grid(True, alpha=0.3); ax.legend()
+
+    # (1,0) per-difficulty acc (Chemical solid, Baseline dashed)
     ax = axes[1, 0]
-    ax.plot(chem_hist['step'], chem_hist['easy_acc'], 'g-', label='Chem Easy', linewidth=2)
-    ax.plot(chem_hist['step'], chem_hist['med_acc'], 'b-', label='Chem Med', linewidth=2)
-    ax.plot(chem_hist['step'], chem_hist['hard_acc'], 'r-', label='Chem Hard', linewidth=2)
-    ax.plot(base_hist['step'], base_hist['easy_acc'], 'g--', label='Base Easy', linewidth=1.5)
-    ax.plot(base_hist['step'], base_hist['med_acc'], 'b--', label='Base Med', linewidth=1.5)
-    ax.plot(base_hist['step'], base_hist['hard_acc'], 'r--', label='Base Hard', linewidth=1.5)
-    ax.set_xlabel('Step'); ax.set_ylabel('Accuracy'); ax.set_title('Per-Difficulty Accuracy')
-    ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
+    for diff, c in [('easy_acc', 'green'), ('med_acc', 'royalblue'), ('hard_acc', 'red')]:
+        ax.plot(hists['Chemical']['step'], hists['Chemical'][diff], '-', color=c,
+                label=f'Chem {diff[:1].upper()}', linewidth=2)
+        ax.plot(hists['Baseline']['step'], hists['Baseline'][diff], '--', color=c,
+                label=f'Base {diff[:1].upper()}', linewidth=1.5)
+    ax.set_title('Per-Difficulty Held-out Accuracy'); ax.set_xlabel('step'); ax.set_ylabel('acc')
+    ax.grid(True, alpha=0.3); ax.legend(fontsize=8)
 
+    # (1,1) FLOPs/token with std band
     ax = axes[1, 1]
-    ax.plot(chem_hist['step'], [f/1e6 for f in chem_hist['flops_per_token']], label='Chemical', linewidth=2)
-    ax.plot(base_hist['step'], [f/1e6 for f in base_hist['flops_per_token']], label='Baseline', linewidth=2)
-    ax.set_xlabel('Step'); ax.set_ylabel('FLOPs / Token (M)'); ax.set_title('Compute per Token')
-    ax.legend(); ax.grid(True, alpha=0.3)
+    for name, h in hists.items():
+        steps = h['step']
+        mean = [f / 1e6 for f in h['flops_mean']]
+        std = [s / 1e6 for s in h['flops_std']]
+        ax.plot(steps, mean, label=name, linewidth=2, color=COLORS[name])
+        ax.fill_between(steps, [a - b for a, b in zip(mean, std)],
+                        [a + b for a, b in zip(mean, std)], color=COLORS[name], alpha=0.15)
+    ax.set_title('FLOPs / Token (mean ± std)'); ax.set_xlabel('step'); ax.set_ylabel('FLOPs/token (M)')
+    ax.grid(True, alpha=0.3); ax.legend()
+
+    # (1,2) mean FFN gate per difficulty (Chemical) -- the thesis readout
+    ax = axes[1, 2]
+    h = hists['Chemical']
+    ax.plot(h['step'], h['easy_proc'], 'g-', label='Easy', linewidth=2)
+    ax.plot(h['step'], h['med_proc'], 'b-', label='Medium', linewidth=2)
+    ax.plot(h['step'], h['hard_proc'], 'r-', label='Hard', linewidth=2)
+    ax.set_title('Mean FFN Gate by Difficulty (Chemical)\nthesis: Hard > Easy')
+    ax.set_xlabel('step'); ax.set_ylabel('mean FFN gate (0=skip .. 1=full)')
+    ax.set_ylim(-0.05, 1.05); ax.grid(True, alpha=0.3); ax.legend()
 
     plt.tight_layout()
     plt.savefig(save_path, dpi=150, bbox_inches='tight')
@@ -568,28 +639,42 @@ def plot_comparison(chem_hist: dict, base_hist: dict, save_path: str = "comparis
 # ============================================================================
 
 def main():
-    print(f"Device: {CFG.device}")
-    print(f"Vocab size: {CFG.vocab_size}")
+    print(f"Device: {CFG.device} | Vocab: {CFG.vocab_size} | seq_len: {CFG.seq_len} "
+          f"| held-out seqs: {len(HELD_OUT_SEQS)} (pool: {len(HELD_OUT_PROBLEMS)} problems)")
 
-    chem_model = ChemicalTransformer()
-    chem_hist = train_model(chem_model, "Chemical Transformer")
+    models = {
+        'Chemical': ChemicalTransformer(chemical_off=False),
+        'Chemical-off': ChemicalTransformer(chemical_off=True),
+        'Baseline': BaselineTransformer(),
+    }
+    hists = {}
+    for name, model in models.items():
+        hists[name] = train_model(model, name)
 
-    base_model = BaselineTransformer()
-    base_hist = train_model(base_model, "Baseline Transformer")
+    plot_comparison(hists)
 
-    plot_comparison(chem_hist, base_hist)
+    print("\n" + "=" * 78)
+    print("FINAL HELD-OUT COMPARISON")
+    print("=" * 78)
+    print(f"{'':14}{'params':>10}{'overall':>9}{'bal':>8}{'easy':>7}{'med':>7}{'hard':>7}"
+          f"{'FLOPs/tok(M)':>15}")
+    for name, model in models.items():
+        h = hists[name]
+        print(f"{name:14}{model.count_params():>10,}{h['overall_acc'][-1]:>9.3f}"
+              f"{h['balanced_acc'][-1]:>8.3f}{h['easy_acc'][-1]:>7.3f}{h['med_acc'][-1]:>7.3f}"
+              f"{h['hard_acc'][-1]:>7.3f}"
+              f"{h['flops_mean'][-1]/1e6:>10.2f}±{h['flops_std'][-1]/1e6:<4.2f}")
 
-    print("\n" + "="*60)
-    print("FINAL COMPARISON")
-    print("="*60)
-    print(f"Chemical params: {chem_model.count_params():,}")
-    print(f"Baseline params: {base_model.count_params():,}")
-    print(f"Param delta: {chem_model.count_params() - base_model.count_params():,} "
-          f"({(chem_model.count_params() / base_model.count_params() - 1) * 100:.2f}%)")
-    print(f"\nFinal Chemical Acc: {chem_hist['acc'][-1]:.4f}")
-    print(f"Final Baseline Acc: {base_hist['acc'][-1]:.4f}")
-    print(f"\nFinal Chemical FLOPs/tok: {chem_hist['flops_per_token'][-1]/1e6:.2f}M")
-    print(f"Final Baseline FLOPs/tok: {base_hist['flops_per_token'][-1]/1e6:.2f}M")
+    print("\nMean FFN gate by difficulty (Chemical model) -- higher = more compute spent:")
+    hc = hists['Chemical']
+    print(f"  easy {hc['easy_proc'][-1]:.3f}  med {hc['med_proc'][-1]:.3f}  "
+          f"hard {hc['hard_proc'][-1]:.3f}")
+
+    print("\nParam delta vs baseline:")
+    base_p = models['Baseline'].count_params()
+    for name, model in models.items():
+        d = model.count_params() - base_p
+        print(f"  {name:14} {d:+,} ({d/base_p*100:+.3f}%)")
 
 if __name__ == "__main__":
     main()
