@@ -1,59 +1,74 @@
-# chemical-transformer
+# Chemical Transformer
 
-~11M-parameter transformer with an **allostatic chemical state**: a per-token,
-layer-to-layer signal (driven by attention entropy) that gates the FFN via a
-Mixture-of-Depths skip, so per-token compute is genuinely input-dependent. The
-thesis is that the model can read a `[E]/[M]/[H]` difficulty tag early in each
-problem and pre-allocate more FFN compute to the upcoming hard answer tokens.
+This project trains a transformer model with an allostatic chemical state.
+The model has about 11 million parameters.
 
-Three models are trained and compared:
+## What it does
 
-- **Chemical** — the full allostatic MoD model.
-- **Chemical-off** — ablation: same architecture with the chemical/router pathway
-  frozen and the gate forced to 1.0 (full compute). Isolates whether any delta
-  comes from the chemical mechanism vs. just having more parameters.
-- **Baseline** — standard transformer, full FFN on every token, no modulation.
+The chemical state is a per-token signal that flows from one layer to the next.
+It uses attention entropy to drive the signal.
+This signal controls a Mixture-of-Depths skip in the feed-forward network.
+The result is that each token uses a different amount of compute.
+The model reads a difficulty tag (`[E]`, `[M]`, or `[H]`) at the start of each problem.
+It allocates more compute to tokens that need it.
 
-## The task (and why it's built this way)
+The project compares three models:
 
-Arithmetic with a leading difficulty tag, packed many problems per sequence:
+- **Chemical**: The full model with the allostatic mechanism.
+- **Chemical-off**: An ablation where the chemical pathway is frozen. The gate stays at 1.0 (full compute). This tests if any improvement comes from the mechanism itself or just from extra parameters.
+- **Baseline**: A standard transformer. The FFN runs on every token. No modulation.
+
+## How it works
+
+The task is arithmetic with a difficulty tag at the start:
 
 ```
 [E]3+5=8   [M]123-456=-333   [H]4291*318=1364538   ...
 ```
 
-- Easy `[E]` 1-digit ± → ~162 unique problems (memorizable).
-- Medium `[M]` 3-digit ± → ~1.6M unique.
-- Hard `[H]` 4-digit × 3-digit → ~9M unique → **not memorizable** at 11M params.
+The training data uses three difficulty levels:
 
-The difficulty tag is the early signal the chemical state is supposed to use.
-Accuracy is measured on a **frozen held-out set** (4000 problems/difficulty,
-sampled once at startup; training never sees them), reported as overall,
-balanced (macro over difficulties), and per-difficulty.
+- Easy `[E]`: 1-digit addition and subtraction. About 162 unique problems. The model can memorize these.
+- Medium `[M]`: 3-digit addition and subtraction. About 1.6 million unique problems.
+- Hard `[H]`: 4-digit by 3-digit multiplication. About 9 million unique problems. The model cannot memorize these at 11 million parameters.
 
-## Run
+The model uses the difficulty tag to decide how much compute to use.
+The test set is a frozen held-out set of 4000 problems per difficulty level.
+The training run never sees these problems.
+The output reports overall accuracy, balanced accuracy (macro over difficulties), and per-difficulty accuracy.
 
-```bash
-uv pip install -e .            # or: pip install -e .
-python main.py                 # ~8h on MPS for 3 models × 10k steps
+## How to install
+
+```
+uv pip install -e .
 ```
 
-Outputs `comparison.png` (6 panels) and a final comparison table. For a fast
-sanity pass, set `CFG.n_steps = 3000`, `CFG.eval_every = 250`.
+Or:
 
-## What the 6 panels show
+```
+pip install -e .
+```
 
-1. Train cross-entropy
-2. Held-out overall accuracy
-3. Held-out balanced accuracy (macro)
-4. Per-difficulty accuracy (Chemical solid, Baseline dashed)
-5. FLOPs/token with ±std band (dynamic counter: counts ops actually performed)
-6. Mean FFN gate by difficulty for the Chemical model — **the thesis readout:
-   Hard > Easy means the chemical state is allocating more compute to hard tokens.**
+## How to run
+
+```
+python main.py
+```
+
+A full run takes about 8 hours on Apple Silicon (MPS).
+It produces `comparison.png` with 6 panels and a final comparison table.
+
+For a fast test, set `CFG.n_steps = 3000` and `CFG.eval_every = 250`.
+
+## What the panels show
+
+1. Training cross-entropy loss.
+2. Held-out overall accuracy.
+3. Held-out balanced accuracy (macro average).
+4. Per-difficulty accuracy. The Chemical model uses a solid line. The Baseline uses a dashed line.
+5. FLOPs per token with a standard deviation band. The counter counts the operations that the model actually performs.
+6. Mean FFN gate value by difficulty for the Chemical model. This shows if the model allocates more compute to hard tokens. If the gate stays flat, the chemical state does not find the signal.
 
 ## Notes
 
-- Optimized for Apple Silicon (MPS); falls back to CUDA/CPU.
-- The allostatic thesis lives or dies on panel 6. If the gate stays flat across
-  difficulties through a full run, the honest conclusion is the chemical state
-  isn't finding the signal — not that the experiment is broken.
+The code runs on Apple Silicon (MPS). It falls back to CUDA or CPU.
