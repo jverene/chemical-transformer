@@ -1,0 +1,222 @@
+
+=== predictor Stage 1 / tagged / seed 0 (3000 steps) ===
+
+=== predictor / tagged / seed 0 (11,087,464 params, device cuda) ===
+[predictor/tagged/s0] step     0 | loss 4.3295 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 33.2 | 0s
+[predictor/tagged/s0] step   250 | loss 1.5458 | acc 0.354 | bal 0.424 | bins 0.638 0.394 0.238 | MFLOPs/tok 33.2 | 16s
+[predictor/tagged/s0] step   500 | loss 1.4711 | acc 0.365 | bal 0.435 | bins 0.649 0.406 0.250 | MFLOPs/tok 33.2 | 31s
+[predictor/tagged/s0] step   750 | loss 1.4230 | acc 0.397 | bal 0.478 | bins 0.735 0.432 0.268 | MFLOPs/tok 33.2 | 47s
+[predictor/tagged/s0] step  1000 | loss 1.3565 | acc 0.452 | bal 0.550 | bins 0.865 0.489 0.296 | MFLOPs/tok 33.2 | 63s
+[predictor/tagged/s0] step  1250 | loss 1.3352 | acc 0.491 | bal 0.598 | bins 0.945 0.525 0.325 | MFLOPs/tok 33.2 | 78s
+[predictor/tagged/s0] step  1500 | loss 1.3132 | acc 0.515 | bal 0.627 | bins 0.983 0.558 0.339 | MFLOPs/tok 33.2 | 94s
+[predictor/tagged/s0] step  1750 | loss 1.2776 | acc 0.523 | bal 0.635 | bins 0.994 0.565 0.346 | MFLOPs/tok 33.2 | 110s
+[predictor/tagged/s0] step  2000 | loss 1.2438 | acc 0.531 | bal 0.640 | bins 0.999 0.560 0.362 | MFLOPs/tok 33.2 | 125s
+[predictor/tagged/s0] step  2250 | loss 1.2826 | acc 0.539 | bal 0.646 | bins 0.998 0.561 0.378 | MFLOPs/tok 33.2 | 141s
+[predictor/tagged/s0] step  2500 | loss 1.2559 | acc 0.540 | bal 0.648 | bins 0.998 0.572 0.373 | MFLOPs/tok 33.2 | 157s
+[predictor/tagged/s0] step  2750 | loss 1.2693 | acc 0.544 | bal 0.652 | bins 1.000 0.586 0.372 | MFLOPs/tok 33.2 | 173s
+[predictor/tagged/s0] step  2999 | loss 1.2444 | acc 0.553 | bal 0.660 | bins 1.000 0.600 0.382 | MFLOPs/tok 33.2 | 188s
+saved results-opt2/tagged/predictor_stage1_seed0.json
+
+=== predictor Stage 2 / tagged / seed 0 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/tagged/predictor_stage1_seed0.pt
+
+=== predictor / tagged / seed 0 (11,087,464 params, device cuda) ===
+[predictor/tagged/s0] step     0 | loss 3.1499 | acc 0.320 | bal 0.369 | bins 0.506 0.366 0.234 | MFLOPs/tok 21.1 | 0s
+[predictor/tagged/s0] step   250 | loss 1.2169 | acc 0.562 | bal 0.668 | bins 1.000 0.610 0.393 | MFLOPs/tok 32.5 | 17s
+[predictor/tagged/s0] step   500 | loss 1.2520 | acc 0.569 | bal 0.674 | bins 1.000 0.621 0.400 | MFLOPs/tok 32.0 | 33s
+[predictor/tagged/s0] step   750 | loss 1.2479 | acc 0.571 | bal 0.676 | bins 1.000 0.626 0.401 | MFLOPs/tok 31.2 | 49s
+[predictor/tagged/s0] step  1000 | loss 1.2251 | acc 0.572 | bal 0.677 | bins 1.000 0.631 0.400 | MFLOPs/tok 30.5 | 66s
+[predictor/tagged/s0] step  1250 | loss 1.2417 | acc 0.571 | bal 0.675 | bins 1.000 0.626 0.400 | MFLOPs/tok 30.0 | 82s
+[predictor/tagged/s0] step  1500 | loss 1.2322 | acc 0.574 | bal 0.678 | bins 1.000 0.631 0.404 | MFLOPs/tok 29.6 | 98s
+[predictor/tagged/s0] step  1750 | loss 1.2087 | acc 0.573 | bal 0.678 | bins 1.000 0.632 0.401 | MFLOPs/tok 29.6 | 115s
+[predictor/tagged/s0] step  2000 | loss 1.1995 | acc 0.573 | bal 0.678 | bins 1.000 0.633 0.400 | MFLOPs/tok 29.2 | 131s
+[predictor/tagged/s0] step  2250 | loss 1.2293 | acc 0.571 | bal 0.676 | bins 1.000 0.629 0.399 | MFLOPs/tok 29.1 | 148s
+[predictor/tagged/s0] step  2500 | loss 1.2190 | acc 0.573 | bal 0.678 | bins 1.000 0.635 0.399 | MFLOPs/tok 29.0 | 164s
+[predictor/tagged/s0] step  2750 | loss 1.2279 | acc 0.576 | bal 0.680 | bins 1.000 0.635 0.406 | MFLOPs/tok 29.3 | 180s
+[predictor/tagged/s0] step  2999 | loss 1.2148 | acc 0.573 | bal 0.678 | bins 1.000 0.630 0.403 | MFLOPs/tok 29.5 | 197s
+saved results-opt2/tagged/predictor_seed0.json
+
+=== predictor Stage 1 / tagged / seed 1 (3000 steps) ===
+
+=== predictor / tagged / seed 1 (11,087,464 params, device cuda) ===
+[predictor/tagged/s1] step     0 | loss 3.7104 | acc 0.007 | bal 0.006 | bins 0.005 0.005 0.010 | MFLOPs/tok 33.2 | 0s
+[predictor/tagged/s1] step   250 | loss 1.5532 | acc 0.354 | bal 0.423 | bins 0.635 0.394 0.239 | MFLOPs/tok 33.2 | 16s
+[predictor/tagged/s1] step   500 | loss 1.4560 | acc 0.359 | bal 0.431 | bins 0.654 0.403 0.238 | MFLOPs/tok 33.2 | 32s
+[predictor/tagged/s1] step   750 | loss 1.4394 | acc 0.391 | bal 0.468 | bins 0.714 0.416 0.273 | MFLOPs/tok 33.2 | 48s
+[predictor/tagged/s1] step  1000 | loss 1.3763 | acc 0.432 | bal 0.515 | bins 0.782 0.459 0.304 | MFLOPs/tok 33.2 | 63s
+[predictor/tagged/s1] step  1250 | loss 1.3265 | acc 0.463 | bal 0.557 | bins 0.858 0.502 0.313 | MFLOPs/tok 33.2 | 79s
+[predictor/tagged/s1] step  1500 | loss 1.3067 | acc 0.497 | bal 0.607 | bins 0.953 0.544 0.322 | MFLOPs/tok 33.2 | 95s
+[predictor/tagged/s1] step  1750 | loss 1.2749 | acc 0.527 | bal 0.637 | bins 0.992 0.563 0.356 | MFLOPs/tok 33.2 | 111s
+[predictor/tagged/s1] step  2000 | loss 1.2486 | acc 0.542 | bal 0.650 | bins 0.993 0.588 0.369 | MFLOPs/tok 33.2 | 126s
+[predictor/tagged/s1] step  2250 | loss 1.2539 | acc 0.568 | bal 0.672 | bins 0.998 0.618 0.399 | MFLOPs/tok 33.2 | 142s
+[predictor/tagged/s1] step  2500 | loss 1.2368 | acc 0.580 | bal 0.683 | bins 0.997 0.644 0.409 | MFLOPs/tok 33.2 | 158s
+[predictor/tagged/s1] step  2750 | loss 1.2229 | acc 0.593 | bal 0.696 | bins 1.000 0.673 0.416 | MFLOPs/tok 33.2 | 174s
+[predictor/tagged/s1] step  2999 | loss 1.1647 | acc 0.642 | bal 0.739 | bins 0.998 0.758 0.462 | MFLOPs/tok 33.2 | 189s
+saved results-opt2/tagged/predictor_stage1_seed1.json
+
+=== predictor Stage 2 / tagged / seed 1 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/tagged/predictor_stage1_seed1.pt
+
+=== predictor / tagged / seed 1 (11,087,464 params, device cuda) ===
+[predictor/tagged/s1] step     0 | loss 2.9766 | acc 0.232 | bal 0.245 | bins 0.224 0.332 0.178 | MFLOPs/tok 21.9 | 0s
+[predictor/tagged/s1] step   250 | loss 1.1532 | acc 0.661 | bal 0.754 | bins 1.000 0.780 0.483 | MFLOPs/tok 32.5 | 17s
+[predictor/tagged/s1] step   500 | loss 1.1581 | acc 0.665 | bal 0.758 | bins 1.000 0.787 0.487 | MFLOPs/tok 32.0 | 33s
+[predictor/tagged/s1] step   750 | loss 1.1631 | acc 0.667 | bal 0.759 | bins 1.000 0.788 0.489 | MFLOPs/tok 31.4 | 49s
+[predictor/tagged/s1] step  1000 | loss 1.1484 | acc 0.667 | bal 0.760 | bins 1.000 0.790 0.489 | MFLOPs/tok 30.5 | 66s
+[predictor/tagged/s1] step  1250 | loss 1.1421 | acc 0.670 | bal 0.763 | bins 1.000 0.797 0.491 | MFLOPs/tok 30.3 | 82s
+[predictor/tagged/s1] step  1500 | loss 1.1575 | acc 0.674 | bal 0.766 | bins 1.000 0.800 0.496 | MFLOPs/tok 29.7 | 98s
+[predictor/tagged/s1] step  1750 | loss 1.1486 | acc 0.670 | bal 0.763 | bins 1.000 0.800 0.489 | MFLOPs/tok 29.3 | 115s
+[predictor/tagged/s1] step  2000 | loss 1.1332 | acc 0.675 | bal 0.767 | bins 1.000 0.807 0.495 | MFLOPs/tok 29.1 | 131s
+[predictor/tagged/s1] step  2250 | loss 1.1550 | acc 0.677 | bal 0.769 | bins 1.000 0.809 0.498 | MFLOPs/tok 28.6 | 147s
+[predictor/tagged/s1] step  2500 | loss 1.1547 | acc 0.678 | bal 0.769 | bins 1.000 0.809 0.498 | MFLOPs/tok 28.5 | 164s
+[predictor/tagged/s1] step  2750 | loss 1.1506 | acc 0.674 | bal 0.767 | bins 1.000 0.813 0.490 | MFLOPs/tok 28.4 | 180s
+[predictor/tagged/s1] step  2999 | loss 1.1267 | acc 0.678 | bal 0.771 | bins 1.000 0.819 0.494 | MFLOPs/tok 28.7 | 196s
+saved results-opt2/tagged/predictor_seed1.json
+
+=== predictor Stage 1 / tagged / seed 2 (3000 steps) ===
+
+=== predictor / tagged / seed 2 (11,087,464 params, device cuda) ===
+[predictor/tagged/s2] step     0 | loss 3.8220 | acc 0.072 | bal 0.062 | bins 0.033 0.069 0.086 | MFLOPs/tok 33.2 | 0s
+[predictor/tagged/s2] step   250 | loss 1.5798 | acc 0.347 | bal 0.418 | bins 0.631 0.397 0.226 | MFLOPs/tok 33.2 | 16s
+[predictor/tagged/s2] step   500 | loss 1.4435 | acc 0.360 | bal 0.432 | bins 0.652 0.405 0.239 | MFLOPs/tok 33.2 | 32s
+[predictor/tagged/s2] step   750 | loss 1.4225 | acc 0.387 | bal 0.471 | bins 0.734 0.426 0.252 | MFLOPs/tok 33.2 | 47s
+[predictor/tagged/s2] step  1000 | loss 1.3693 | acc 0.417 | bal 0.509 | bins 0.800 0.458 0.270 | MFLOPs/tok 33.2 | 63s
+[predictor/tagged/s2] step  1250 | loss 1.3486 | acc 0.466 | bal 0.562 | bins 0.874 0.493 0.318 | MFLOPs/tok 33.2 | 79s
+[predictor/tagged/s2] step  1500 | loss 1.3256 | acc 0.505 | bal 0.614 | bins 0.977 0.524 0.341 | MFLOPs/tok 33.2 | 95s
+[predictor/tagged/s2] step  1750 | loss 1.2815 | acc 0.512 | bal 0.623 | bins 0.990 0.539 0.342 | MFLOPs/tok 33.2 | 111s
+[predictor/tagged/s2] step  2000 | loss 1.3069 | acc 0.523 | bal 0.635 | bins 0.996 0.559 0.350 | MFLOPs/tok 33.2 | 126s
+[predictor/tagged/s2] step  2250 | loss 1.2469 | acc 0.528 | bal 0.637 | bins 0.992 0.560 0.359 | MFLOPs/tok 33.2 | 142s
+[predictor/tagged/s2] step  2500 | loss 1.2397 | acc 0.532 | bal 0.641 | bins 1.000 0.556 0.367 | MFLOPs/tok 33.2 | 158s
+[predictor/tagged/s2] step  2750 | loss 1.2488 | acc 0.555 | bal 0.661 | bins 0.992 0.607 0.383 | MFLOPs/tok 33.2 | 174s
+[predictor/tagged/s2] step  2999 | loss 1.2376 | acc 0.585 | bal 0.688 | bins 0.988 0.670 0.406 | MFLOPs/tok 33.2 | 189s
+saved results-opt2/tagged/predictor_stage1_seed2.json
+
+=== predictor Stage 2 / tagged / seed 2 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/tagged/predictor_stage1_seed2.pt
+
+=== predictor / tagged / seed 2 (11,087,464 params, device cuda) ===
+[predictor/tagged/s2] step     0 | loss 2.0991 | acc 0.338 | bal 0.374 | bins 0.474 0.376 0.272 | MFLOPs/tok 21.9 | 0s
+[predictor/tagged/s2] step   250 | loss 1.2048 | acc 0.608 | bal 0.708 | bins 1.000 0.691 0.434 | MFLOPs/tok 31.1 | 17s
+[predictor/tagged/s2] step   500 | loss 1.2008 | acc 0.608 | bal 0.709 | bins 1.000 0.693 0.433 | MFLOPs/tok 30.3 | 33s
+[predictor/tagged/s2] step   750 | loss 1.1978 | acc 0.609 | bal 0.709 | bins 1.000 0.693 0.434 | MFLOPs/tok 29.7 | 49s
+[predictor/tagged/s2] step  1000 | loss 1.1862 | acc 0.609 | bal 0.709 | bins 1.000 0.692 0.435 | MFLOPs/tok 28.9 | 66s
+[predictor/tagged/s2] step  1250 | loss 1.2016 | acc 0.610 | bal 0.710 | bins 1.000 0.690 0.439 | MFLOPs/tok 28.5 | 82s
+[predictor/tagged/s2] step  1500 | loss 1.2110 | acc 0.615 | bal 0.714 | bins 1.000 0.701 0.441 | MFLOPs/tok 27.9 | 98s
+[predictor/tagged/s2] step  1750 | loss 1.1875 | acc 0.615 | bal 0.714 | bins 1.000 0.702 0.441 | MFLOPs/tok 27.6 | 115s
+[predictor/tagged/s2] step  2000 | loss 1.2106 | acc 0.616 | bal 0.715 | bins 1.000 0.702 0.442 | MFLOPs/tok 27.4 | 131s
+[predictor/tagged/s2] step  2250 | loss 1.1620 | acc 0.620 | bal 0.718 | bins 1.000 0.706 0.447 | MFLOPs/tok 27.2 | 147s
+[predictor/tagged/s2] step  2500 | loss 1.1602 | acc 0.620 | bal 0.718 | bins 1.000 0.708 0.446 | MFLOPs/tok 27.0 | 164s
+[predictor/tagged/s2] step  2750 | loss 1.1945 | acc 0.629 | bal 0.725 | bins 1.000 0.716 0.459 | MFLOPs/tok 26.7 | 180s
+[predictor/tagged/s2] step  2999 | loss 1.1983 | acc 0.628 | bal 0.726 | bins 1.000 0.727 0.451 | MFLOPs/tok 26.7 | 196s
+saved results-opt2/tagged/predictor_seed2.json
+
+=== predictor Stage 1 / mixed / seed 0 (3000 steps) ===
+
+=== predictor / mixed / seed 0 (11,087,464 params, device cuda) ===
+[predictor/mixed/s0] step     0 | loss 4.3827 | acc 0.071 | bal 0.057 | bins 0.014 0.069 0.071 0.075 | MFLOPs/tok 33.2 | 0s
+[predictor/mixed/s0] step   250 | loss 2.5083 | acc 0.244 | bal 0.308 | bins 0.456 0.323 0.245 0.208 | MFLOPs/tok 33.2 | 16s
+[predictor/mixed/s0] step   500 | loss 2.1191 | acc 0.326 | bal 0.394 | bins 0.551 0.405 0.337 0.284 | MFLOPs/tok 33.2 | 32s
+[predictor/mixed/s0] step   750 | loss 2.0641 | acc 0.338 | bal 0.408 | bins 0.567 0.422 0.349 0.295 | MFLOPs/tok 33.2 | 47s
+[predictor/mixed/s0] step  1000 | loss 2.0253 | acc 0.342 | bal 0.409 | bins 0.555 0.426 0.358 0.296 | MFLOPs/tok 33.2 | 63s
+[predictor/mixed/s0] step  1250 | loss 2.0123 | acc 0.359 | bal 0.421 | bins 0.560 0.436 0.368 0.319 | MFLOPs/tok 33.2 | 79s
+[predictor/mixed/s0] step  1500 | loss 1.9618 | acc 0.374 | bal 0.447 | bins 0.609 0.470 0.379 0.329 | MFLOPs/tok 33.2 | 95s
+[predictor/mixed/s0] step  1750 | loss 1.9157 | acc 0.441 | bal 0.501 | bins 0.635 0.515 0.451 0.402 | MFLOPs/tok 33.2 | 110s
+[predictor/mixed/s0] step  2000 | loss 1.8658 | acc 0.485 | bal 0.569 | bins 0.772 0.569 0.496 0.438 | MFLOPs/tok 33.2 | 126s
+[predictor/mixed/s0] step  2250 | loss 1.8289 | acc 0.525 | bal 0.609 | bins 0.802 0.620 0.542 0.471 | MFLOPs/tok 33.2 | 142s
+[predictor/mixed/s0] step  2500 | loss 1.7676 | acc 0.563 | bal 0.645 | bins 0.824 0.671 0.574 0.511 | MFLOPs/tok 33.2 | 158s
+[predictor/mixed/s0] step  2750 | loss 1.7470 | acc 0.626 | bal 0.712 | bins 0.894 0.744 0.643 0.567 | MFLOPs/tok 33.2 | 174s
+[predictor/mixed/s0] step  2999 | loss 1.6657 | acc 0.684 | bal 0.762 | bins 0.925 0.797 0.697 0.629 | MFLOPs/tok 33.2 | 189s
+saved results-opt2/mixed/predictor_stage1_seed0.json
+
+=== predictor Stage 2 / mixed / seed 0 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/mixed/predictor_stage1_seed0.pt
+
+=== predictor / mixed / seed 0 (11,087,464 params, device cuda) ===
+[predictor/mixed/s0] step     0 | loss 2.1898 | acc 0.429 | bal 0.473 | bins 0.560 0.498 0.443 0.393 | MFLOPs/tok 21.4 | 0s
+[predictor/mixed/s0] step   250 | loss 1.6301 | acc 0.726 | bal 0.801 | bins 0.962 0.836 0.731 0.677 | MFLOPs/tok 31.1 | 17s
+[predictor/mixed/s0] step   500 | loss 1.6252 | acc 0.732 | bal 0.805 | bins 0.965 0.834 0.737 0.686 | MFLOPs/tok 29.4 | 33s
+[predictor/mixed/s0] step   750 | loss 1.6261 | acc 0.733 | bal 0.806 | bins 0.965 0.837 0.736 0.687 | MFLOPs/tok 28.8 | 49s
+[predictor/mixed/s0] step  1000 | loss 1.6085 | acc 0.736 | bal 0.810 | bins 0.972 0.838 0.741 0.689 | MFLOPs/tok 28.0 | 66s
+[predictor/mixed/s0] step  1250 | loss 1.6140 | acc 0.736 | bal 0.811 | bins 0.967 0.846 0.742 0.688 | MFLOPs/tok 27.5 | 82s
+[predictor/mixed/s0] step  1500 | loss 1.5888 | acc 0.739 | bal 0.810 | bins 0.960 0.839 0.748 0.691 | MFLOPs/tok 27.3 | 98s
+[predictor/mixed/s0] step  1750 | loss 1.6048 | acc 0.741 | bal 0.811 | bins 0.960 0.844 0.748 0.694 | MFLOPs/tok 26.7 | 115s
+[predictor/mixed/s0] step  2000 | loss 1.5932 | acc 0.744 | bal 0.815 | bins 0.969 0.840 0.749 0.700 | MFLOPs/tok 26.2 | 131s
+[predictor/mixed/s0] step  2250 | loss 1.6074 | acc 0.744 | bal 0.815 | bins 0.967 0.843 0.751 0.699 | MFLOPs/tok 26.1 | 147s
+[predictor/mixed/s0] step  2500 | loss 1.5953 | acc 0.747 | bal 0.818 | bins 0.972 0.844 0.757 0.700 | MFLOPs/tok 26.1 | 164s
+[predictor/mixed/s0] step  2750 | loss 1.6000 | acc 0.749 | bal 0.819 | bins 0.972 0.848 0.752 0.705 | MFLOPs/tok 26.0 | 180s
+[predictor/mixed/s0] step  2999 | loss 1.5997 | acc 0.750 | bal 0.819 | bins 0.967 0.848 0.756 0.705 | MFLOPs/tok 25.9 | 196s
+saved results-opt2/mixed/predictor_seed0.json
+
+=== predictor Stage 1 / mixed / seed 1 (3000 steps) ===
+
+=== predictor / mixed / seed 1 (11,087,464 params, device cuda) ===
+[predictor/mixed/s1] step     0 | loss 4.0009 | acc 0.013 | bal 0.010 | bins 0.002 0.012 0.012 0.015 | MFLOPs/tok 33.2 | 0s
+[predictor/mixed/s1] step   250 | loss 2.4501 | acc 0.229 | bal 0.277 | bins 0.388 0.282 0.240 0.198 | MFLOPs/tok 33.2 | 16s
+[predictor/mixed/s1] step   500 | loss 2.1082 | acc 0.306 | bal 0.372 | bins 0.541 0.366 0.310 0.273 | MFLOPs/tok 33.2 | 32s
+[predictor/mixed/s1] step   750 | loss 2.0659 | acc 0.340 | bal 0.405 | bins 0.548 0.427 0.350 0.297 | MFLOPs/tok 33.2 | 47s
+[predictor/mixed/s1] step  1000 | loss 2.0029 | acc 0.360 | bal 0.423 | bins 0.569 0.434 0.369 0.321 | MFLOPs/tok 33.2 | 63s
+[predictor/mixed/s1] step  1250 | loss 1.9915 | acc 0.365 | bal 0.434 | bins 0.593 0.450 0.370 0.325 | MFLOPs/tok 33.2 | 79s
+[predictor/mixed/s1] step  1500 | loss 1.9292 | acc 0.411 | bal 0.480 | bins 0.640 0.500 0.411 0.371 | MFLOPs/tok 33.2 | 95s
+[predictor/mixed/s1] step  1750 | loss 1.9065 | acc 0.454 | bal 0.530 | bins 0.704 0.548 0.462 0.407 | MFLOPs/tok 33.2 | 111s
+[predictor/mixed/s1] step  2000 | loss 1.8750 | acc 0.467 | bal 0.551 | bins 0.734 0.579 0.479 0.412 | MFLOPs/tok 33.2 | 126s
+[predictor/mixed/s1] step  2250 | loss 1.8782 | acc 0.474 | bal 0.566 | bins 0.784 0.574 0.490 0.418 | MFLOPs/tok 33.2 | 142s
+[predictor/mixed/s1] step  2500 | loss 1.8570 | acc 0.490 | bal 0.591 | bins 0.833 0.600 0.494 0.436 | MFLOPs/tok 33.2 | 158s
+[predictor/mixed/s1] step  2750 | loss 1.8343 | acc 0.511 | bal 0.603 | bins 0.826 0.605 0.524 0.458 | MFLOPs/tok 33.2 | 174s
+[predictor/mixed/s1] step  2999 | loss 1.8148 | acc 0.531 | bal 0.623 | bins 0.847 0.633 0.530 0.483 | MFLOPs/tok 33.2 | 190s
+saved results-opt2/mixed/predictor_stage1_seed1.json
+
+=== predictor Stage 2 / mixed / seed 1 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/mixed/predictor_stage1_seed1.pt
+
+=== predictor / mixed / seed 1 (11,087,464 params, device cuda) ===
+[predictor/mixed/s1] step     0 | loss 2.6742 | acc 0.241 | bal 0.238 | bins 0.233 0.240 0.238 0.243 | MFLOPs/tok 20.1 | 0s
+[predictor/mixed/s1] step   250 | loss 1.7791 | acc 0.567 | bal 0.668 | bins 0.908 0.682 0.571 0.511 | MFLOPs/tok 32.2 | 17s
+[predictor/mixed/s1] step   500 | loss 1.7537 | acc 0.574 | bal 0.674 | bins 0.908 0.690 0.580 0.517 | MFLOPs/tok 31.0 | 33s
+[predictor/mixed/s1] step   750 | loss 1.7569 | acc 0.576 | bal 0.677 | bins 0.915 0.691 0.580 0.520 | MFLOPs/tok 30.9 | 49s
+[predictor/mixed/s1] step  1000 | loss 1.7394 | acc 0.578 | bal 0.681 | bins 0.922 0.698 0.583 0.521 | MFLOPs/tok 30.1 | 66s
+[predictor/mixed/s1] step  1250 | loss 1.7536 | acc 0.584 | bal 0.688 | bins 0.932 0.705 0.589 0.525 | MFLOPs/tok 29.4 | 82s
+[predictor/mixed/s1] step  1500 | loss 1.7371 | acc 0.587 | bal 0.689 | bins 0.927 0.709 0.593 0.528 | MFLOPs/tok 28.5 | 99s
+[predictor/mixed/s1] step  1750 | loss 1.7575 | acc 0.585 | bal 0.688 | bins 0.925 0.708 0.592 0.525 | MFLOPs/tok 28.2 | 115s
+[predictor/mixed/s1] step  2000 | loss 1.7270 | acc 0.590 | bal 0.693 | bins 0.936 0.705 0.594 0.535 | MFLOPs/tok 28.1 | 131s
+[predictor/mixed/s1] step  2250 | loss 1.7432 | acc 0.594 | bal 0.695 | bins 0.932 0.714 0.593 0.540 | MFLOPs/tok 27.3 | 148s
+[predictor/mixed/s1] step  2500 | loss 1.7395 | acc 0.597 | bal 0.698 | bins 0.934 0.722 0.595 0.542 | MFLOPs/tok 27.4 | 164s
+[predictor/mixed/s1] step  2750 | loss 1.7438 | acc 0.596 | bal 0.697 | bins 0.929 0.720 0.599 0.538 | MFLOPs/tok 26.9 | 181s
+[predictor/mixed/s1] step  2999 | loss 1.7419 | acc 0.596 | bal 0.699 | bins 0.946 0.714 0.598 0.539 | MFLOPs/tok 27.6 | 197s
+saved results-opt2/mixed/predictor_seed1.json
+
+=== predictor Stage 1 / mixed / seed 2 (3000 steps) ===
+
+=== predictor / mixed / seed 2 (11,087,464 params, device cuda) ===
+[predictor/mixed/s2] step     0 | loss 3.8548 | acc 0.086 | bal 0.083 | bins 0.075 0.077 0.092 0.086 | MFLOPs/tok 33.2 | 0s
+[predictor/mixed/s2] step   250 | loss 2.5000 | acc 0.208 | bal 0.256 | bins 0.367 0.263 0.218 0.178 | MFLOPs/tok 33.2 | 16s
+[predictor/mixed/s2] step   500 | loss 2.0971 | acc 0.326 | bal 0.392 | bins 0.532 0.417 0.338 0.282 | MFLOPs/tok 33.2 | 32s
+[predictor/mixed/s2] step   750 | loss 2.0541 | acc 0.340 | bal 0.406 | bins 0.555 0.420 0.352 0.297 | MFLOPs/tok 33.2 | 48s
+[predictor/mixed/s2] step  1000 | loss 2.0065 | acc 0.357 | bal 0.423 | bins 0.574 0.434 0.366 0.316 | MFLOPs/tok 33.2 | 64s
+[predictor/mixed/s2] step  1250 | loss 1.9578 | acc 0.414 | bal 0.485 | bins 0.652 0.493 0.421 0.374 | MFLOPs/tok 33.2 | 79s
+[predictor/mixed/s2] step  1500 | loss 1.9144 | acc 0.460 | bal 0.543 | bins 0.732 0.570 0.459 0.413 | MFLOPs/tok 33.2 | 95s
+[predictor/mixed/s2] step  1750 | loss 1.8698 | acc 0.467 | bal 0.550 | bins 0.727 0.580 0.482 0.410 | MFLOPs/tok 33.2 | 111s
+[predictor/mixed/s2] step  2000 | loss 1.8493 | acc 0.470 | bal 0.566 | bins 0.791 0.582 0.474 0.417 | MFLOPs/tok 33.2 | 127s
+[predictor/mixed/s2] step  2250 | loss 1.8241 | acc 0.515 | bal 0.611 | bins 0.842 0.620 0.520 0.462 | MFLOPs/tok 33.2 | 143s
+[predictor/mixed/s2] step  2500 | loss 1.7924 | acc 0.535 | bal 0.631 | bins 0.849 0.656 0.538 0.480 | MFLOPs/tok 33.2 | 159s
+[predictor/mixed/s2] step  2750 | loss 1.7542 | acc 0.573 | bal 0.666 | bins 0.882 0.684 0.584 0.516 | MFLOPs/tok 33.2 | 175s
+[predictor/mixed/s2] step  2999 | loss 1.6834 | acc 0.644 | bal 0.739 | bins 0.951 0.763 0.657 0.583 | MFLOPs/tok 33.2 | 190s
+saved results-opt2/mixed/predictor_stage1_seed2.json
+
+=== predictor Stage 2 / mixed / seed 2 (3000 steps) ===
+Loading Stage 1 checkpoint from results-opt2/mixed/predictor_stage1_seed2.pt
+
+=== predictor / mixed / seed 2 (11,087,464 params, device cuda) ===
+[predictor/mixed/s2] step     0 | loss 2.2288 | acc 0.431 | bal 0.493 | bins 0.619 0.524 0.442 0.387 | MFLOPs/tok 21.5 | 0s
+[predictor/mixed/s2] step   250 | loss 1.6469 | acc 0.692 | bal 0.781 | bins 0.967 0.822 0.696 0.637 | MFLOPs/tok 31.5 | 17s
+[predictor/mixed/s2] step   500 | loss 1.6439 | acc 0.698 | bal 0.785 | bins 0.969 0.821 0.709 0.640 | MFLOPs/tok 30.1 | 33s
+[predictor/mixed/s2] step   750 | loss 1.6426 | acc 0.707 | bal 0.790 | bins 0.962 0.830 0.713 0.653 | MFLOPs/tok 29.5 | 49s
+[predictor/mixed/s2] step  1000 | loss 1.6341 | acc 0.709 | bal 0.793 | bins 0.965 0.832 0.720 0.653 | MFLOPs/tok 29.0 | 66s
+[predictor/mixed/s2] step  1250 | loss 1.6270 | acc 0.715 | bal 0.797 | bins 0.967 0.834 0.727 0.658 | MFLOPs/tok 28.9 | 82s
+[predictor/mixed/s2] step  1500 | loss 1.6371 | acc 0.720 | bal 0.799 | bins 0.962 0.839 0.731 0.665 | MFLOPs/tok 28.8 | 99s
+[predictor/mixed/s2] step  1750 | loss 1.6029 | acc 0.727 | bal 0.805 | bins 0.965 0.847 0.735 0.673 | MFLOPs/tok 28.4 | 115s
+[predictor/mixed/s2] step  2000 | loss 1.6236 | acc 0.730 | bal 0.808 | bins 0.969 0.842 0.741 0.679 | MFLOPs/tok 28.0 | 132s
+[predictor/mixed/s2] step  2250 | loss 1.5958 | acc 0.732 | bal 0.809 | bins 0.967 0.847 0.743 0.679 | MFLOPs/tok 28.0 | 148s
+[predictor/mixed/s2] step  2500 | loss 1.6181 | acc 0.737 | bal 0.813 | bins 0.972 0.848 0.746 0.687 | MFLOPs/tok 27.5 | 164s
+[predictor/mixed/s2] step  2750 | loss 1.6008 | acc 0.740 | bal 0.816 | bins 0.974 0.850 0.749 0.690 | MFLOPs/tok 27.4 | 181s
+[predictor/mixed/s2] step  2999 | loss 1.5919 | acc 0.745 | bal 0.820 | bins 0.974 0.854 0.755 0.695 | MFLOPs/tok 27.8 | 197s
+saved results-opt2/mixed/predictor_seed2.json

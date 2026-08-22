@@ -1,0 +1,80 @@
+
+=== baseline / tagged / seed 0 (10,861,078 params, device mps) ===
+[baseline/tagged/s0] step     0 | loss 3.9578 | acc 0.084 | bal 0.090 | bins 0.119 0.081 0.071 | MFLOPs/tok 32.7 | 2s
+[baseline/tagged/s0] step    60 | loss 1.9809 | acc 0.308 | bal 0.356 | bins 0.575 0.315 0.177 | MFLOPs/tok 32.7 | 43s
+[baseline/tagged/s0] step   119 | loss 1.7265 | acc 0.305 | bal 0.352 | bins 0.562 0.329 0.166 | MFLOPs/tok 32.7 | 96s
+saved results_smoke/tagged/baseline_seed0.json
+
+=== chemical / tagged / seed 0 (10,865,116 params, device mps) ===
+[chemical/tagged/s0] step     0 | loss 3.6546 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 18.6 | 2s
+[chemical/tagged/s0] step    60 | loss 2.0825 | acc 0.168 | bal 0.178 | bins 0.212 0.190 0.132 | MFLOPs/tok 18.4 | 78s
+[chemical/tagged/s0] step   119 | loss 1.8463 | acc 0.293 | bal 0.339 | bins 0.558 0.282 0.175 | MFLOPs/tok 17.8 | 149s
+saved results_smoke/tagged/chemical_seed0.json
+
+=== chemical-off / tagged / seed 0 (10,865,116 params, device mps) ===
+[chemical-off/tagged/s0] step     0 | loss 3.8097 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 32.7 | 1s
+[chemical-off/tagged/s0] step    60 | loss 2.1156 | acc 0.149 | bal 0.159 | bins 0.200 0.156 0.120 | MFLOPs/tok 32.7 | 48s
+[chemical-off/tagged/s0] step   119 | loss 1.7582 | acc 0.323 | bal 0.369 | bins 0.562 0.357 0.187 | MFLOPs/tok 32.7 | 95s
+saved results_smoke/tagged/chemical-off_seed0.json
+MoD capacity auto-matched to Chemical mean gate: 0.474
+
+=== mod / tagged / seed 0 (10,863,388 params, device mps) ===
+[mod/tagged/s0] step     0 | loss 4.2008 | acc 0.064 | bal 0.059 | bins 0.044 0.042 0.090 | MFLOPs/tok 18.9 | 4s
+[mod/tagged/s0] step    60 | loss 1.9712 | acc 0.208 | bal 0.230 | bins 0.331 0.216 0.145 | MFLOPs/tok 18.9 | 58s
+[mod/tagged/s0] step   119 | loss 1.7509 | acc 0.305 | bal 0.353 | bins 0.567 0.318 0.173 | MFLOPs/tok 18.9 | 117s
+saved results_smoke/tagged/mod_seed0.json
+
+=== random-gate / tagged / seed 0 (10,865,116 params, device mps) ===
+[random-gate/tagged/s0] step     0 | loss 3.6546 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 18.6 | 1s
+[random-gate/tagged/s0] step    60 | loss 2.0637 | acc 0.150 | bal 0.159 | bins 0.187 0.175 0.116 | MFLOPs/tok 18.3 | 55s
+[random-gate/tagged/s0] step   119 | loss 1.7235 | acc 0.321 | bal 0.366 | bins 0.579 0.315 0.204 | MFLOPs/tok 17.9 | 104s
+saved results_smoke/tagged/random-gate_seed0.json
+
+=== fixed-schedule / tagged / seed 0 (10,865,116 params, device mps) ===
+[fixed-schedule/tagged/s0] step     0 | loss 3.6496 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 18.6 | 1s
+[fixed-schedule/tagged/s0] step    60 | loss 2.0726 | acc 0.191 | bal 0.202 | bins 0.248 0.203 0.156 | MFLOPs/tok 18.6 | 38s
+[fixed-schedule/tagged/s0] step   119 | loss 1.7902 | acc 0.337 | bal 0.379 | bins 0.563 0.354 0.219 | MFLOPs/tok 18.6 | 73s
+saved results_smoke/tagged/fixed-schedule_seed0.json
+
+=== tag-only / tagged / seed 0 (10,865,116 params, device mps) ===
+[tag-only/tagged/s0] step     0 | loss 3.6546 | acc 0.000 | bal 0.000 | bins 0.000 0.000 0.000 | MFLOPs/tok 18.6 | 3s
+[tag-only/tagged/s0] step    60 | loss 2.0876 | acc 0.204 | bal 0.216 | bins 0.269 0.213 0.166 | MFLOPs/tok 18.4 | 57s
+[tag-only/tagged/s0] step   119 | loss 1.7459 | acc 0.317 | bal 0.360 | bins 0.550 0.334 0.196 | MFLOPs/tok 18.2 | 104s
+saved results_smoke/tagged/tag-only_seed0.json
+
+=== baseline / mixed / seed 0 (10,861,078 params, device mps) ===
+[baseline/mixed/s0] step     0 | loss 3.8813 | acc 0.090 | bal 0.100 | bins 0.132 0.087 0.094 0.085 | MFLOPs/tok 32.6 | 1s
+[baseline/mixed/s0] step    60 | loss 2.5767 | acc 0.123 | bal 0.143 | bins 0.165 0.182 0.112 0.111 | MFLOPs/tok 32.6 | 48s
+[baseline/mixed/s0] step   119 | loss 2.4316 | acc 0.254 | bal 0.318 | bins 0.462 0.333 0.260 0.217 | MFLOPs/tok 32.6 | 97s
+saved results_smoke/mixed/baseline_seed0.json
+
+=== chemical / mixed / seed 0 (10,865,116 params, device mps) ===
+[chemical/mixed/s0] step     0 | loss 3.7937 | acc 0.209 | bal 0.260 | bins 0.363 0.287 0.211 0.178 | MFLOPs/tok 18.5 | 1s
+[chemical/mixed/s0] step    60 | loss 2.5885 | acc 0.220 | bal 0.258 | bins 0.330 0.292 0.213 0.198 | MFLOPs/tok 17.9 | 58s
+[chemical/mixed/s0] step   119 | loss 2.5766 | acc 0.116 | bal 0.106 | bins 0.066 0.116 0.132 0.109 | MFLOPs/tok 17.1 | 115s
+saved results_smoke/mixed/chemical_seed0.json
+
+=== chemical-off / mixed / seed 0 (10,865,116 params, device mps) ===
+[chemical-off/mixed/s0] step     0 | loss 3.7882 | acc 0.209 | bal 0.259 | bins 0.363 0.287 0.210 0.178 | MFLOPs/tok 32.6 | 1s
+[chemical-off/mixed/s0] step    60 | loss 2.6963 | acc 0.060 | bal 0.055 | bins 0.055 0.046 0.045 0.075 | MFLOPs/tok 32.6 | 41s
+[chemical-off/mixed/s0] step   119 | loss 2.5759 | acc 0.140 | bal 0.192 | bins 0.308 0.221 0.110 0.128 | MFLOPs/tok 32.6 | 75s
+saved results_smoke/mixed/chemical-off_seed0.json
+MoD capacity auto-matched to Chemical mean gate: 0.449
+
+=== mod / mixed / seed 0 (10,863,388 params, device mps) ===
+[mod/mixed/s0] step     0 | loss 3.9935 | acc 0.134 | bal 0.143 | bins 0.176 0.132 0.121 0.141 | MFLOPs/tok 17.8 | 1s
+[mod/mixed/s0] step    60 | loss 2.5257 | acc 0.207 | bal 0.247 | bins 0.308 0.292 0.217 0.172 | MFLOPs/tok 17.8 | 32s
+[mod/mixed/s0] step   119 | loss 2.3631 | acc 0.276 | bal 0.341 | bins 0.462 0.399 0.265 0.238 | MFLOPs/tok 17.8 | 63s
+saved results_smoke/mixed/mod_seed0.json
+
+=== random-gate / mixed / seed 0 (10,865,116 params, device mps) ===
+[random-gate/mixed/s0] step     0 | loss 3.7944 | acc 0.211 | bal 0.261 | bins 0.363 0.287 0.214 0.180 | MFLOPs/tok 18.5 | 1s
+[random-gate/mixed/s0] step    60 | loss 2.6218 | acc 0.108 | bal 0.128 | bins 0.143 0.187 0.082 0.101 | MFLOPs/tok 17.9 | 50s
+[random-gate/mixed/s0] step   119 | loss 2.5258 | acc 0.189 | bal 0.256 | bins 0.418 0.267 0.175 0.164 | MFLOPs/tok 17.1 | 111s
+saved results_smoke/mixed/random-gate_seed0.json
+
+=== fixed-schedule / mixed / seed 0 (10,865,116 params, device mps) ===
+[fixed-schedule/mixed/s0] step     0 | loss 3.7887 | acc 0.209 | bal 0.260 | bins 0.363 0.287 0.211 0.178 | MFLOPs/tok 18.5 | 1s
+[fixed-schedule/mixed/s0] step    60 | loss 2.5855 | acc 0.219 | bal 0.258 | bins 0.330 0.292 0.213 0.197 | MFLOPs/tok 18.5 | 37s
+[fixed-schedule/mixed/s0] step   119 | loss 2.4928 | acc 0.153 | bal 0.181 | bins 0.220 0.232 0.130 0.142 | MFLOPs/tok 18.5 | 73s
+saved results_smoke/mixed/fixed-schedule_seed0.json
