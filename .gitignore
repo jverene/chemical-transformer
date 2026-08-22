@@ -19,3 +19,6 @@ run.log
 .zcode/
 .DS_Store
 .ipynb_checkpoints/
+*.pt
+results-smoke/
+__pycache__/
