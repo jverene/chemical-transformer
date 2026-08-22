@@ -18,3 +18,4 @@ run.log
 .vscode/
 .zcode/
 .DS_Store
+.ipynb_checkpoints/
