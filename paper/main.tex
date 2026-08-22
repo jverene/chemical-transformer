@@ -167,7 +167,10 @@ quantities---halting scores, exit confidence, router logits---trained on the
 task loss (sometimes with auxiliary balancing objectives). Our work is
 complementary: rather than proposing a new routing mechanism, we ask whether
 such endogenous signals actually track problem difficulty, and show that in our
-setting they do not unless supervised.
+setting they do not unless supervised. This reframes the canonical method as
+well: MoD's learned router exhibits the same inversion we diagnose
+(\S\ref{sec:ablations}), allocating slightly more of its budget to easy tokens
+than to hard ones.
 
 \paragraph{Conditional computation and mixture-of-experts.}
 Sparsely-gated MoE \citep{shazeer2017outrageously} routes tokens to expert FFNs
@@ -468,7 +471,9 @@ a slightly \emph{larger} fraction of its compute budget to easy tokens than to
 hard ones (fraction of tokens processed, E/M/H $= 0.135/0.109/0.093$), and its
 accuracy suffers ($62.6{\pm}4.8$ tagged, $70.5{\pm}2.9$ mixed). Endogenous
 training dynamics push compute toward reducible error regardless of the routing
-mechanism.
+mechanism. MoD is thus not a counterexample to our diagnosis but its most
+prominent instance: the field's canonical token-level allocator rests on the
+same untested assumption, and in our setting it fails the same way.
 
 \textbf{Controls.} Random-gate ($70.7{\pm}4.4$) and Tag-only ($71.6{\pm}3.1$)
 show that neither gate variance alone nor a static oracle tag heuristic explains
