@@ -228,6 +228,8 @@ def main():
                    help="Target mean gate (budget)")
     p.add_argument("--predictor-budget-weight", type=float, default=1.0,
                    help="Budget loss weight for Option 3b")
+    p.add_argument("--predictor-digit-targets", action="store_true",
+                   help="Option B (mixed): difficulty targets from digit-count bins")
 
     args = p.parse_args()
 
@@ -263,6 +265,8 @@ def main():
                 overrides["chem_tag_init"] = True
             if args.chem_hidden:
                 overrides["chem_hidden_input"] = True
+            if args.predictor_digit_targets:
+                overrides["predictor_digit_targets"] = True
 
             cfg = Config.for_size(args.size, **overrides)
 

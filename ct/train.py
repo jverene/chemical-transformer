@@ -237,10 +237,16 @@ def train_run(method: str, task_name: str, seed: int, cfg,
                 target_gate_h = getattr(cfg, "predictor_target_gate_h", 0.8)
 
                 # Create per-position targets from diffs
-                # E (0) -> 0.2, M (1) -> 0.5, H (2) -> 0.8, none (-1) -> 0.5
-                target = torch.where(diffs == 0, target_gate_e,
-                             torch.where(diffs == 1, target_gate_m,
-                             torch.where(diffs == 2, target_gate_h, 0.5)))
+                if getattr(cfg, "predictor_digit_targets", False):
+                    # Option B (mixed): digit-count bins 0..3 -> 0.2/0.4/0.6/0.8
+                    target = torch.full(diffs.shape, 0.5, device=diffs.device)
+                    valid = diffs >= 0
+                    target[valid] = 0.2 + 0.2 * diffs[valid].float()
+                else:
+                    # E (0) -> 0.2, M (1) -> 0.5, H (2) -> 0.8, none (-1) -> 0.5
+                    target = torch.where(diffs == 0, target_gate_e,
+                                 torch.where(diffs == 1, target_gate_m,
+                                 torch.where(diffs == 2, target_gate_h, 0.5)))
 
                 # MSE loss on sigmoid(score) vs target (both in [0,1] space)
                 pred_gate = torch.sigmoid(pred_score)

@@ -57,6 +57,8 @@ class Config:
     predictor_budget_weight: float = 0.5
     predictor_budget_target: float = 0.5
     predictor_freeze_body: bool = False
+    # Option B for mixed task: targets from digit-count bins (0.2/0.4/0.6/0.8)
+    predictor_digit_targets: bool = False
     # evaluation
     held_out_seed: int = 12345  # same held-out set for every method/seed
     test_seqs: int = 256

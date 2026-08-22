@@ -110,6 +110,7 @@ class ChemicalLayer(nn.Module):
         x2 = self.norm1(x + attn_out)
 
         entropy = None
+        score = None
         if self.mode == "predictor":
             # Stage 1: full compute everywhere (gate = 1.0)
             # Stage 2: learned difficulty predictor from hidden state

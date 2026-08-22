@@ -1,0 +1,35 @@
+{
+  "metric_note": "Pearson r between the per-token (or per-problem mean) allocation signal and the difficulty bin index (E=0<M=1<H=2), computed on frozen held-out batches from saved checkpoints. Scripts: eval_signal_corr.py, eval_probcorr.py.",
+  "iterations": {
+    "iter1_entropy": {
+      "label": "1: Attention entropy",
+      "runs": "results/tagged/chemical_seed{0,1,2}.json",
+      "signal": "gate (entropy-driven chemical state)",
+      "per_problem_r": [-0.1670, 0.5623, 0.2841],
+      "per_token_r": [-0.0339, 0.1244, 0.0279],
+      "entropy_vs_difficulty_per_token_r": [0.0475, -0.1004, -0.1196]
+    },
+    "iter2_tag_init": {
+      "label": "2: Tag-initialized state",
+      "runs": "results-opt1/tagged/chemical_seed{0,1,2}.json",
+      "signal": "gate",
+      "per_problem_r": [-0.1747, -0.6638, -0.9288],
+      "per_token_r": [-0.1027, -0.2745, -0.3972]
+    },
+    "iter3_learned_head": {
+      "label": "3: Learned head (unsup.)",
+      "runs": "results-opt2/tagged/predictor_seed{0,1,2}.json",
+      "signal": "difficulty score (pre-sigmoid)",
+      "per_problem_r": [0.6495, 0.6392, 0.0385],
+      "per_token_r": [0.4107, 0.2962, 0.1452]
+    },
+    "iter4_supervised": {
+      "label": "4: Supervised (ours)",
+      "runs": "results-opt3b-s1-5k/tagged/predictor-supervised_seed{0,1,2}.json",
+      "signal": "gate",
+      "per_problem_r": [0.9690, 0.9848, 0.8964],
+      "per_token_r": [0.7737, 0.8481, 0.6741],
+      "note": "headline Stage1-5K runs; the 3K+3K variant (results-opt3b-full) gave per-problem r = [0.9563, 0.9781, 0.8494]"
+    }
+  }
+}
