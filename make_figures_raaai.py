@@ -15,7 +15,11 @@ import numpy as np
 FIGDIR = "figures"
 
 # --- style -----------------------------------------------------------------
-OURS_COLOR = "#d62728"      # strong red for our method
+# Colorblind-safe palette (Okabe-Ito): blue #0072B2, orange #E69F00,
+# bluish-green #009E73, vermillion #D55E00, gray #999999.  These remain
+# distinguishable under deuteranopia, protanopia, and tritanopia, so keep any
+# new entries within this palette.
+OURS_COLOR = "#D55E00"      # Okabe-Ito vermillion (colorblind-safe red) for our method
 MUTED = {
     "baseline":       {"label": "Baseline",        "color": "#0072B2", "marker": "s"},
     "fixed-schedule": {"label": "Fixed-schedule",  "color": "#E69F00", "marker": "^"},

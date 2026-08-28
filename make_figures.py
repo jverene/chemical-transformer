@@ -15,14 +15,17 @@ import numpy as np
 RESULTS = "results"
 FIGDIR = "figures"
 
+# Colorblind-safe palette (Okabe-Ito): colors stay distinguishable under
+# deuteranopia, protanopia, and tritanopia; markers add a second (non-color)
+# channel. Keep new entries within this palette.
 METHOD_STYLE = {
-    "chemical":       {"label": "Chemical (ours)", "color": "#d62728", "marker": "o"},
-    "baseline":       {"label": "Baseline",        "color": "#1f77b4", "marker": "s"},
-    "chemical-off":   {"label": "Chemical-off",    "color": "#ff7f0e", "marker": "^"},
-    "mod":            {"label": "MoD",             "color": "#2ca02c", "marker": "D"},
-    "random-gate":    {"label": "Random-gate",     "color": "#9467bd", "marker": "v"},
-    "fixed-schedule": {"label": "Fixed-schedule",  "color": "#8c564b", "marker": "<"},
-    "tag-only":       {"label": "Tag-only",        "color": "#7f7f7f", "marker": ">"},
+    "chemical":       {"label": "Chemical (ours)", "color": "#D55E00", "marker": "o"},
+    "baseline":       {"label": "Baseline",        "color": "#0072B2", "marker": "s"},
+    "chemical-off":   {"label": "Chemical-off",    "color": "#56B4E9", "marker": "^"},
+    "mod":            {"label": "MoD",             "color": "#009E73", "marker": "D"},
+    "random-gate":    {"label": "Random-gate",     "color": "#CC79A7", "marker": "v"},
+    "fixed-schedule": {"label": "Fixed-schedule",  "color": "#E69F00", "marker": "<"},
+    "tag-only":       {"label": "Tag-only",        "color": "#999999", "marker": ">"},
 }
 
 
@@ -223,7 +226,7 @@ def fig5_entropy_scatter(task="tagged"):
         if m.sum() > 10:
             centers.append(ent[m].mean())
             accs.append(cor[m].mean())
-    ax.plot(centers, accs, "o-", color="#d62728", label="binned accuracy")
+    ax.plot(centers, accs, "o-", color="#D55E00", label="binned accuracy")
     idx = np.random.RandomState(0).choice(len(ent), size=min(1500, len(ent)), replace=False)
     ax.scatter(ent[idx], cor[idx] + np.random.RandomState(1).uniform(-0.03, 0.03, len(idx)),
                s=3, alpha=0.15, color="gray", label="tokens (jittered)")
@@ -259,8 +262,8 @@ def fig6_probe(task="tagged"):
     layers = sorted(per_layer)
     m = [np.mean(per_layer[l]) for l in layers]
     s = [np.std(per_layer[l], ddof=1) if len(per_layer[l]) > 1 else 0 for l in layers]
-    ax.errorbar(layers, m, yerr=s, marker="o", color="#d62728", capsize=3)
-    ax.axhline(chance, color="gray", ls="--", label=f"chance ({chance:.2f})")
+    ax.errorbar(layers, m, yerr=s, marker="o", color="#D55E00", capsize=3)
+    ax.axhline(chance, color="0.4", ls="--", label=f"chance ({chance:.2f})")
     ax.set_xlabel("layer")
     ax.set_ylabel("probe accuracy")
     ax.set_title(f"Linear probe on chemical state ({task})")

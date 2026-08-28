@@ -31,14 +31,15 @@ RESULTS = "results"
 FIGDIR = "figures"
 DEVICE = get_device()
 
+# Colorblind-safe palette (Okabe-Ito); markers add a second (non-color) channel.
 METHOD_STYLE = {
-    "chemical":       {"label": "Chemical (ours)", "color": "#d62728", "marker": "o"},
-    "baseline":       {"label": "Baseline",        "color": "#1f77b4", "marker": "s"},
-    "chemical-off":   {"label": "Chemical-off",    "color": "#ff7f0e", "marker": "^"},
-    "mod":            {"label": "MoD",             "color": "#2ca02c", "marker": "D"},
-    "random-gate":    {"label": "Random-gate",     "color": "#9467bd", "marker": "v"},
-    "fixed-schedule": {"label": "Fixed-schedule",  "color": "#8c564b", "marker": "<"},
-    "tag-only":       {"label": "Tag-only",        "color": "#7f7f7f", "marker": ">"},
+    "chemical":       {"label": "Chemical (ours)", "color": "#D55E00", "marker": "o"},
+    "baseline":       {"label": "Baseline",        "color": "#0072B2", "marker": "s"},
+    "chemical-off":   {"label": "Chemical-off",    "color": "#56B4E9", "marker": "^"},
+    "mod":            {"label": "MoD",             "color": "#009E73", "marker": "D"},
+    "random-gate":    {"label": "Random-gate",     "color": "#CC79A7", "marker": "v"},
+    "fixed-schedule": {"label": "Fixed-schedule",  "color": "#E69F00", "marker": "<"},
+    "tag-only":       {"label": "Tag-only",        "color": "#999999", "marker": ">"},
 }
 
 
@@ -164,7 +165,7 @@ def fig1_gate_by_difficulty(task):
         vals = [r["final"]["gate_by_bin"][b] for r in rs if r["final"]["gate_by_bin"][b] is not None]
         means.append(np.mean(vals))
         stds.append(np.std(vals, ddof=1) if len(vals) > 1 else 0)
-    ax.bar(range(len(tags)), means, yerr=stds, capsize=4, color="#d62728", alpha=0.85)
+    ax.bar(range(len(tags)), means, yerr=stds, capsize=4, color="#D55E00", alpha=0.85)
     ax.axhline(0.5, color="k", ls="--", lw=1, label="gate=0.5 (neutral)")
     annotate(ax, tags, rs, f"Mean FFN gate by difficulty ({task})")
     ax.legend(fontsize=8)
@@ -180,7 +181,7 @@ def fig2_gate_histogram(task, coll):
     fig, axes = plt.subplots(1, len(tags), figsize=(4.2 * len(tags), 3.6), sharey=True)
     for b, (ax, tag) in enumerate(zip(axes, tags)):
         vals = coll["gate"][coll["diff"] == b]
-        ax.hist(vals, bins=40, color="#d62728", alpha=0.8, density=True)
+        ax.hist(vals, bins=40, color="#D55E00", alpha=0.8, density=True)
         ax.axvline(np.mean(vals), color="k", ls="--", lw=1, label=f"mean {np.mean(vals):.2f}")
         ax.set_title(f"{tag} (n={len(vals)})")
         ax.set_xlabel("FFN gate")
@@ -207,7 +208,7 @@ def fig3_gate_vs_accuracy(task, coll):
         if m.sum() > 10:
             centers.append(gate[m].mean())
             accs.append(corr[m].mean())
-    ax.plot(centers, accs, "o-", color="#d62728")
+    ax.plot(centers, accs, "o-", color="#D55E00")
     ax.set_xlabel("FFN gate (mean over layers)")
     ax.set_ylabel("P(correct)")
     ax.set_title(f"Gate vs answer accuracy ({task})")
@@ -218,7 +219,7 @@ def fig3_gate_vs_accuracy(task, coll):
     high = ~low
     ax.bar(["gate<0.5", "gate>=0.5"],
            [corr[low].mean() if low.any() else 0, corr[high].mean() if high.any() else 0],
-           color=["#7f7f7f", "#1f77b4"])
+           color=["#999999", "#0072B2"])
     for i, m in enumerate((low, high)):
         if m.any():
             ax.text(i, corr[m].mean() + 0.01, f"n={m.sum()}", ha="center", fontsize=9)
@@ -263,7 +264,7 @@ def fig4_entropy_difficulty(task, coll):
         if m.sum() > 10:
             centers.append(ent_a[m].mean())
             accs.append(corr_a[m].mean())
-    ax.plot(centers, accs, "o-", color="#d62728")
+    ax.plot(centers, accs, "o-", color="#D55E00")
     ax.set_xlabel("normalized attention entropy")
     ax.set_ylabel("P(correct)")
     ax.set_title(f"Entropy vs correctness ({task})\n"

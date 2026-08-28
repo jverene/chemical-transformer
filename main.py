@@ -541,13 +541,15 @@ def plot_comparison(chem_hist: dict, base_hist: dict, save_path: str = "comparis
     ax.set_xlabel('Step'); ax.set_ylabel('Accuracy'); ax.set_title('Overall Accuracy')
     ax.legend(); ax.grid(True, alpha=0.3)
 
+    # Colorblind-safe (Okabe-Ito) palette: easy=blue, med=orange, hard=gray.
+    # Chemical vs Baseline are further distinguished by line style ('-' vs '--').
     ax = axes[1, 0]
-    ax.plot(chem_hist['step'], chem_hist['easy_acc'], 'g-', label='Chem Easy', linewidth=2)
-    ax.plot(chem_hist['step'], chem_hist['med_acc'], 'b-', label='Chem Med', linewidth=2)
-    ax.plot(chem_hist['step'], chem_hist['hard_acc'], 'r-', label='Chem Hard', linewidth=2)
-    ax.plot(base_hist['step'], base_hist['easy_acc'], 'g--', label='Base Easy', linewidth=1.5)
-    ax.plot(base_hist['step'], base_hist['med_acc'], 'b--', label='Base Med', linewidth=1.5)
-    ax.plot(base_hist['step'], base_hist['hard_acc'], 'r--', label='Base Hard', linewidth=1.5)
+    ax.plot(chem_hist['step'], chem_hist['easy_acc'], color='#0072B2', linestyle='-', label='Chem Easy', linewidth=2)
+    ax.plot(chem_hist['step'], chem_hist['med_acc'], color='#E69F00', linestyle='-', label='Chem Med', linewidth=2)
+    ax.plot(chem_hist['step'], chem_hist['hard_acc'], color='#999999', linestyle='-', label='Chem Hard', linewidth=2)
+    ax.plot(base_hist['step'], base_hist['easy_acc'], color='#0072B2', linestyle='--', label='Base Easy', linewidth=1.5)
+    ax.plot(base_hist['step'], base_hist['med_acc'], color='#E69F00', linestyle='--', label='Base Med', linewidth=1.5)
+    ax.plot(base_hist['step'], base_hist['hard_acc'], color='#999999', linestyle='--', label='Base Hard', linewidth=1.5)
     ax.set_xlabel('Step'); ax.set_ylabel('Accuracy'); ax.set_title('Per-Difficulty Accuracy')
     ax.legend(fontsize=8); ax.grid(True, alpha=0.3)
 
