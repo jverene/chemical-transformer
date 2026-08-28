@@ -1,6 +1,6 @@
 \documentclass{article}
 
-% NeurIPS 2026 Workshop on Resource-Aware Agentic AI (RAAAI) -- submission (anonymous)
+% NeurIPS 2026 Workshop on Resource-Aware Agentic AI (RAAAI): submission (anonymous)
 \usepackage{neurips_2026}
 
 \usepackage[utf8]{inputenc}
@@ -62,20 +62,20 @@
 
 \begin{abstract}
 Token-level adaptive compute promises to make the transformer forward pass
-resource-aware, but most mechanisms rely on \emph{endogenous} signals---attention
-entropy, router scores, confidence estimates---whose correlation with problem
-difficulty is assumed rather than tested. We test the assumption on arithmetic
-with graded difficulty, a clean testbed: difficulty grades deterministically
+resource-aware, but most mechanisms key off \emph{endogenous} signals: attention
+entropy, router scores, confidence estimates. Their correlation with problem
+difficulty is assumed, not tested. We test the assumption on arithmetic with
+graded difficulty, a clean testbed in which difficulty grades deterministically
 from 1-digit addition to $4{\times}3$-digit multiplication, ground-truth labels
-exist for every token, and there are no confounds from pretraining knowledge.
-The endogenous signals fail in three distinct ways: an entropy-driven gate
+exist for every token, and pretraining knowledge is absent.
+The endogenous signals fail in three distinct ways. An entropy-driven gate
 \emph{collapses} to a constant
 (per-token entropy--difficulty correlation $r \approx -0.06$); a tag-initialized
-gate \emph{inverts}, allocating more compute to easy problems than hard ones
+gate \emph{inverts}, spending more compute on easy problems than hard ones
 ($r = \CorrIterII$) because the cross-entropy gradient is largest on
 memorizable tokens; and a learned difficulty head trained without supervision is
-\emph{vacuous}, with unstable allocation across seeds. Explicit per-token
-difficulty supervision with a budget constraint fixes all three: gates order
+\emph{vacuous}, with allocation unstable across seeds. Explicit per-token
+difficulty supervision under a budget constraint fixes all three: gates order
 correctly (easy $<$ medium $<$ hard) in every seed with per-problem
 gate--difficulty $r = \CorrIterIV$, accuracy matches the full-compute
 baseline while cutting FLOPs per token by \OursTSave\%, and it beats a
@@ -89,11 +89,11 @@ proxies exist, supervised allocation is simple, reliable, and interpretable.
 Resource-aware agentic AI is mostly practiced \emph{outside} the model: cascade
 queries across models of different sizes \citep{chen2023frugalgpt}, truncate
 chains of thought, cap tool calls, budget retries. The forward pass itself
-remains resource-blind: a transformer \citep{vaswani2017attention} spends
-identical FLOPs on a trivial token and on the token that determines whether the
-answer is right. Yet difficulty is unevenly distributed across tokens---carrying
-a digit in multi-digit multiplication is hard; copying a ``$+$'' sign is not. An
-agent that must meter its compute should be able to allocate it per token.
+remains resource-blind. A transformer \citep{vaswani2017attention} spends
+identical FLOPs on a trivial token and on the token that decides whether the
+answer is right, yet difficulty is unevenly distributed across tokens: carrying
+a digit in multi-digit multiplication is hard; copying a ``$+$'' sign is not.
+An agent that must meter its compute should be able to allocate it per token.
 
 Adaptive-compute methods show that large savings are available: early exiting
 \citep{teerapittayanon2016branchynet,xin2020deebert,schuster2022calm}, adaptive
@@ -101,10 +101,10 @@ computation time \citep{graves2016act}, dynamic layer skipping
 \citep{wang2018skipnet,elbayad2020depth}, slimmable networks
 \citep{yu2019universally}, and token-level Mixture-of-Depths (MoD) routing
 \citep{raposo2024mixture} all reduce average compute per token. Nearly all of
-them share one assumption: that a signal the network already produces
-internally---attention entropy, router scores, exit confidence---correlates with
-how difficult a token is, so that end-to-end training on the task loss will shape
-that signal into a sensible allocation. This assumption is rarely tested
+them share one assumption: a signal the network already produces internally,
+be it attention entropy, router scores, or exit confidence, correlates with how
+difficult a token is, so that end-to-end training on the task loss will shape
+that signal into a sensible allocation. The assumption is rarely tested
 directly. We test it, and it fails.
 
 This paper is an empirical account of a four-iteration journey toward token-level
@@ -114,27 +114,27 @@ $g \in [0,1]$ that scales each token's feed-forward (FFN) output at every layer,
 with FLOPs charged proportionally to the gate: a token gated at $0.2$ costs a
 fifth of the FFN compute of a token gated at $1.0$. The question is what should
 drive the gate. Iteration~1 drives it with attention entropy, a label-free
-endogenous difficulty proxy: the gate collapses to a constant and entropy turns
-out not to encode task difficulty ($r \approx -0.06$ per token). Iteration~2
-initializes the gating state from explicit difficulty tags: the gate now varies,
-but \emph{inverts}---easy tokens receive more compute than hard ones
-($r = \CorrIterII$ per problem)---because the cross-entropy gradient is
+endogenous difficulty proxy: the gate collapses to a constant, and entropy does
+not encode task difficulty ($r \approx -0.06$ per token). Iteration~2
+initializes the gating state from explicit difficulty tags. The gate now varies,
+but \emph{inverts}: easy tokens receive more compute than hard ones
+($r = \CorrIterII$ per problem), because the cross-entropy gradient is
 largest on easy, memorizable tokens and end-to-end training follows the gradient,
 not the semantics. Iteration~3 replaces the entropy signal with a learned
-difficulty head but still trains it only on the task loss: the gate is nearly
-flat and its correlation with difficulty is unstable across seeds. Iteration~4
-supervises the head explicitly with per-token difficulty targets plus a budget
-constraint, and it works.
+difficulty head while still training it only on the task loss: the gate is
+nearly flat, and its correlation with difficulty is unstable across seeds.
+Iteration~4 supervises the head explicitly with per-token difficulty targets
+plus a budget constraint, and it works.
 
 \textbf{Contributions.}
 \begin{itemize}
 \item \textbf{A systematic diagnosis of endogenous difficulty signals.}
   Across three distinct instantiations (entropy-driven state, tag-initialized
   state, learned unsupervised head), endogenous training signals fail in three
-  different ways---\emph{collapse}, \emph{inversion}, and \emph{vacuity}
+  different ways: \emph{collapse}, \emph{inversion}, and \emph{vacuity}
   (\S\ref{sec:failures}). A standard MoD top-$k$ router exhibits the same
-  inversion, suggesting the pathology is a general property of endogenous
-  training dynamics, not of our architecture.
+  inversion, so the pathology is a general property of endogenous training
+  dynamics, not of our architecture.
 \item \textbf{A simple fix: explicit difficulty supervision with a budget
   constraint} (\S\ref{sec:method}). A small per-layer difficulty head is trained
   with an MSE loss toward tag-derived per-token targets while a budget term pins
@@ -164,20 +164,20 @@ universally slimmable networks
 \citep{yu2019universally} run a single network at several widths.
 Mixture-of-Depths \citep{raposo2024mixture} routes tokens through or around
 transformer blocks with a learned top-$k$ router, allocating a fixed compute
-budget per sequence. All of these decide allocation from endogenous
-quantities---halting scores, exit confidence, router logits---trained on the
-task loss (sometimes with auxiliary balancing objectives). Our work is
+budget per sequence. All of these decide allocation from endogenous quantities,
+halting scores, exit confidence, router logits, trained on the task loss
+(sometimes with auxiliary balancing objectives). Our work is
 complementary: rather than proposing a new routing mechanism, we ask whether
 such endogenous signals actually track problem difficulty, and show that in our
-setting they do not unless supervised. MoD's own router turns out to exhibit
-the inversion we diagnose (\S\ref{sec:ablations}).
+setting they do not unless supervised. MoD's own router exhibits the
+inversion we diagnose (\S\ref{sec:ablations}).
 
 \paragraph{Conditional computation and mixture-of-experts.}
 Sparsely-gated MoE \citep{shazeer2017outrageously} routes tokens to expert FFNs
 via a learned gating network, primarily to scale capacity at constant compute
-rather than to allocate by difficulty; load-balancing losses are needed to
-prevent collapse to a few experts---an early sign that end-to-end router
-dynamics do not self-organize into the intended allocation. Our DifficultyHead
+rather than to allocate by difficulty; load-balancing losses prevent collapse to
+a few experts, an early sign that end-to-end router dynamics do not
+self-organize into the intended allocation. Our DifficultyHead
 is easy to mistake for this kind of routing, so it is worth separating the two:
 MoE dispatches each token to a subset of expert parameters, changing
 \emph{which} capacity processes it, whereas our head changes \emph{how much}
@@ -194,8 +194,8 @@ signal and find it nearly uncorrelated with ground-truth difficulty
 ($r \approx -0.06$ per token; \S\ref{sec:failures}).
 
 \paragraph{Resource-aware agents.}
-Orchestration-level resource awareness---model cascades and routing
-\citep{chen2023frugalgpt}, token and tool budgets---treats each model call as
+Orchestration-level resource awareness, whether model cascades and routing
+\citep{chen2023frugalgpt} or token and tool budgets, treats each model call as
 fixed-cost. Token-level gating makes the call itself cost-sensitive. Our results
 bear on when such metering is feasible: when difficulty labels or proxies exist
 (curriculum tags, verifier scores, metadata), supervised allocation is cheap and
@@ -239,7 +239,7 @@ End-to-end training offers the gate only one channel of feedback: the task loss.
 We identify three ways this goes wrong, developed empirically in
 \S\ref{sec:failures}.
 \emph{Collapse}: if the driving signal carries no information about difficulty,
-the cheapest way to satisfy a sparsity penalty is a uniform gate---and attention
+the cheapest way to satisfy a sparsity penalty is a uniform gate, and attention
 entropy is such a signal ($r \approx -0.06$ per token).
 \emph{Inversion}: a ground-truth initialization makes the gate vary, but easy
 problems are memorizable, so their cross-entropy gradient is largest and
@@ -309,7 +309,7 @@ the same budget as ours), \emph{MoD} (top-$k$ token routing
 \citep{raposo2024mixture} at matched capacity), \emph{Chemical-entropy}
 (iteration~1: entropy-driven chemical-state gate with sparsity penalty),
 \emph{Random-gate} (entropy replaced by uniform noise in the same range), and
-\emph{Tag-only} (gate driven only by the difficulty-tag identity---a static
+\emph{Tag-only} (gate driven only by the difficulty-tag identity, a static
 oracle heuristic). Our method (\emph{Difficulty-supervised}) uses the two-stage
 protocol of \S\ref{sec:supervised} (5000$+$3000 steps on tagged). All models
 share the 11M backbone, batch size 32, AdamW, and gradient clipping $1.0$.
@@ -347,8 +347,8 @@ quantifies the allocation quality per iteration.
 chemical state, updated from position-normalized attention entropy and mapped to
 the gate, trained end-to-end with cross-entropy plus a sparsity penalty,
 converges to a constant gate: mean gates for E/M/H are $0.232/0.233/0.233$
-(spread $\approx 0.001$). Accuracy is fine---$71.5{\pm}1.3$\% at $11.5$
-MFLOPs/token---so the model saves compute, but it does not allocate
+(spread $\approx 0.001$). Accuracy is fine, $71.5{\pm}1.3$\% at $11.5$
+MFLOPs/token, so the model saves compute but does not allocate
 differentially. The reason is the signal, not the mechanism: the per-token
 Pearson correlation between attention entropy and difficulty is $\approx -0.06$
 (seed range $+0.05$ to $-0.12$). Attention entropy does not encode task
@@ -356,7 +356,7 @@ difficulty in this setting.
 
 \textbf{Iteration 2: tag initialization inverts.} Initializing the chemical
 state from the difficulty-tag embedding gives the pathway ground-truth
-information at the start of training. The gate does go live---but inverted:
+information at the start of training. The gate does go live, but inverted:
 E/M/H gates are $0.266/0.265/0.213$, and the per-problem correlation between
 mean gate and difficulty bin is $\CorrIterII$, negative in all 3 seeds.
 The cause is the training dynamics, not the initialization: the cross-entropy
@@ -364,11 +364,11 @@ gradient is largest on easy (memorizable) tokens, so end-to-end training pushes
 compute where the loss is most reducible, not where the problem is hardest.
 
 \textbf{Iteration 3: a learned head without supervision is vacuous.} Replacing
-the entropy pathway with the DifficultyHead of \S\ref{sec:arch}---two-stage
+the entropy pathway with the DifficultyHead of \S\ref{sec:arch} uses a two-stage
 protocol (Stage 1 full FFN for 3000 steps; Stage 2 head trained only by
-cross-entropy)---yields a nearly flat gate: E/M/H $= 0.812/0.824/0.834$, spread
-$0.02$. The per-problem gate--difficulty correlation is unstable across seeds
-($r = 0.65/0.64/0.04$). Without an explicit signal, there is no reliable
+cross-entropy), which yields a nearly flat gate: E/M/H $= 0.812/0.824/0.834$,
+spread $0.02$. The per-problem gate--difficulty correlation is unstable across
+seeds ($r = 0.65/0.64/0.04$). Without an explicit signal, there is no reliable
 allocation.
 
 \begin{figure}[t]
@@ -416,7 +416,7 @@ Ours (Stage-1 = 3K) & 66.9$\pm$2.1 & 76.2$\pm$2.4 & 19.6$\pm$0.1 & 0.17$\pm$0.03
 
 Table~\ref{tab:tagged} reports the main tagged results. Our method reaches
 \OursTAcc$\pm$2.7\% accuracy ($83.4{\pm}2.1$ balanced) at
-\OursTFlops\ MFLOPs/token---\OursTSave\% below the full-compute
+\OursTFlops\ MFLOPs/token, \OursTSave\% below the full-compute
 baseline's $33.2$. This statistically matches the baseline ($75.0{\pm}0.9$) and
 the architecture-matched Chemical-off control ($74.4{\pm}0.7$), while the
 allocation is correct: mean gates for E/M/H are $0.37/0.51/0.58$, ordered in all
@@ -445,9 +445,9 @@ Two comparisons isolate the value of \emph{adaptive} allocation. First, at the
 same compute budget, the Fixed-schedule baseline (gate $0.5$ everywhere, $19.0$
 MFLOPs/token) reaches only $72.3{\pm}2.7$\%: spending the same FLOPs uniformly
 rather than by difficulty costs $\sim$2 points. Second, static or unsupervised
-alternatives at even lower budgets---Random-gate ($70.7{\pm}4.4$ @ $11.2$M),
-Tag-only ($71.6{\pm}3.1$ @ $13.0$M), Chemical-entropy ($71.5{\pm}1.3$ @
-$11.5$M)---all trade accuracy away. Per-difficulty accuracies
+alternatives at even lower budgets, Random-gate ($70.7{\pm}4.4$ @ $11.2$M),
+Tag-only ($71.6{\pm}3.1$ @ $13.0$M), and Chemical-entropy ($71.5{\pm}1.3$ @
+$11.5$M), all trade accuracy away. Per-difficulty accuracies
 (Figure~\ref{fig:perdifficulty_acc}) show that our method preserves hard-bin
 accuracy while cutting compute on easy bins, which is where balanced accuracy is
 won.
@@ -481,11 +481,11 @@ targets $0.2/0.4/0.6/0.8$. (The mixed runs use a 3000-step Stage 1; only the
 tagged headline runs use 5000 steps.) The result is a partial success
 (Table~\ref{tab:mixed}, Appendix~\ref{app:mixed}). The allocation is correct in
 direction: mean gates per bin are $0.45/0.50/0.52/0.53$, monotone increasing,
-with per-problem $r = 0.70$---but the spread is small ($0.08$), and accuracy is
+with per-problem $r = 0.70$, but the spread is small ($0.08$), and accuracy is
 $58.5{\pm}3.4$\% ($69.9{\pm}2.7$ balanced) at \OursMFlops\ MFLOPs/token,
 well below the 6000-step baselines ($85.0{\pm}1.7$ for the standard baseline).
 
-Context matters for interpreting this gap. Our mixed Stage-1-only checkpoint
+That gap needs context. Our mixed Stage-1-only checkpoint
 (3000 steps, full FFN, ungated) scores just $53.1$\% at $33.2$ MFLOPs/token: the
 gated Stage-2 model \emph{beats its own ungated starting point} by $5.4$ points
 while using \OursMSave\% fewer FLOPs. Because the body is nearly frozen
@@ -529,7 +529,7 @@ the mixed-regime analysis of \S\ref{sec:mixed}.
 
 \textbf{Frontier.} Figure~\ref{fig:frontier} plots accuracy against MFLOPs per
 token for all methods on both regimes. On tagged data our method sits on the
-Pareto frontier at the high-accuracy end---the only adaptive method that matches
+Pareto frontier at the high-accuracy end, the only adaptive method that matches
 full-compute accuracy at substantially reduced compute.
 
 \begin{figure}[t]
@@ -547,8 +547,8 @@ but trails the longer-trained baselines.}
 \label{sec:discussion}
 
 \paragraph{Implications for resource-aware agents.} Our experiments use
-arithmetic as a controlled testbed, but the core finding---endogenous
-difficulty signals fail, and explicit supervision is required---should carry to
+arithmetic as a controlled testbed, but the core finding, that endogenous
+difficulty signals fail and explicit supervision is required, should carry to
 any agentic reasoning loop whose tokens differ in computational demand, from
 tool-use trajectories to code generation. The practical lesson is
 about where difficulty knowledge comes from. Agentic pipelines often possess
@@ -557,9 +557,8 @@ curriculum tags in training corpora, verifier or reward-model scores, problem
 metadata, or cheap proxy features such as operand length. Our results show that
 spending this metadata on explicit per-token supervision yields an allocation
 that is reliable (correct ordering in every seed), interpretable (gates can be
-read directly as a compute budget per token), and cheap (a two-layer head per
-transformer layer). Conversely, relying on signals the network already
-produces---entropy, router scores---risks allocation that is absent, inverted,
+read directly as a compute budget per token), and cheap (a two-layer head per transformer layer). Conversely, relying on signals the network already
+produces, entropy and router scores, risks allocation that is absent, inverted,
 or unstable, and the failure can be silent: iteration~1 saved 65\% of FLOPs with
 healthy accuracy while allocating nothing differentially. Inversion is the more
 dangerous failure than collapse: it actively misallocates while appearing to
@@ -569,9 +568,9 @@ work.
 the same budget beat every adaptive method (Table~\ref{tab:mixed}). Adaptive
 allocation pays when (i) difficulty varies substantially across tokens,
 (ii) a reliable difficulty signal or proxy exists, and (iii) the base model is
-already competent. When any of these fails---weak proxy (mixed regime),
-undertrained body (short Stage 1)---a uniform schedule is a strong baseline that
-adaptive methods must beat, not merely undercut on FLOPs.
+already competent. When any of these fails, a weak proxy in the mixed regime or
+an undertrained body from a short Stage 1, a uniform schedule is a strong
+baseline that adaptive methods must beat, not merely undercut on FLOPs.
 
 \paragraph{Limitations.} Our study is deliberately narrow: a single task family
 (arithmetic), a single 11M-parameter model, and difficulty defined by operand
@@ -588,7 +587,7 @@ deriving them from measured per-problem loss, is a natural next step.
 
 We tested the assumption underlying most token-level adaptive-compute methods:
 that endogenous signals correlate with problem difficulty. On arithmetic with
-graded difficulty, they do not---failing by collapse, inversion, or vacuity
+graded difficulty, they do not: they fail by collapse, inversion, or vacuity
 across three distinct mechanisms, with a standard MoD router inverting as well.
 Explicit per-token difficulty supervision with a budget constraint fixes the
 allocation: correct ordering in every seed, per-problem $r =
