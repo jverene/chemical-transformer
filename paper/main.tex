@@ -65,7 +65,7 @@ Token-level adaptive compute promises to make the transformer forward pass
 resource-aware, but most mechanisms key off \emph{endogenous} signals: attention
 entropy, router scores, confidence estimates. Their correlation with problem
 difficulty is assumed, not tested. We test the assumption on arithmetic with
-graded difficulty, a clean testbed in which difficulty grades deterministically
+graded difficulty, a clean testbed: difficulty grades deterministically
 from 1-digit addition to $4{\times}3$-digit multiplication, ground-truth labels
 exist for every token, and pretraining knowledge is absent.
 The endogenous signals fail in three distinct ways. An entropy-driven gate
@@ -276,7 +276,7 @@ penalty: the goal is allocation, not maximal savings. Stage 2 uses a two-group
 AdamW schedule: the body trains at a near-frozen learning rate $3{\times}10^{-6}$
 and the DifficultyHeads at $3{\times}10^{-4}$; gradient clipping is $1.0$
 throughout. The low body learning rate preserves Stage-1 accuracy while the
-heads learn allocation; the cost is that the body can no longer adapt much in
+heads learn allocation; the cost is that the body adapts little in
 Stage 2, a confound we return to in \S\ref{sec:mixed} and \S\ref{sec:discussion}.
 
 \section{Experiments}
@@ -556,8 +556,8 @@ difficulty metadata that end-to-end training cannot discover on its own:
 curriculum tags in training corpora, verifier or reward-model scores, problem
 metadata, or cheap proxy features such as operand length. Our results show that
 spending this metadata on explicit per-token supervision yields an allocation
-that is reliable (correct ordering in every seed), interpretable (gates can be
-read directly as a compute budget per token), and cheap (a two-layer head per transformer layer). Conversely, relying on signals the network already
+that is reliable (correct ordering in every seed), interpretable (a compute
+budget per token), and cheap (a two-layer head per transformer layer). Conversely, relying on signals the network already
 produces, entropy and router scores, risks allocation that is absent, inverted,
 or unstable, and the failure can be silent: iteration~1 saved 65\% of FLOPs with
 healthy accuracy while allocating nothing differentially. Inversion is the more
@@ -594,9 +594,9 @@ allocation: correct ordering in every seed, per-problem $r =
 \CorrIterIV$, full-compute accuracy at \OursTSave\% fewer
 FLOPs per token, and a win over the same-budget static schedule. For
 resource-aware agents the message is conservative but useful: when difficulty
-labels or proxies exist, supervised token-level allocation is a simple,
-reliable, interpretable metering primitive; when they do not, endogenous
-signals should not be trusted to allocate on their own.
+labels or proxies exist, supervised token-level allocation is simple, reliable,
+and interpretable; when they do not, endogenous signals should not be trusted
+to allocate on their own.
 
 \bibliographystyle{plainnat}
 \bibliography{refs}
