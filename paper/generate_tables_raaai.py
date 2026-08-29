@@ -72,10 +72,16 @@ def table_tex(task, entries):
     lines = []
     lines.append("\\begin{table}[t]")
     lines.append("\\centering")
-    lines.append(f"\\caption{{{task.capitalize()} arithmetic: held-out accuracy "
-                 "(mean $\\pm$ std over 3 seeds), balanced accuracy (macro over "
-                 "difficulty bins), compute per token, and gate spread "
-                 "(hardest minus easiest bin).}")
+    caption = (f"{task.capitalize()} arithmetic: held-out accuracy ",
+               "(mean $\\pm$ std over 3 seeds), balanced accuracy (macro over ",
+               "difficulty bins), compute per token, and gate spread ",
+               "(hardest minus easiest bin).")
+    if task == "tagged":
+        caption += (" The ``Ours (Stage-1 = 3K)'' row shows that a 3000-step ",
+                    "Stage 1 already costs $\\sim$7 accuracy points on tagged data; ",
+                    "the mixed runs use the same shortened Stage 1, which accounts ",
+                    "for part of the mixed-regime gap (\\S\\ref{sec:mixed}).")
+    lines.append("\\caption{" + "".join(caption) + "}")
     lines.append(f"\\label{{tab:{task}}}")
     lines.append("\\small")
     lines.append("\\begin{tabular}{lcccc}")
