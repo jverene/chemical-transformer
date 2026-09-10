@@ -66,7 +66,7 @@ class MoDLayer(nn.Module):
         x3 = self.norm2(x2 + ffn_full)
 
         gate_map = torch.zeros(B, S, device=x.device, dtype=x.dtype)
-        gate_map.scatter_(1, topi, w)
+        gate_map.scatter_(1, topi, w.to(gate_map.dtype))
 
         flops = FLOPsCounter.attention(B, S, D, self.n_heads) + \
             FLOPsCounter.ffn_per_token(D, self.ffn[0].out_features) * float(k * B)
