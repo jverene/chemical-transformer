@@ -22,3 +22,19 @@ run.log
 *.pt
 results-smoke/
 __pycache__/
+
+# Vast.ai operational logs (ephemeral)
+vast_*.log
+p0_run.log
+smoke.log
+
+# Paper build artifacts
+paper/main.aux
+paper/main.bbl
+paper/main.blg
+paper/main.log
+paper/main.out
+
+# Tooling markers
+.freebuff/
+.v2c/

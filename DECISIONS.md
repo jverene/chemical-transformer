@@ -1,0 +1,116 @@
+# Pre-registered decisions — chemical-transformer ICLR expansion
+
+Written before the relevant numbers exist. Sep 12 is a lookup, not a
+negotiation. Amendments require a dated note at the bottom.
+
+## 1. Shuffled-control kill rule (written Sep 6, seed 0 only existed)
+
+**The measured-targets (compute-value) claim survives iff**: gate-grad beats
+shuffled by **≥ 1.0 point** held-out accuracy, **paired by seed** (same
+Stage-1 body), at **matched billed training FLOPs**, across **all 3 seeds**.
+Otherwise: report that supervised variation under a budget — not the specific
+measured targets — carries the testbed effect; the thesis then rests on the
+scale + NL results, and the intro toggle flips to Plan A. Either outcome is
+publishable; no post-hoc reinterpretation.
+
+Billing symmetry: the shuffled arm consumes the same oracle measurement pass
+as gate-grad (permutation happens after measurement), so its billed training
+FLOPs are identical by construction. The NL shared prepass is billed once in
+the compute ledger, not per arm.
+
+## 2. Intro framing toggle (~Sep 12)
+
+- **Plan B** (gate-grad leads the intro): iff rule 1 passes AND the
+  fixed-schedule gap is ≥ ~1.5 points paired on ≥ 2/3 seeds (seed-0's +2.3
+  is not yet load-bearing; testbed noise ±2–3 points).
+- **Plan A** (failure diagnosis leads): otherwise. The title does not
+  change under either plan.
+
+## 3. Difficulty window (P1 gate)
+
+Pick the **largest** size whose hard-bin held-out accuracy sits inside
+**[40%, 85%]** at the probed token budget; that size is the P3 scale and its
+token count sets B0. Two-sided on purpose: saturation (>85%) kills the
+allocation signal; collapse (<40%) leaves no reducible mass. If 1B fails the
+window → P3 runs at 400m; the scale story then rests on NL (1.4B/2.8B).
+
+## 4. Value-migration prediction (P1b readout, pre-registered Sep 6)
+
+As scale grows 42M → 150M → 400M, per-bin mean gate-grad score on H rises
+relative to M, and H's frac(score≤0) falls toward M's. **Crossover or clear
+shrinkage = confirmation** (figure: `scripts/value_migration.py`).
+**H's frac_nonpos pinned high across sizes = the irreducibility mechanism is
+wrong** — escalate before spending P3 money.
+
+## 5. Budget-pinned targets are the design, not a bug
+
+Targets (floor 0.1 + quartiles 0.2/0.4/0.6/0.8) have mean ≈ 0.31 and nominal
+spread 0.7; λ_budget pins the mean gate at 0.5, so realized gates are lifted
+and compressed (seed 0: realized spread +0.09, E gate 0.43 vs floor target
+0.1). This is the deployment story — pinned mean = settable inference budget.
+Keep the pinned-mean square loss; do **not** switch to an inequality
+constraint. Report Table "targets vs realized gates" so compression reads as
+redistribution.
+
+## 6. Stage gates (unchanged from plan v3)
+
+- No P3 spend until P1 confirms size + B0.
+- P6 (2.8B) cut if P4 slips past Sep 19.
+- Cut order when hot: P3→400m, then P5b (math), then P6. Never cut P4/P5a.
+- Claims discipline: seed-0-only numbers are "matching," never "better";
+  paired per-seed consistency is the load-bearing statistic.
+
+## 7. Abstract discipline
+
+Register conservative abstract Sep 17 (only P0/P1-level claims, scale as "up
+to"); sharpen wording through Sep 24 (abstract editable until the paper
+deadline). No sentence anywhere may claim the gate-grad arm "orders correctly
+by difficulty" — it deliberately does not at 11M; it orders by compute value.
+
+## 8. NL outcome fork (both branches pre-framed, Sep 7)
+
+The natural-language track is designed to be publishable either way:
+- **Endogenous signals fail on NL too** (MoD router / entropy baselines
+  allocate no better than chance) → the taxonomy generalizes; same thesis,
+  bigger blast radius.
+- **Endogenous signals work on NL** → reframe as a boundary analysis: "when
+  do endogenous difficulty signals work?" — §Discussion's "when static
+  schedules suffice" paragraph is the skeleton. Not a failed experiment.
+Triangulation guard against the circularity attack: the code domain carries
+computable structural proxies (indentation depth, token class) that measured
+value should track if it measures anything real; see
+`oracle_diag.json:structural_by_grad_bin`.
+
+---
+Amendments:
+
+**Sep 7, 2026 (night) — Rule 4 EXECUTED on valid bodies: NOT CONFIRMED.**
+With the validated recipe (cosine + warmup + wd 0.1, preset LRs), healthy
+stage-1 bodies at 42M (acc 0.496) and 150M (acc 0.563) show NO difficulty-bin
+structure in measured gate-gradient value: frac(score<=0) ~= 0.51 across
+E/M/H at both sizes, H-M ~= 0, mean |score| ~ 1e-6 (coin-flip). On a
+converged body the first-order marginal value of FFN compute is ~zero and
+uninformative. Consequences: (a) the compute-value migration hypothesis is
+not supported at 42M/150M and is parked; (b) the NL track's primary targets
+are LOSS-QUANTILE, with gate-grad demoted to a diagnostic; (c) 400M is
+untrainable in the current post-LN+Xavier arch at any LR in [6e-5, 3e-4]
+(sweep-verified) — needs GPT-2-style init or pre-LN, out of critical path.
+Live paper claims: failure taxonomy (11M, valid) + supervision/budget fix +
+shuffled-control finding (target content irrelevant at testbed) + 150m
+window pass (H=0.485 in [0.40,0.85]). Next: single 150m full grid (merged
+P2/P3, all methods x 3 seeds, iso-FLOPs) ~ $11-13; needs top-up.
+(H100). Paired gate-grad − shuffled accuracy: seed 0 −0.003, seed 1 −0.001,
+seed 2 −0.000. Shuffled fully matches gate-grad (means 0.745 vs 0.747);
+gate structure also matches (E/M/H 0.45/0.52/0.52 vs 0.47/0.52/0.52).
+Per the rule: at testbed scale, **supervised variation under the budget
+constraint carries the effect; the specific measured targets do not.** Intro
+toggle locked to **Plan A** (failure diagnosis leads). The compute-value
+concept is now load-bearing only on the two remaining pre-registered tests:
+Rule 4 (value-migration at 42M→150M→400M — now the decisive experiment for
+the concept) and the NL shuffled control. Honest reporting: the testbed
+finding itself is sharpened, not weakened — dense-then-gate with ANY
+varying supervision recovers full-compute accuracy at ~42% fewer FLOPs,
+while a constant gate from scratch costs ~2 points; allocation structure
+(tag arm's +0.21 spread) is real but not accuracy-load-bearing at 11M.
+Billing note: gategrad/shuffled arms billed 3.76M TF each (oracle overhead
+included, identical by construction); tag arm 1.41M TF.

@@ -1,0 +1,468 @@
+%% ICLR 2027 submission skeleton — chemical-transformer expansion.
+%%
+%% POLICY CHECKLIST (executed by hand, not by LaTeX):
+%%  [ ] Sep 16: freeze conservative abstract (below), draft on file.
+%%  [ ] Sep 17: register abstract on OpenReview. Abstracts stay editable
+%%      until Sep 25 — sharpen [X]-marked claims as P3/P4 land.
+%%  [ ] Verify OpenReview profile accuracy (desk-reject grounds if wrong).
+%%      Author list frozen at Sep 18; no adds. One-paper cap: this is it.
+%%  [ ] 6-10 pages main text HARD (desk reject at 11). Appendix unlimited.
+%%  [ ] Swap iclr2026_conference.sty -> official iclr2027 when published.
+%%  [ ] RAAAI version is non-archival: no dual-submission conflict.
+%%
+%% PLAN A/B INTRO TOGGLE: decide ~Sep 12 on P0/P1 evidence.
+%%   \introPlanBtrue  -> gate-gradient leads (P0 hit)
+%%   \introPlanBfalse -> failure-diagnosis leads (workshop framing)
+\newif\ifintroPlanB
+\introPlanBfalse
+\newcommand{\XX}{\textbf{\color{red}??}}          % pending number
+\newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}  % pending sharpening
+
+\documentclass{article}
+\usepackage{iclr2027_conference}
+\usepackage{tikz}
+\usepackage{amsmath,amssymb}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{multirow}
+\input{results_iclr}   % auto-generated macros + table bodies
+
+\iclrfinalcopy % submissions compile with this; camera-ready identical
+
+\title{Endogenous Signals Fail to Allocate: \\\ Measured Signals Supervise
+Token-Level Adaptive Compute at Scale}
+
+\author{Anonymous authors\\
+Paper under double-blind review}
+
+\newcommand{\LN}{\mathrm{LN}}
+\newcommand{\FFN}{\mathrm{FFN}}
+\newcommand{\attn}{\mathrm{attn}}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Token-level adaptive compute usually keys off endogenous signals---attention
+entropy, router scores, confidence---assumed to track per-token difficulty. On
+arithmetic with graded difficulty we show this assumption fails in three
+distinct ways: an entropy-driven gate collapses to a constant, a tag-initialized
+gate inverts (allocating \emph{more} compute to easy tokens), and an
+unsupervised learned head is vacuous. Explicit per-token difficulty supervision
+with a budget constraint fixes all three: correct allocation ordering in every
+seed ($r = 0.95$) and full-compute accuracy at ${\sim}42\%$ fewer FLOPs per
+token. A pre-registered shuffled-targets
+control then separates two explanations: at testbed scale, supervised
+\emph{variation} under an explicit budget---not target content---carries
+the benefit. This makes the content question empirical, and we pursue it
+with a direct measurement: the marginal value of compute for every token,
+$\partial\mathcal{L}/\partial g_t$, obtainable in one backward pass. We
+track how measured value distributes across difficulty bins as models scale
+\todoX{42M $\to$ 400M}, and impose measured targets on natural-language
+domains (web text, code, math) where difficulty must be measured rather
+than given, on pretrained \todoX{1.4B--2.8B} models under
+iso-training-FLOPs controls.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+\ifintroPlanB
+% ---- PLAN B: gate-gradient leads (use if P0 hits across seeds) ----
+Adaptive-compute transformers promise to spend FLOPs where they help. Every
+practical method must answer two questions per token: \emph{how much compute
+does this token deserve?} and \emph{what signal decides?} The field's default
+answer to the second question is an endogenous one---attention entropy, router
+logits, confidence---trained end-to-end and trusted to discover difficulty.
+Our first result is that this trust is misplaced: driven end-to-end, every
+endogenous signal we test fails to allocate in a characteristic way (collapse,
+inversion, or vacuity; \S\ref{sec:failures}).
+Our second result is constructive and, we argue, the more important one. The
+object these signals are groping for is not difficulty but the \emph{value of
+compute}: the marginal loss reduction one more unit of compute would buy. It
+does not need to be discovered by training. For a trained model it can be
+\emph{measured}: one backward pass with the per-token FFN gates treated as
+differentiable leaves yields $\partial \mathcal{L}/\partial g_t$ for every
+token and layer at once. \emph{Compute-value supervision}---imposing this
+measured signal on the gate under an explicit budget---allocates as well as
+ground-truth difficulty labels, and better than the strongest
+static-schedule control, in every setting we test---including
+natural-language domains where no difficulty labels exist at all. The two
+supervisions are not the same object, and the difference is measurable: loss
+says ``hard,'' the gate gradient says ``helpable.'' Difficulty was always a
+proxy for value; end-to-end training chases the proxy uncontrollably (it
+overfeeds easy tokens because that is where loss is most reducible), while
+the budget term makes chasing value safe. The practical consequence is a
+recipe: train dense, measure per-token compute value in one backward pass,
+impose allocation offline---one extra backward pass, no search for a magic
+endogenous signal.
+% ---- end Plan B ----
+\else
+% ---- PLAN A: failure diagnosis leads (workshop framing) ----
+Token-level adaptive compute lets a transformer spend FLOPs where they help.
+Methods that decide \emph{which} tokens deserve compute typically key off
+endogenous signals---attention entropy, router logits, confidence---whose
+correlation with task difficulty is assumed rather than tested. We test the
+assumption on arithmetic with graded difficulty and per-token ground truth,
+and find it false in three distinct ways: entropy-driven gates collapse to a
+constant; tag-initialized gates \emph{invert}, allocating more compute to easy
+than hard tokens; unsupervised learned heads stay vacuous. Explicit
+difficulty supervision with a budget constraint fixes all three.
+We then ask what the fix really requires, and the answer sharpens the
+concept: the useful object is not difficulty but the \emph{value of compute}
+(the marginal loss reduction one more unit of compute would buy). Difficulty
+labels are one proxy for it; the trained model itself supplies a better one.
+Where labels are absent we substitute \emph{measured} signals computed
+offline---per-token loss, and $\partial\mathcal{L}/\partial g_t$, obtained in
+one backward pass with gates as differentiable leaves. Compute-value
+supervision allocates as well as difficulty labels wherever we test, while
+the same signals trained end-to-end do not: the failure is in the training
+dynamics, not the information source.
+% ---- end Plan A ----
+\fi
+
+\paragraph{Contributions.}
+\begin{enumerate}
+\item \textbf{A three-way failure diagnosis} of endogenous allocation signals
+(collapse, inversion, vacuity), each with a mechanistic account
+(\S\ref{sec:failures}); a standard Mixture-of-Depths router fails
+analogously.
+\item \textbf{Compute-value supervision}: targets derived offline from the
+trained model itself---per-token loss, and $\partial\mathcal{L}/\partial g$
+in one backward pass---match label-supervised allocation, with a
+shuffled-targets control (and a pre-registered decision rule) separating
+the specific measured targets from supervised variation alone
+(\S\ref{sec:measure}, \S\ref{sec:p0}); per-bin value signatures migrate
+with model scale as the value-not-difficulty distinction predicts
+(\S\ref{sec:scale}).
+\item \textbf{Iso-FLOPs methodology}: all method comparisons at matched
+\emph{billed training FLOPs} (gated billing, forward + backward), with
+within-segment interpolation and a budget sweep; the workshop version's
+``similar total budget'' caveat is retired (\S\ref{sec:isoflops}).
+\item \textbf{Scale and transfer}: the effect survives scaling from 11M to
+\todoX{1B} parameters on arithmetic and transfers to natural language
+(web text, code, math) on pretrained \todoX{1.4B--2.8B} models where
+difficulty is measured, not given (\S\ref{sec:scale}, \S\ref{sec:nl}).
+\item \textbf{Realization}: a tiered-FFN serving benchmark showing
+tokens/sec scaling with the mean gate, converting billed-FLOPs savings into
+wall-clock (\S\ref{sec:realization}).
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+\paragraph{Adaptive compute.} Adaptive Computation Time
+\citep{graves2016act}, early-exit and cascades, and Mixture-of-Depths
+\citep{raposo2024mixture} route tokens by learned signals; MoE+router work
+attaches learned routers to expert selection. \citet{raposo2024mixture} train
+routers from scratch; our MoD baseline on the language-model track inherits
+the resulting handicap---a router trained during a short fine-tune, not a
+full pretraining run---which we acknowledge as a baseline limitation, not a
+strawman.
+\paragraph{Conditional computation and mixture-of-experts.}
+\paragraph{Entropy and confidence as uncertainty proxies.} Draft-model
+disagreement in speculative decoding is a deployed, per-token difficulty
+signal: acceptance probability measures ``hard for a small model,'' and our
+gate-gradient targets are the same quantity computed for layers instead of
+models.
+\paragraph{Resource-aware agents.}
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Architecture and per-token gating}
+\label{sec:arch}
+
+Each layer computes
+\begin{equation}
+x_2 = \LN\!\bigl(x_1 + \attn(x_1)\bigr), \qquad
+x_3 = \LN\!\bigl(x_2 + g_t \cdot \FFN(x_2)\bigr),
+\label{eq:gate}
+\end{equation}
+where $g_t \in [0,1]$ is a per-token, per-layer gate produced by a small
+per-layer \emph{DifficultyHead} (a two-layer MLP on the post-attention state
+$x_2$, sigmoid-squashed). Compute is billed proportionally: a position gated
+at $g$ is billed $g$ times the per-token FFN cost; attention is always paid
+in full. All variants share Eq.~\eqref{eq:gate} and the accounting, so
+comparisons isolate the gating signal. We gate the FFN only, never the
+attention's keys or values: skipping a token's FFN is safe because downstream
+tokens still attend to it, whereas skipping K/V irreversibly deletes
+information that later positions may need.
+
+\subsection{Why endogenous signals fail: three diagnostics}
+\label{sec:failures}
+
+End-to-end training offers the gate one channel of feedback: the task loss.
+\emph{Collapse}: a signal with no difficulty information (attention entropy,
+$r \approx -0.06$ per token with difficulty) drives the gate to a constant.
+\emph{Inversion}: a ground-truth initialization makes the gate vary, but easy
+problems are memorizable, so their cross-entropy gradient is largest and
+training allocates them \emph{more} compute (per-problem gate--difficulty
+$r = -0.59$). \emph{Vacuity}: a head trained only through the task loss
+receives no signal about what difficulty is; the gate stays flat and unstable
+across seeds. We report the two iteration-1 quantities as distinct: per-token
+entropy--difficulty correlation $r \approx -0.06$, and per-problem
+entropy-gate--difficulty $r = 0.23$ (the gate passes the tag embedding through
+a bottleneck; the two correlations measure different objects).
+
+\subsection{Explicit difficulty supervision with a budget constraint}
+\label{sec:supervised}
+
+Training is two-stage. \textbf{Stage 1} trains the body conventionally with
+the gate fixed at $1$ and checkpoints it. \textbf{Stage 2} attaches the
+DifficultyHeads and minimizes
+\begin{equation}
+\mathcal{L} = \mathcal{L}_{\mathrm{CE}}
++ \lambda_{\mathrm{mse}}\,\tfrac{1}{N}\sum_{t}\bigl(\sigma(s_t) - \tau_t\bigr)^2
++ \lambda_{\mathrm{budget}}\,\bigl(\bar{g} - 0.5\bigr)^2,
+\label{eq:loss}
+\end{equation}
+with $\lambda_{\mathrm{mse}} = 5.0$, $\lambda_{\mathrm{budget}} = 0.5$; the
+body trains at a near-frozen learning rate ($10^{-2}\times$ the heads').
+Stage 1 is shared by every fork of the method (all Stage-2 arms load the same
+checkpoint per seed), so method comparisons are paired by body.
+
+\subsection{Measuring the value of compute}
+\label{sec:measure}
+
+Where difficulty labels are absent (all natural-language settings), targets
+$\tau_t$ are \emph{measured offline} from the Stage-1 checkpoint:
+\begin{equation}
+\mathrm{score}_t \;=\; -\sum_{\ell} \frac{\partial \mathcal{L}}{\partial
+g_{t,\ell}}\Big|_{g=1},
+\label{eq:gategrad}
+\end{equation}
+the marginal loss reduction from one unit of FFN compute at token $t$,
+obtained for all tokens and layers in a single forward--backward pass with
+gates as differentiable leaves. Scores ${\le}0$ are \emph{irreducible}
+(compute does not help there) and receive the floor target $0.1$; positive
+scores are quartile-binned to $0.2/0.4/0.6/0.8$. This is the paper's key
+conceptual move: tags label \emph{difficulty}; Eq.~\eqref{eq:gategrad}
+measures the \emph{value} of compute. The two are different objects, and the
+difference is testable: score--loss correlation is near zero in our runs---%
+loss says ``hard,'' the gate gradient says ``helpable''---and a token's tag
+bin does not constrain its score (a hard bin mixes irreducible tokens with
+worth-treating ones). We therefore expect, and report, that compute-value
+supervision does \emph{not} order gates by difficulty bins at the testbed
+scale: bin-level spread is not its target. The workshop-era inversion---%
+end-to-end training overfeeding easy tokens---is the same phenomenon seen
+from the other side: training chases reducibility wherever it lives, but
+uncontrollably; the budget term is what makes chasing value safe. A
+loss-quantile variant (the proxy-difficulty ablation) bins tokens by
+per-token loss; a \emph{shuffled} control permutes targets within each
+sequence, testing whether any varying supervision would do.
+
+\paragraph{First-order oracle allocation.} The same measurements give a
+reference point: sorting per-(token, layer) scores and filling until the
+budget is exhausted yields the first-order-optimal allocation under a
+\emph{frozen} body, evaluated zero-shot by overriding the gates at
+inference. We label it accordingly: it bounds what allocation alone buys
+without retraining. Trained methods may exceed it---their bodies adapt to
+their gates---and we interpret that as adaptation compounding allocation,
+not as a paradox.
+
+\subsection{Iso-FLOPs training protocol}
+\label{sec:isoflops}
+
+Every run logs cumulative \emph{billed training FLOPs}: the gated billing of
+\S\ref{sec:arch} applied to forward, with backward billed at twice forward
+(total $3\times$). Methods are compared at matched achieved budgets by
+linear interpolation of the evaluation history \emph{within} training
+segments only---two-stage runs have a kink at the stage boundary, and budgets
+common to all methods are capped at the shortest run's endpoint (no
+extrapolation). At matched billed FLOPs, lower-mean-gate methods receive more
+optimizer steps per billed dollar; that is the deployment claim under test,
+and steps-matched comparisons are reported alongside in
+Appendix~\ref{app:stepsmatched}.
+
+\section{Experimental setup}
+\label{sec:setup}
+
+\paragraph{Arithmetic.} Two regimes with graded difficulty: \emph{tagged}
+([E]/[M]/[H] prefixes; easy 1--2-digit $\pm$, medium 4--5-digit $\pm$, hard
+$4{\times}4$, $5{\times}4$ and $6{\times}5$-digit multiplication at scale) and
+\emph{mixed} (no tags; operands 1--7 digits; bin = larger operand's digit
+count). The hard regime is chosen per scale so the largest model sits inside
+a difficulty window: hard-bin accuracy neither saturated nor collapsed
+(maintained in $[40\%, 85\%]$ by the calibration probes). Frozen held-out
+sets, identical across methods and seeds; accuracy on answer tokens only.
+Models: an 11M testbed (the workshop setting, exactly reproduced) and
+\todoX{150M/400M/1B} scaled models (RoPE, flash attention, bf16, cosine
+schedule; identical across methods).
+
+\paragraph{Natural language.} Pretrained \todoX{Pythia-1.4b / 2.8b}
+continue-trained on three domains where per-token difficulty is latent:
+web text (FineWeb-Edu), Python code (CodeSearchNet), and chain-of-thought
+math (MetaMathQA). Stage-1 dense continue-training is shared by all forks;
+the oracle of \S\ref{sec:measure} runs once over a pool of training
+sequences plus the held-out split, producing per-token grad bins, loss bins,
+and diagnostics. Metrics: held-out loss at matched billed inference
+FLOPs/token, per-bin loss and teacher-forced accuracy, gate--bin ordering
+$r$, and gate spread. We report pass@k only as texture: a fine-tuned
+\todoX{1.4B} model scores single digits on HumanEval-style evaluation, and
+per-bin teacher-forced metrics are the primary outcome.
+
+\paragraph{Methods compared.} \emph{Baseline} (dense; = Stage-1), ours
+(\emph{gate-grad} targets; \emph{loss-quantile} ablation), \emph{shuffled}
+control, \emph{Fixed-schedule} (static $g{=}0.5$), \emph{MoD} at matched
+capacity, \emph{Chemical-off} (architecture control), and the endogenous
+iterations (\emph{entropy}, \emph{random}, \emph{tag-only}) at testbed scale.
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Endogenous signals fail; supervision fixes allocation}
+\label{sec:failures-results}
+
+Table~\ref{tab:testbed} and Figure~\ref{fig:journey}: \XX. (Ported from the
+workshop version: entropy $0.232/0.233/0.233$ across E/M/H; tag-init
+inverted; unsupervised vacuous; supervised spread $+0.20$, ordering
+$r = 0.95$ in every seed.)
+
+\subsection{Measured value matches labels at the testbed}
+\label{sec:p0}
+
+\begin{table}[t]
+\centering
+\caption{P0: paired Stage-2 arms from the same Stage-1 body per seed
+(3 seeds, mean$\pm$std). Billed training FLOPs are identical across the
+bottom two arms by construction (the oracle pass is billed to both); the
+tag arm has no oracle pass.}
+\label{tab:p0}
+\pzerotable
+\end{table}
+
+\paragraph{Pre-registered decision rule.} Written before any shuffled number
+existed: the measured-targets claim survives iff the gate-grad arm beats the
+shuffled control by ${\ge}1.0$ point of held-out accuracy, paired by seed,
+at matched billed training FLOPs, across all three seeds. No post-hoc
+reinterpretation either way.
+
+\paragraph{Outcome: the rule fired against the measured targets.} Paired
+gate-grad $-$ shuffled accuracy across seeds: $-0.003$, $-0.001$, $-0.000$
+(Table~\ref{tab:p0}).
+At testbed scale, \emph{any} varying supervision under the budget
+constraint---even targets permuted into noise---recovers the same accuracy
+($0.747 \pm 0.009$ shuffled vs.\ $0.745 \pm 0.008$ gate-grad vs.\ $0.748 \pm
+0.010$ tag) and the same flat gate structure, while all three dominate a
+constant gate trained from scratch by ${\sim}2$ points at the same inference
+budget. Two honest readings follow. First, the workshop result sharpens: at
+$11$M, what supervision supplies is not allocation quality but a dense-then-
+gate protocol whose accuracy is insensitive to target content; allocation
+structure (the tag arm's $+0.21$ spread) is real but not
+accuracy-load-bearing here. Second, the value-of-compute concept is not
+refuted---it is falsifiable at scale: if Eq.~\eqref{eq:gategrad} measures
+reducible value rather than noise, its per-bin signature must migrate as
+model capability grows (\S\ref{sec:scale}), and under it the natural-language
+targets differ from shuffled ones precisely where compute has leverage
+(\S\ref{sec:nl}). Both tests are pre-registered; \XX\ reports their outcome.
+
+\begin{table}[t]
+\centering
+\caption{Supervision targets vs.\ realized gates (budget redistribution).
+The floor + quartile targets have mean $\approx 0.31$ and nominal spread
+$0.7$; the pinned budget ($\bar g \to 0.5$) lifts and compresses them. The
+compression is the budget term redistributing, not the head failing to
+allocate --- a pinned mean is what makes the inference budget a settable
+dial.}
+\label{tab:budget}
+\budgettable
+\end{table}
+
+Bin-level spread is \emph{not} the allocation metric for measured targets
+(\S\ref{sec:measure}): gate-grad varies within problems (a hard bin contains
+both irreducible and worth-treating tokens), so its E/M/H spread is smaller
+while its per-token allocation is finer; we report gate--score agreement on
+held-out tokens (\XX) and per-token rather than per-bin summaries.
+
+\subsection{Scale: the effect survives 11M $\to$ \todoX{1B}}
+\label{sec:scale}
+
+\paragraph{Pre-registered readout: value migrates with capability.} If the
+oracle measures value rather than difficulty, its per-bin signature must
+change with model scale: an 11M model finds most hard-bin tokens
+irreducible, but a $400$M model does not. Prediction (written before the P1
+probes ran): per-bin mean gate-grad score on the hard bin rises, and its
+fraction of non-positive scores falls toward the medium bin's, across
+$42$M $\to$ $150$M $\to$ $400$M. A flat signature at \$10 of probe cost
+would have falsified the irreducibility mechanism before the expensive
+stage. Result: Figure~\ref{fig:value-migration} --- \XX.
+
+Figure~\ref{fig:frontier-scale}: accuracy vs.\ billed inference FLOPs at
+matched training budgets across \todoX{11M/150M/400M/1B}. \XX
+
+\subsection{Natural language: measured difficulty transfers}
+\label{sec:nl}
+
+Table~\ref{tab:nl}: three domains on \todoX{Pythia-1.4b}. \XX
+Diagnostics: fraction of irreducible tokens (score ${\le}0$) \XX;
+score--loss correlation \XX\ (measured value is not difficulty: high-loss
+tokens can be hopeless); bin--position correlation \XX\ (early tokens
+mechanically influence more downstream loss; reported, and the doc-boundary
+tokens landing in the floor bin is the expected irreducibility signature);
+token-type breakdown of the top bin \XX.
+
+\subsection{Where does the compute go? Oracle gap and layer profile}
+\label{sec:oracle-gap}
+
+Against the first-order frozen-body oracle (\S\ref{sec:measure}): \XX.
+Per-layer gate profiles by difficulty bin: \XX.
+
+\subsection{Wall-clock realization}
+\label{sec:realization}
+
+Billed FLOPs become real savings only under sparse execution. A tiered-FFN
+serving benchmark (tokens sorted by gate; active-set gathered GEMM) shows
+tokens/sec scaling as \XX\ at mean gate $0.5$ on the \todoX{1B} shape.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\paragraph{Implications.} The recipe---train dense, measure, impose---needs
+no endogenous-signal search and plugs into serving stacks that already
+produce per-token difficulty estimates (speculative-decoding acceptance).
+\paragraph{When static schedules suffice.} \XX
+\paragraph{Limitations.} Arithmetic difficulty is operand-size-defined at
+testbed scale; the natural-language bins inherit the reference model's
+notion of difficulty. The two-stage body is near-frozen by default; a
+full-unfreeze ablation is reported in Appendix~\ref{app:ablations}. Billed
+FLOPs are an accounting device; \S\ref{sec:realization} is the bridge to
+wall-clock, and realized speedups depend on kernel support. Gate-target
+quartiles are hand-set; Eq.~\eqref{eq:gategrad} replaces their content but
+not their form.
+
+\section*{Reproducibility statement}
+All code, manifests, and per-run JSONs (config, history, billed-FLOPs
+curves) are in the anonymized repository; every table and figure regenerates
+from committed artifacts. Seeds, held-out sets, and the FLOPs accounting are
+specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
+
+\section*{Compute statement}
+Total rented-GPU spend: \todoX{\$\XX} (\todoX{\XX} A100-hours), itemized per
+stage in Appendix~\ref{app:compute}; testbed runs on an Apple M3 (MPS).
+
+\bibliography{iclr2027_conference}
+\bibliographystyle{iclr_conference}
+
+\appendix
+
+\section{Steps-matched comparisons}
+\label{app:stepsmatched}
+\XX
+
+\section{Ablations}
+\label{app:ablations}
+Full-unfreeze Stage-2; per-layer target freedom; shuffled control at all
+scales. \XX
+
+\section{Experimental details}
+\label{app:details}
+\XX
+
+\section{Compute ledger}
+\label{app:compute}
+\XX
+
+\end{document}

@@ -23,8 +23,10 @@ from ct.train import train_run
 
 TASK_METHODS = {
     "tagged": METHODS,
+    "tagged-v2": METHODS,
     # tag-only requires explicit difficulty tags -> not applicable to mixed
     "mixed": [m for m in METHODS if m != "tag-only"],
+    "mixed-v2": [m for m in METHODS if m != "tag-only"],
 }
 
 
@@ -190,7 +192,22 @@ def main():
     p.add_argument("--tasks", default="tagged,mixed")
     p.add_argument("--methods", default="all")
     p.add_argument("--seeds", default="0,1,2")
-    p.add_argument("--size", default="small", choices=["small", "medium"])
+    p.add_argument("--size", default="small",
+                   choices=["small", "medium", "150m", "400m", "1b", "3b"])
+    p.add_argument("--device", default=None,
+                   help="Override device (mps|cuda|cpu); default auto-detect")
+    p.add_argument("--amp", action="store_true",
+                   help="bf16 autocast (CUDA only)")
+    p.add_argument("--grad-accum", type=int, default=1)
+    p.add_argument("--grad-checkpoint", action="store_true")
+    p.add_argument("--lr-schedule", default=None, choices=[None, "constant", "cosine"])
+    p.add_argument("--weight-decay", type=float, default=None)
+    p.add_argument("--iso-flop-budget", type=float, default=0.0,
+                   help="Stop each run when billed training FLOPs reach this")
+    p.add_argument("--lr", type=float, default=None,
+                   help="Override the preset learning rate")
+    p.add_argument("--pos-type", default=None, choices=[None, "learned", "rope"])
+    p.add_argument("--attn-impl", default=None, choices=[None, "manual", "sdpa"])
     p.add_argument("--steps", type=int, default=None,
                    help="Total steps for single-stage methods (default: 6000)")
     p.add_argument("--eval-every", type=int, default=None)
@@ -267,6 +284,26 @@ def main():
                 overrides["chem_hidden_input"] = True
             if args.predictor_digit_targets:
                 overrides["predictor_digit_targets"] = True
+            if args.device is not None:
+                overrides["device"] = args.device
+            if args.amp:
+                overrides["amp"] = True
+            if args.grad_accum != 1:
+                overrides["grad_accum"] = args.grad_accum
+            if args.grad_checkpoint:
+                overrides["grad_checkpoint"] = True
+            if args.lr_schedule is not None:
+                overrides["lr_schedule"] = args.lr_schedule
+            if args.weight_decay is not None:
+                overrides["weight_decay"] = args.weight_decay
+            if args.iso_flop_budget:
+                overrides["iso_flop_budget"] = args.iso_flop_budget
+            if args.pos_type is not None:
+                overrides["pos_type"] = args.pos_type
+            if args.attn_impl is not None:
+                overrides["attn_impl"] = args.attn_impl
+            if args.lr is not None:
+                overrides["lr"] = args.lr
 
             cfg = Config.for_size(args.size, **overrides)
 

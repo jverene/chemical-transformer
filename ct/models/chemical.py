@@ -19,7 +19,8 @@ import torch
 import torch.nn as nn
 
 from ..flops import FLOPsCounter
-from .common import make_causal_mask, manual_attention, normalized_entropy
+from .common import (make_causal_mask, manual_attention, sdpa_attention,
+                     rope_cos_sin, normalized_entropy)
 
 MODES = ("full", "off", "random", "fixed", "tag", "predictor", "predictor-supervised")
 
@@ -55,6 +56,11 @@ class ChemicalLayer(nn.Module):
         self.fixed_gate = cfg.fixed_gate
         self.chem_tag_init = cfg.chem_tag_init
         self.chem_hidden_input = cfg.chem_hidden_input
+        self.attn_impl = getattr(cfg, "attn_impl", "manual")
+        # entropy needs attention weights -> manual path is mandatory there
+        self.use_sdpa = self.attn_impl == "sdpa" and mode != "full"
+        if self.attn_impl == "sdpa" and mode == "full":
+            self.use_sdpa = False
 
         self.q_proj = nn.Linear(cfg.d_model, cfg.d_model)
         self.k_proj = nn.Linear(cfg.d_model, cfg.d_model)
@@ -100,13 +106,20 @@ class ChemicalLayer(nn.Module):
             for p in self.tag_emb.parameters():
                 p.requires_grad = False
 
-    def forward(self, x, prev_chemical, causal_mask, pad_mask, meta):
+    def _attention(self, x, causal_mask, cos, sin):
+        if self.use_sdpa:
+            return sdpa_attention(x, self.q_proj, self.k_proj, self.v_proj,
+                                  self.o_proj, self.n_heads, causal_mask,
+                                  cos=cos, sin=sin), None
+        return manual_attention(x, self.q_proj, self.k_proj, self.v_proj,
+                                self.o_proj, self.n_heads, causal_mask,
+                                cos=cos, sin=sin)
+
+    def forward(self, x, prev_chemical, causal_mask, pad_mask, meta,
+                cos=None, sin=None, oracle_gate=None):
         B, S, D = x.shape
 
-        attn_out, weights = manual_attention(
-            x, self.q_proj, self.k_proj, self.v_proj, self.o_proj,
-            self.n_heads, causal_mask,
-        )
+        attn_out, weights = self._attention(x, causal_mask, cos, sin)
         x2 = self.norm1(x + attn_out)
 
         entropy = None
@@ -165,11 +178,19 @@ class ChemicalLayer(nn.Module):
             chemical = torch.zeros(B, S, self.chemical_dim,
                                    device=x.device, dtype=x.dtype)
 
+        if oracle_gate is not None:
+            # Gate-gradient oracle: g supplied as a leaf tensor with
+            # requires_grad so one backward yields dL/dg per token/layer.
+            g = oracle_gate
+
         ffn_out = self.ffn(x2) * g.unsqueeze(-1)
         x3 = self.norm2(x2 + ffn_out)
 
+        # Billing is pure accounting, never differentiable: keep it off the
+        # autograd graph so cumulative trackers don't pin per-step history.
         g_real = g[pad_mask] if pad_mask is not None else g.flatten()
-        processed = float(g_real.sum().item())
+        processed = (g_real.sum() if g_real.numel() > 0
+                     else torch.zeros((), device=x.device)).detach()
         flops = FLOPsCounter.attention(B, S, D, self.n_heads) + \
             FLOPsCounter.ffn_per_token(D, self.ffn[0].out_features) * processed
 
@@ -182,8 +203,13 @@ class ChemicalTransformer(nn.Module):
         self.cfg = cfg
         self.mode = mode
         self.stage = stage
+        self.pos_type = getattr(cfg, "pos_type", "learned")
+        self.grad_checkpoint = getattr(cfg, "grad_checkpoint", False)
         self.token_emb = nn.Embedding(cfg.vocab_size, cfg.d_model)
-        self.pos_emb = nn.Embedding(cfg.max_len, cfg.d_model)
+        if self.pos_type == "learned":
+            self.pos_emb = nn.Embedding(cfg.max_len, cfg.d_model)
+        else:
+            self.pos_emb = None
         self.dropout = nn.Dropout(cfg.dropout)
         self.layers = nn.ModuleList(
             [ChemicalLayer(cfg, mode=mode, stage=stage) for _ in range(cfg.n_layers)]
@@ -198,11 +224,21 @@ class ChemicalTransformer(nn.Module):
                 nn.init.xavier_uniform_(p)
 
     def forward(self, x, pad_mask: Optional[torch.Tensor] = None,
-                meta: Optional[dict] = None, collect_chemical: bool = False):
+                meta: Optional[dict] = None, collect_chemical: bool = False,
+                oracle_gates: Optional[List[torch.Tensor]] = None):
         B, S = x.shape
-        pos = torch.arange(S, device=x.device).unsqueeze(0)
-        x = self.dropout(self.token_emb(x) + self.pos_emb(pos))
+        if self.pos_type == "rope":
+            x = self.dropout(self.token_emb(x))
+            cos, sin = rope_cos_sin(S, self.cfg.d_model // self.cfg.n_heads,
+                                    x.device, x.dtype)
+        else:
+            pos = torch.arange(S, device=x.device).unsqueeze(0)
+            x = self.dropout(self.token_emb(x) + self.pos_emb(pos))
+            cos = sin = None
         causal_mask = make_causal_mask(S, x.device, x.dtype)
+        if self.grad_checkpoint:
+            assert not collect_chemical, \
+                "grad_checkpoint is incompatible with collect_chemical"
 
         chemical = None
         total_flops = 0.0
@@ -210,9 +246,18 @@ class ChemicalTransformer(nn.Module):
         ents: List[torch.Tensor] = []
         diff_scores: List[torch.Tensor] = []
         states: List[torch.Tensor] = []
-        for layer in self.layers:
-            x, chemical, g, flops, ent, score = layer(x, chemical, causal_mask, pad_mask, meta)
-            total_flops += flops
+        for i, layer in enumerate(self.layers):
+            og = oracle_gates[i] if oracle_gates is not None else None
+            if self.grad_checkpoint and self.training:
+                from torch.utils.checkpoint import checkpoint
+                x, chemical, g, flops, ent, score = checkpoint(
+                    layer, x, chemical, causal_mask, pad_mask, meta,
+                    cos, sin, og, use_reentrant=False)
+            else:
+                x, chemical, g, flops, ent, score = layer(
+                    x, chemical, causal_mask, pad_mask, meta,
+                    cos=cos, sin=sin, oracle_gate=og)
+            total_flops = total_flops + flops
             gates.append(g)
             if ent is not None:
                 ents.append(ent)
@@ -234,10 +279,13 @@ class ChemicalTransformer(nn.Module):
             'flops': total_flops,
             'sparsity_penalty': sparsity,
             'gate_mean': gate_stack.mean(dim=0),                    # (B, S)
+            'gates_per_layer': gate_stack,                          # (L, B, S)
             'entropy_mean': (torch.stack(ents, dim=0).mean(dim=0)
                              if ents else None),                    # (B, S)
             'chemical_states': states if collect_chemical else None,
         }
         if self.mode in ("predictor", "predictor-supervised") and self.stage == 2 and diff_scores:
             info['diff_score_mean'] = torch.stack(diff_scores, dim=0).mean(dim=0)  # (B, S)
+        if oracle_gates is not None:
+            info['oracle_gates'] = oracle_gates  # leaves; caller reads .grad
         return logits, info

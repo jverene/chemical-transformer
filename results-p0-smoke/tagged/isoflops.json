@@ -1,0 +1,23 @@
+{
+  "task": "tagged",
+  "metric": "acc",
+  "budgets": [
+    2184901562937.5999,
+    6311937848486.4,
+    10438974134035.201,
+    14566010419584.0
+  ],
+  "methods": {
+    "gategrad": [
+      "0.0104\u00b10.0000 (n=1)",
+      "0.0104\u00b10.0000 (n=1)"
+    ]
+  },
+  "ordering": {
+    "a": "predictor-supervised",
+    "b": "gategrad",
+    "a_wins": 0,
+    "n": 1,
+    "ties": 1
+  }
+}

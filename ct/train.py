@@ -1,5 +1,6 @@
 """Training and evaluation loops shared by every method/task/seed."""
 import json
+import math
 import os
 import random
 import time
@@ -43,6 +44,8 @@ def eval_loop(model, held_out, task, cfg, n_batches: int, collect: bool = False)
     bin_total = [0] * task.n_bins
     gate_sum = [0.0] * task.n_bins
     gate_n = [0] * task.n_bins
+    lgate_sum = torch.zeros(cfg.n_layers, task.n_bins)
+    lgate_count = [0] * task.n_bins
     flops_sum, tok_sum = 0.0, 0
     ent_list, corr_list, compute_list = [], [], []
     ffn_tok = FLOPsCounter.ffn_per_token(cfg.d_model, cfg.d_ff) * cfg.n_layers
@@ -72,7 +75,7 @@ def eval_loop(model, held_out, task, cfg, n_batches: int, collect: bool = False)
             bin_total[b] += int(mb.sum())
 
         n_real = int(pad.sum())
-        flops_sum += info["flops"]
+        flops_sum = flops_sum + info["flops"]
         tok_sum += n_real
 
         g = info.get("gate_mean")
@@ -82,6 +85,15 @@ def eval_loop(model, held_out, task, cfg, n_batches: int, collect: bool = False)
                 if gb.any():
                     gate_sum[b] += float(g[gb].sum())
                     gate_n[b] += int(gb.sum())
+
+        if collect and g is not None:
+            gpl = info.get("gates_per_layer")
+            if gpl is not None:
+                for b in range(task.n_bins):
+                    mb = pad & (diffs == b)
+                    lgate_count[b] += int(mb.sum())
+                    if mb.any():
+                        lgate_sum[:, b] += gpl[:, mb].sum(dim=1).float().cpu()
 
         if collect:
             if info.get("entropy_mean") is not None:
@@ -102,10 +114,14 @@ def eval_loop(model, held_out, task, cfg, n_batches: int, collect: bool = False)
         "balanced_acc": float(np.mean(bin_acc)),
         "bin_acc": bin_acc,
         "bin_total": bin_total,
-        "flops_per_token": flops_sum / max(tok_sum, 1),
+        "flops_per_token": float(flops_sum) / max(tok_sum, 1),
         "gate_by_bin": [gs / gn if gn else None for gs, gn in zip(gate_sum, gate_n)],
         "mean_gate": (sum(gate_sum) / total_gate_n) if total_gate_n else None,
     }
+    if collect and lgate_count[0] > 0:
+        out["gate_by_bin_per_layer"] = [
+            [float(lgate_sum[l, b] / lgate_count[b]) for b in range(task.n_bins)]
+            for l in range(cfg.n_layers)]
     if collect and ent_list:
         ent = np.concatenate(ent_list)
         cor = np.concatenate(corr_list)
@@ -142,13 +158,18 @@ def wallclock_eval(model, held_out, task, cfg) -> float:
 
 
 def train_run(method: str, task_name: str, seed: int, cfg,
-              out_path: str, ckpt: bool = True, verbose: bool = True) -> dict:
+              out_path: str, ckpt: bool = True, verbose: bool = True,
+              stage1_ckpt: str = None) -> dict:
     set_seed(seed)
     task = get_task(task_name)
     held_out = task.build_held_out(cfg)
     model = build_model(method, cfg).to(cfg.device)
     n_params = sum(p.numel() for p in model.parameters())
     n_trainable = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    target_params = getattr(cfg, "preset_target_params", None)
+    if target_params and abs(n_params - target_params) / target_params > 0.10:
+        raise ValueError(f"preset param check failed: built {n_params:,} vs "
+                         f"target {target_params:,.0f}")
 
     # Stage detection
     is_predictor_stage1 = (method in ("predictor", "predictor-supervised")
@@ -167,7 +188,9 @@ def train_run(method: str, task_name: str, seed: int, cfg,
 
     if is_predictor_stage2:
         # Load Stage 1 checkpoint
-        if is_supervised:
+        if stage1_ckpt is not None:
+            stage1_path = stage1_ckpt
+        elif is_supervised:
             # Option 3b: predictor-supervised
             stage1_path = out_path.replace("predictor-supervised_seed", "predictor-supervised_stage1_seed").replace(".json", ".pt")
         else:
@@ -183,6 +206,8 @@ def train_run(method: str, task_name: str, seed: int, cfg,
             )
 
     # Optimizer setup
+    wd_kwargs = ({} if getattr(cfg, "weight_decay", None) is None
+                 else {"weight_decay": cfg.weight_decay})
     if is_predictor_stage2 and is_supervised:
         # Option 3b: supervised difficulty with budget
         # Unfreeze body with low LR, full LR for DifficultyHead
@@ -196,98 +221,150 @@ def train_run(method: str, task_name: str, seed: int, cfg,
         opt = torch.optim.AdamW([
             {"params": body_params, "lr": cfg.lr * 0.01},
             {"params": head_params, "lr": cfg.lr},
-        ])
+        ], **wd_kwargs)
         sparsity_lambda = cfg.sparsity_lambda  # from config
     else:
-        opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr)
+        opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, **wd_kwargs)
         sparsity_lambda = cfg.sparsity_lambda
+
+    scheduler = None
+    if getattr(cfg, "lr_schedule", "constant") == "cosine":
+        warmup = max(1, int(cfg.warmup_frac * cfg.n_steps))
+
+        def lr_fn(s):
+            if s < warmup:
+                return (s + 1) / warmup
+            p = (s - warmup) / max(1, cfg.n_steps - warmup)
+            return cfg.min_lr_frac + (1 - cfg.min_lr_frac) * 0.5 * (
+                1 + math.cos(math.pi * min(1.0, p)))
+
+        scheduler = torch.optim.lr_scheduler.LambdaLR(opt, lr_fn)
+    amp_enabled = bool(getattr(cfg, "amp", False)) and cfg.device == "cuda"
+    grad_accum = max(1, int(getattr(cfg, "grad_accum", 1)))
 
     rng = random.Random(seed * 100003 + 7)
 
+    # Gate-gradient oracle (predictor_target_source == "gategrad"): a frozen
+    # copy of the Stage-1 body that measures per-token compute value each step.
+    target_source = getattr(cfg, "predictor_target_source", "tag")
+    oracle_model = None
+    oracle_diag = defaultdict(list)
+    if is_predictor_stage2 and is_supervised and target_source == "gategrad":
+        from .gategrad import build_oracle
+        oracle_model = build_oracle(stage1_path, cfg)
+
     history = defaultdict(list)
+    cum_train_flops = 0.0  # billed training FLOPs: 3x fwd-billed (fwd + 2x bwd)
     t0 = time.time()
     if verbose:
         print(f"\n=== {method} / {task_name} / seed {seed} "
               f"({n_params:,} params, device {cfg.device}) ===", flush=True)
 
     for step in range(cfg.n_steps):
-        model.train()
-        x, y, diffs, ans = get_batch(task, cfg, rng, cfg.batch_size)
-        pad = x != TOKENIZER.pad_id
-        logits, info = model(x, pad_mask=pad, meta={"diffs": diffs})
-
-        # Cross-entropy
-        ce = F.cross_entropy(logits.view(-1, cfg.vocab_size), y.view(-1),
-                             ignore_index=TOKENIZER.pad_id)
-
-        # Option 3b Stage 1: no target accumulation needed (targets from tags)
-        # Just compute CE
-        ce_loss = ce
-
-        # Loss computation
-        loss = ce_loss + sparsity_lambda * info.get("sparsity_penalty", 0)
-
-        # Option 3b Stage 2: supervised difficulty + budget
-        if is_predictor_stage2 and "predictor-supervised" in method:
-            if "diff_score_mean" in info:
-                pred_score = info["diff_score_mean"]  # (B, S) raw score before sigmoid
-                # Per-position difficulty targets from tags
-                target_gate_e = getattr(cfg, "predictor_target_gate_e", 0.2)
-                target_gate_m = getattr(cfg, "predictor_target_gate_m", 0.5)
-                target_gate_h = getattr(cfg, "predictor_target_gate_h", 0.8)
-
-                # Create per-position targets from diffs
-                if getattr(cfg, "predictor_digit_targets", False):
-                    # Option B (mixed): digit-count bins 0..3 -> 0.2/0.4/0.6/0.8
-                    target = torch.full(diffs.shape, 0.5, device=diffs.device)
-                    valid = diffs >= 0
-                    target[valid] = 0.2 + 0.2 * diffs[valid].float()
-                else:
-                    # E (0) -> 0.2, M (1) -> 0.5, H (2) -> 0.8, none (-1) -> 0.5
-                    target = torch.where(diffs == 0, target_gate_e,
-                                 torch.where(diffs == 1, target_gate_m,
-                                 torch.where(diffs == 2, target_gate_h, 0.5)))
-
-                # MSE loss on sigmoid(score) vs target (both in [0,1] space)
-                pred_gate = torch.sigmoid(pred_score)
-                mse_loss = F.mse_loss(pred_gate, target.float().detach())
-
-                # Budget loss: (mean_gate - target_budget)^2
-                mean_gate = info["gate_mean"].mean()
-                budget_loss = (mean_gate - getattr(cfg, "predictor_budget_target", 0.5)) ** 2
-
-                mse_weight = getattr(cfg, "predictor_mse_weight", 5.0)
-                budget_weight = getattr(cfg, "predictor_budget_weight", 0.5)
-
-                loss = loss + mse_weight * mse_loss + budget_weight * budget_loss
-
-                # Debug logging (first step only)
-                if step == 0:
-                    t = target.float().detach()
-                    print(f"  [debug] Target unique: {t.unique().tolist()}")
-                    print(f"  [debug] Target samples: {t[0, :10].tolist()}")
-                    print(f"  [debug] Pred gate samples: {pred_gate[0, :10].tolist()}")
-                    print(f"  [debug] MSE: {mse_loss.item():.4f}, Budget: {budget_loss.item():.4f}")
-
         opt.zero_grad()
-        loss.backward()
+        model.train()
+        loss_value = 0.0
+        for _micro in range(grad_accum):
+            x, y, diffs, ans = get_batch(task, cfg, rng, cfg.batch_size)
+            pad = x != TOKENIZER.pad_id
+
+            oracle_target = None
+            if oracle_model is not None:
+                from .gategrad import gategrad_targets
+                oracle_target, odiag = gategrad_targets(oracle_model, x, y, diffs, cfg)
+                for k, v in odiag.items():
+                    oracle_diag[k].append(v)
+                cum_train_flops += 3.0 * odiag["flops"]  # measurement pass cost
+
+            with torch.autocast("cuda", dtype=torch.bfloat16, enabled=amp_enabled):
+                logits, info = model(x, pad_mask=pad, meta={"diffs": diffs})
+                cum_train_flops = cum_train_flops + 3.0 * info["flops"]
+
+                # Cross-entropy
+                ce = F.cross_entropy(logits.view(-1, cfg.vocab_size), y.view(-1),
+                                     ignore_index=TOKENIZER.pad_id)
+                loss = ce + sparsity_lambda * info.get("sparsity_penalty", 0)
+
+                # Option 3b Stage 2: supervised difficulty + budget
+                if is_predictor_stage2 and "predictor-supervised" in method:
+                    if "diff_score_mean" in info:
+                        pred_score = info["diff_score_mean"]  # raw score before sigmoid
+                        target_gate_e = getattr(cfg, "predictor_target_gate_e", 0.2)
+                        target_gate_m = getattr(cfg, "predictor_target_gate_m", 0.5)
+                        target_gate_h = getattr(cfg, "predictor_target_gate_h", 0.8)
+
+                        # Per-position targets: measured (gategrad) or tag-derived
+                        if oracle_target is not None:
+                            target = oracle_target
+                            if getattr(cfg, "predictor_shuffle_targets", False):
+                                perm = torch.rand(
+                                    target.shape, device=target.device
+                                ).argsort(dim=1)
+                                target = target.gather(1, perm)
+                        elif getattr(cfg, "predictor_digit_targets", False):
+                            # Digit-count bins spread over [0.2, 0.8]
+                            # (4 bins -> 0.2/0.4/0.6/0.8, as in the workshop paper)
+                            target = torch.full(diffs.shape, 0.5, device=diffs.device)
+                            valid = diffs >= 0
+                            target[valid] = 0.2 + 0.6 * diffs[valid].float() / max(1, task.n_bins - 1)
+                        else:
+                            # E (0) -> 0.2, M (1) -> 0.5, H (2) -> 0.8, none (-1) -> 0.5
+                            target = torch.where(diffs == 0, target_gate_e,
+                                         torch.where(diffs == 1, target_gate_m,
+                                         torch.where(diffs == 2, target_gate_h, 0.5)))
+
+                        # MSE loss on sigmoid(score) vs target (both in [0,1] space)
+                        pred_gate = torch.sigmoid(pred_score)
+                        mse_loss = F.mse_loss(pred_gate, target.float().detach())
+
+                        # Budget loss: (mean_gate - target_budget)^2
+                        mean_gate = info["gate_mean"].mean()
+                        budget_loss = (mean_gate - getattr(cfg, "predictor_budget_target", 0.5)) ** 2
+
+                        mse_weight = getattr(cfg, "predictor_mse_weight", 5.0)
+                        budget_weight = getattr(cfg, "predictor_budget_weight", 0.5)
+
+                        loss = loss + mse_weight * mse_loss + budget_weight * budget_loss
+
+                        # Debug logging (first step only)
+                        if step == 0:
+                            t = target.float().detach()
+                            print(f"  [debug] Target unique: {t.unique().tolist()}")
+                            print(f"  [debug] Target samples: {t[0, :10].tolist()}")
+                            print(f"  [debug] Pred gate samples: {pred_gate[0, :10].tolist()}")
+                            print(f"  [debug] MSE: {mse_loss.item():.4f}, Budget: {budget_loss.item():.4f}")
+
+                (loss / grad_accum).backward()
+            loss_value = float(loss.detach())
+
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
+        if scheduler is not None:
+            scheduler.step()
+
+        if getattr(cfg, "iso_flop_budget", 0.0) and \
+                float(cum_train_flops) >= cfg.iso_flop_budget:
+            if verbose:
+                print(f"[{method}/{task_name}/s{seed}] iso-FLOP budget "
+                      f"{cfg.iso_flop_budget:.3e} reached at step {step} "
+                      f"({float(cum_train_flops):.3e} billed)", flush=True)
+            break
 
         if step % cfg.eval_every == 0 or step == cfg.n_steps - 1:
             m = eval_loop(model, held_out, task, cfg, cfg.eval_batches)
             history["step"].append(step)
-            history["train_loss"].append(loss.item())
+            history["train_loss"].append(loss_value)
             history["eval_loss"].append(m["loss"])
             history["acc"].append(m["acc"])
             history["balanced_acc"].append(m["balanced_acc"])
             history["bin_acc"].append(m["bin_acc"])
             history["flops_per_token"].append(m["flops_per_token"])
             history["gate_by_bin"].append(m["gate_by_bin"])
+            history["cum_train_flops"].append(float(cum_train_flops))
             if verbose:
                 bins = " ".join(f"{a:.3f}" for a in m["bin_acc"])
                 print(f"[{method}/{task_name}/s{seed}] step {step:5d} | "
-                      f"loss {loss.item():.4f} | acc {m['acc']:.3f} | "
+                      f"loss {loss_value:.4f} | acc {m['acc']:.3f} | "
                       f"bal {m['balanced_acc']:.3f} | bins {bins} | "
                       f"MFLOPs/tok {m['flops_per_token'] / 1e6:.1f} | "
                       f"{time.time() - t0:.0f}s", flush=True)
@@ -295,6 +372,7 @@ def train_run(method: str, task_name: str, seed: int, cfg,
     final = eval_loop(model, held_out, task, cfg, cfg.final_eval_batches, collect=True)
     final["wallclock_per_token"] = wallclock_eval(model, held_out, task, cfg)
     final["train_wallclock_s"] = time.time() - t0
+    final["cum_train_flops"] = float(cum_train_flops)
 
     # Debug summary for predictor-supervised
     if is_supervised and is_predictor_stage2:
@@ -322,6 +400,9 @@ def train_run(method: str, task_name: str, seed: int, cfg,
         "config": cfg.to_dict(),
         "history": dict(history),
         "final": final,
+        "target_source": target_source,
+        "oracle_diag": dict(oracle_diag) if oracle_model is not None else None,
+        "stage1_ckpt": stage1_ckpt if (is_predictor_stage2 and stage1_ckpt) else None,
     }
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w") as f:
