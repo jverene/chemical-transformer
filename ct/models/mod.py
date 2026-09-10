@@ -58,7 +58,9 @@ class MoDLayer(nn.Module):
         w = torch.sigmoid(topv)
 
         sel = x2.gather(1, topi.unsqueeze(-1).expand(-1, -1, D))
-        out = self.ffn(sel) * w.unsqueeze(-1)
+        # autocast keeps x2 fp32 (LayerNorm) but the FFN runs bf16; the
+        # in-place scatter_ requires matching dtypes, so cast explicitly.
+        out = (self.ffn(sel) * w.unsqueeze(-1)).to(x2.dtype)
         ffn_full = torch.zeros_like(x2)
         ffn_full.scatter_(1, topi.unsqueeze(-1).expand(-1, -1, D), out)
         x3 = self.norm2(x2 + ffn_full)
