@@ -249,7 +249,9 @@ def train_run(method: str, task_name: str, seed: int, cfg,
     target_source = getattr(cfg, "predictor_target_source", "tag")
     oracle_model = None
     oracle_diag = defaultdict(list)
-    if is_predictor_stage2 and is_supervised and target_source == "gategrad":
+    constant_target = getattr(cfg, "predictor_constant_target", None)
+    if is_predictor_stage2 and is_supervised and target_source == "gategrad" \
+            and constant_target is None:
         from .gategrad import build_oracle
         oracle_model = build_oracle(stage1_path, cfg)
 
@@ -294,7 +296,10 @@ def train_run(method: str, task_name: str, seed: int, cfg,
                         target_gate_h = getattr(cfg, "predictor_target_gate_h", 0.8)
 
                         # Per-position targets: measured (gategrad) or tag-derived
-                        if oracle_target is not None:
+                        if constant_target is not None:
+                            target = torch.full(diffs.shape, constant_target,
+                                                device=diffs.device)
+                        elif oracle_target is not None:
                             target = oracle_target
                             if getattr(cfg, "predictor_shuffle_targets", False):
                                 perm = torch.rand(

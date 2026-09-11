@@ -166,6 +166,17 @@ def run_p0(seeds, outdir, device=None, stage1_steps=5000, stage2_steps=3000,
         else:
             print(f"Stage 1 exists: {stage1_path}")
 
+        # 1b. Fixed-two-stage control: constant targets on the two-stage
+        # protocol (closes the protocol-vs-content 2x2; no oracle pass).
+        fx_json = os.path.join(
+            outdir, task_name, f"fixed2stage{sfx}_seed{seed}.json")
+        if "fixed2stage" in arms and not os.path.exists(fx_json):
+            cfg_fx = mk(stage=2, n_steps=stage2_steps)
+            cfg_fx.predictor_constant_target = 0.5
+            train_run("predictor-supervised", task_name, seed, cfg_fx,
+                      fx_json, ckpt=False, verbose=verbose,
+                      stage1_ckpt=stage1_path)
+
         # 2. Tag-target arm (workshop recipe, hyperparameter-identical)
         if "tag" in arms and not os.path.exists(tag_json):
             cfg_tag = mk(stage=2, n_steps=stage2_steps)

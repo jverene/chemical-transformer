@@ -99,6 +99,9 @@ class Config:
     # Control: permute the per-position targets within each sequence
     # (separates "supervision with these targets" from "any varying targets").
     predictor_shuffle_targets: bool = False
+    # Control: constant per-position target (e.g. 0.5 = fixed schedule on the
+    # two-stage protocol). Closes the protocol-vs-content 2x2.
+    predictor_constant_target: float = None
     # evaluation
     held_out_seed: int = 12345  # same held-out set for every method/seed
     test_seqs: int = 256
