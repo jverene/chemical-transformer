@@ -1,23 +1,12 @@
-%% ICLR 2027 submission skeleton — chemical-transformer expansion.
+%% ICLR 2027 submission — chemical-transformer expansion (v3: dropout-lead).
 %%
 %% POLICY CHECKLIST (executed by hand, not by LaTeX):
-%%  [ ] Sep 16: freeze conservative abstract (below), draft on file.
-%%  [ ] Sep 17: register abstract on OpenReview. Abstracts stay editable
-%%      until Sep 25 — sharpen [X]-marked claims as P3/P4 land.
-%%  [ ] Verify OpenReview profile accuracy (desk-reject grounds if wrong).
-%%      Author list frozen at Sep 18; no adds. One-paper cap: this is it.
-%%  [ ] 6-10 pages main text HARD (desk reject at 11). Appendix unlimited.
+%%  [ ] Sep 16: freeze conservative abstract (below). Sep 17: register.
+%%      Abstract editable until Sep 25 — sharpen as results land.
+%%  [ ] OpenReview profile accuracy; authors frozen Sep 18; one-paper cap.
+%%  [ ] 6-10 pages main text HARD. Appendix unlimited.
 %%  [ ] Swap iclr2026_conference.sty -> official iclr2027 when published.
-%%  [ ] RAAAI version is non-archival: no dual-submission conflict.
-%%
-%% PLAN A/B INTRO TOGGLE: decide ~Sep 12 on P0/P1 evidence.
-%%   \introPlanBtrue  -> gate-gradient leads (P0 hit)
-%%   \introPlanBfalse -> failure-diagnosis leads (workshop framing)
-\newif\ifintroPlanB
-\introPlanBfalse
-\newcommand{\XX}{\textbf{\color{red}??}}          % pending number
-\newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}  % pending sharpening
-
+%%  [ ] PARITY TOGGLE: decided by the 10k convergence pair — see \ifparity.
 \documentclass{article}
 \usepackage{iclr2027_conference}
 \usepackage{tikz}
@@ -28,10 +17,11 @@
 \usepackage{multirow}
 \input{results_iclr}   % auto-generated macros + table bodies
 
-\iclrfinalcopy % submissions compile with this; camera-ready identical
+\iclrfinalcopy
 
-\title{Endogenous Signals Fail to Allocate: \\\ Measured Signals Supervise
-Token-Level Adaptive Compute at Scale}
+\title{Endogenous Signals Fail to Allocate: \\
+Measured Signals and Token-Level FFN Dropout \\
+for Half-Cost Transformer Training}
 
 \author{Anonymous authors\\
 Paper under double-blind review}
@@ -39,89 +29,70 @@ Paper under double-blind review}
 \newcommand{\LN}{\mathrm{LN}}
 \newcommand{\FFN}{\mathrm{FFN}}
 \newcommand{\attn}{\mathrm{attn}}
+% PARITY TOGGLE (decided by the 10k convergence pair): true = rotation
+% matches dense at 10k -> positive headline ("half-cost training");
+% false = scoped to compute-limited regimes.
+\newif\ifparity
+\paritytrue
+\newcommand{\XX}{\textbf{\color{red}??}}
+\newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}
 
 \begin{document}
-
 \maketitle
 
 \begin{abstract}
 Token-level adaptive compute usually keys off endogenous signals---attention
-entropy, router scores, confidence---assumed to track per-token difficulty. On
-arithmetic with graded difficulty we show this assumption fails in three
-distinct ways: an entropy-driven gate collapses to a constant, a tag-initialized
-gate inverts (allocating \emph{more} compute to easy tokens), and an
-unsupervised learned head is vacuous. Explicit per-token difficulty supervision
-with a budget constraint fixes all three: correct allocation ordering in every
-seed ($r = 0.95$) and full-compute accuracy at ${\sim}42\%$ fewer FLOPs per
-token. A pre-registered shuffled-targets
-control then separates two explanations: at testbed scale, supervised
-\emph{variation} under an explicit budget---not target content---carries
-the benefit. This makes the content question empirical, and we pursue it
-with a direct measurement: the marginal value of compute for every token,
-$\partial\mathcal{L}/\partial g_t$, obtainable in one backward pass. We
-track how measured value distributes across difficulty bins as models scale
-\todoX{42M $\to$ 400M}, and impose measured targets on natural-language
-domains (web text, code, math) where difficulty must be measured rather
-than given, on pretrained \todoX{1.4B--2.8B} models under
-iso-training-FLOPs controls.
+entropy, router scores, confidence---assumed to track per-token difficulty.
+On arithmetic with graded difficulty we show this assumption fails in three
+distinct ways: an entropy-driven gate collapses to a constant, a
+tag-initialized gate inverts, and an unsupervised learned head is vacuous.
+Supervised targets with a budget constraint produce correctly ordered gates,
+but a pre-registered shuffled-targets control shows the ordering carries no
+accuracy benefit at either 11M or 150M scale. Measuring the field
+directly---the per-token gradient of the loss with respect to each token's
+compute gate---explains why: the field carries transient structure early in
+training and is flat at convergence, so there is nothing for any allocator,
+learned or supervised, to exploit. \ifparity The constructive result:
+training with \emph{token-level FFN dropout}---each token receives full
+feed-forward compute only inside randomly rotating windows---matches dense
+quality at \todoX{half} the FFN training FLOPs on 11M and 150M models and on
+\todoX{1.4B} language-model fine-tuning, with dense deployment requiring no
+architecture change. \else In the compute-limited regime the rotated recipe
+recovers most but not all of dense quality; the parity claim is scoped
+accordingly. \fi The contribution is a measurement methodology
+(permutation-controlled ordering gaps, allocation headroom, the value-field
+life cycle) and a free training recipe the adaptive-compute literature
+skips: the baseline that beats every allocator is random.
 \end{abstract}
 
-\section{Introduction}
-\label{sec:intro}
-
-\ifintroPlanB
-% ---- PLAN B: gate-gradient leads (use if P0 hits across seeds) ----
-Adaptive-compute transformers promise to spend FLOPs where they help. Every
-practical method must answer two questions per token: \emph{how much compute
-does this token deserve?} and \emph{what signal decides?} The field's default
-answer to the second question is an endogenous one---attention entropy, router
-logits, confidence---trained end-to-end and trusted to discover difficulty.
-Our first result is that this trust is misplaced: driven end-to-end, every
-endogenous signal we test fails to allocate in a characteristic way (collapse,
-inversion, or vacuity; \S\ref{sec:failures}).
-Our second result is constructive and, we argue, the more important one. The
-object these signals are groping for is not difficulty but the \emph{value of
-compute}: the marginal loss reduction one more unit of compute would buy. It
-does not need to be discovered by training. For a trained model it can be
-\emph{measured}: one backward pass with the per-token FFN gates treated as
-differentiable leaves yields $\partial \mathcal{L}/\partial g_t$ for every
-token and layer at once. \emph{Compute-value supervision}---imposing this
-measured signal on the gate under an explicit budget---allocates as well as
-ground-truth difficulty labels, and better than the strongest
-static-schedule control, in every setting we test---including
-natural-language domains where no difficulty labels exist at all. The two
-supervisions are not the same object, and the difference is measurable: loss
-says ``hard,'' the gate gradient says ``helpable.'' Difficulty was always a
-proxy for value; end-to-end training chases the proxy uncontrollably (it
-overfeeds easy tokens because that is where loss is most reducible), while
-the budget term makes chasing value safe. The practical consequence is a
-recipe: train dense, measure per-token compute value in one backward pass,
-impose allocation offline---one extra backward pass, no search for a magic
-endogenous signal.
-% ---- end Plan B ----
-\else
-% ---- PLAN A: failure diagnosis leads (workshop framing) ----
-Token-level adaptive compute lets a transformer spend FLOPs where they help.
-Methods that decide \emph{which} tokens deserve compute typically key off
-endogenous signals---attention entropy, router logits, confidence---whose
-correlation with task difficulty is assumed rather than tested. We test the
-assumption on arithmetic with graded difficulty and per-token ground truth,
-and find it false in three distinct ways: entropy-driven gates collapse to a
-constant; tag-initialized gates \emph{invert}, allocating more compute to easy
-than hard tokens; unsupervised learned heads stay vacuous. Explicit
-difficulty supervision with a budget constraint fixes all three.
-We then ask what the fix really requires, and the answer sharpens the
-concept: the useful object is not difficulty but the \emph{value of compute}
-(the marginal loss reduction one more unit of compute would buy). Difficulty
-labels are one proxy for it; the trained model itself supplies a better one.
-Where labels are absent we substitute \emph{measured} signals computed
-offline---per-token loss, and $\partial\mathcal{L}/\partial g_t$, obtained in
-one backward pass with gates as differentiable leaves. Compute-value
-supervision allocates as well as difficulty labels wherever we test, while
-the same signals trained end-to-end do not: the failure is in the training
-dynamics, not the information source.
-% ---- end Plan A ----
-\fi
+% ---- ACTIVE INTRO (dropout-lead; parity-conditional sentence marked) ----
+Transformers spend most of their training compute on feed-forward blocks
+applied uniformly to every token at every step. We ask a simple question:
+does every token need the FFN at every step? The adaptive-compute literature
+answers with learned allocators---routers, entropy gates, difficulty
+heads---trained end-to-end to switch compute on where it ``matters.'' We
+first show this program fails on its own terms in a controlled testbed with
+per-token ground truth: endogenous signals collapse, invert, or stay vacuous
+(\S\ref{sec:failures}), supervised targets produce correctly ordered gates
+whose ordering carries no accuracy benefit, and a pre-registered
+shuffled-targets control shows target content is irrelevant at 11M and
+150M scale.
+The positive half of the paper is a measurement that explains these
+failures and a recipe it motivates. We measure the per-token
+\emph{value of compute}---the gradient of the loss with respect to each
+token's FFN gate---and find it has a life cycle: structured transiently
+early in training, consumed by it, and flat at convergence
+(\S\ref{sec:measure}). A permutation-controlled oracle shows the converged
+field has no realizable headroom, and a causal single-stage test shows that
+\emph{chasing} the field online is worse than random allocation of the same
+budget. What works is the degenerate allocator everyone skips: train with
+\emph{token-level FFN dropout}---each token receives full FFN compute only
+inside randomly rotating windows---and deploy dense. At matched tokens this
+matches dense quality at half the FFN training FLOPs
+\ifparity across 11M, 150M, and 1.4B language-model fine-tuning \else at
+11M, with the 150M and 1.4B parity claims scoped to the compute-limited
+regime \fi, requires no labels or routers, and composes with any attention
+architecture because it never touches attention.
 
 \paragraph{Contributions.}
 \begin{enumerate}
