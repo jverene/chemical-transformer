@@ -84,6 +84,45 @@ value should track if it measures anything real; see
 ---
 Amendments:
 
+**Sep 12 — Gate 1 readout (11M causal 5-arm, 1 seed, matched everything,
+gates from step 0, budget 0.5, 3000 steps).** Dense-inference finals:
+dense 1.167/0.642, dropout(per-step) 1.275/0.513, shuffled(100-step
+windows) 1.274/0.516, online(field-chasing) 2.253/0.367, static
+2.621/0.318. Readouts per the pre-registered rules: (a) per-step ~= windowed
+(1.275 vs 1.274) -> **the mechanism is token-level FFN dropout
+(noise-regularization); the "rotation" branding is dropped.** (b) static
+scaling and field-chasing are the failing arms; intermittent full compute
+beats uniformly reduced compute at the same mean gate. (c) dense wins
+dense-inference at 3000 steps — no parity claim at this horizon; the 10k
+convergence pair decides tonight. Pre-registered parity interpretation
+(before the 10k pair): rotation held loss within ~2% of dense -> the
+positive claim ("same quality, half the FFN training FLOPs,
+dense-deployable") advances to 150m + NL. A 2-10% gap -> the claim scopes
+to compute-limited regimes, stated plainly. >10% worse -> the dropout
+recipe is dropped; the paper is measurement/life-cycle + taxonomy.
+
+**Sep 12 — Gate 2 executed: KILL on method novelty.** Turbo Training (Han,
+Xie, Zisserman, BMVC 2022, arXiv 2210.04889) already establishes train-time
+token dropping with dense deployment and training-compute savings (~4x) on
+video transformers. Surviving differentiation: LLM decoder fine-tuning
+domain; token-level FFN granularity; the value-field life-cycle
+measurement; the failure taxonomy of learned allocators; headroom
+methodology. The method arm enters the paper as an adopted baseline
+(cited), not a novel method. TokenTune (EMNLP 2024) differentiates on
+objective (memory, not FLOPs).
+
+**Sep 12 — the life-cycle law, measured at three points.** Ordering value
+(waterfill - random, permutation-controlled): structured mid-training
+(starved-150M, both seeds: waterfill beats random +0.30/+0.38, beats anti
++0.70/+0.78), decaying on the 11M trajectory (peak |gap| ~0.2 at steps
+100-800), ~0 at convergence (all converged bodies; the step-5000 sign is
+seed-inconsistent and logged as noise per pre-registration). This resolves
+the earlier ambiguity: there is NO P0-vs-retrained discrepancy — every
+healthy body measured (11M x3, 42M, 150M) shows a flat converged field;
+the P0 pass was always an accuracy result, never a gradient-structure
+result.
+
+**Sep 7, 2026 (night) — Rule 4 EXECUTED on valid bodies: NOT CONFIRMED.**
 **Sep 7, 2026 (night) — Rule 4 EXECUTED on valid bodies: NOT CONFIRMED.**
 With the validated recipe (cosine + warmup + wd 0.1, preset LRs), healthy
 stage-1 bodies at 42M (acc 0.496) and 150M (acc 0.563) show NO difficulty-bin
