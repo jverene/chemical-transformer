@@ -91,7 +91,22 @@ def main():
         oracle.load_state_dict(model.state_dict())
         oracle.eval()
         m = measure(oracle, task, cfg, args.budget, args.batches, gen)
+        # dense (g=1) loss for the loss-based x-axis
+        rng_d = random.Random(31337)
+        dl = []
+        was_train = model.training
+        model.eval()
+        with torch.no_grad():
+            for _ in range(args.batches):
+                x, y, diffs, _ = get_batch(task, cfg, rng_d, cfg.batch_size)
+                logits, _ = model(x, pad_mask=x != TOKENIZER.pad_id,
+                                  meta={"diffs": diffs})
+                dl.append(float(F.cross_entropy(
+                    logits.view(-1, cfg.vocab_size), y.view(-1),
+                    ignore_index=TOKENIZER.pad_id)))
+        model.train(was_train)
         m["step"] = step
+        m["dense_loss"] = float(np.mean(dl))
         traj.append(m)
         gap_wf = m["waterfill"] - m["random"]
         gap_anti = m["anti"] - m["waterfill"]

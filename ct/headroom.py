@@ -85,6 +85,7 @@ def main():
     results = {k: [] for k in ("uniform", "waterfill", "random", "anti")}
     gen = torch.Generator().manual_seed(0)  # CPU generator; noise moved to device
 
+    raw = []
     for _ in range(args.batches):
         x, y, diffs, _ = get_batch(task, cfg, rng, cfg.batch_size)
         pad = x != TOKENIZER.pad_id
@@ -109,8 +110,11 @@ def main():
             "random": random_alloc((B, S), args.budget, device, gen),
             "anti": alloc_from_scores(real_score, args.budget, invert=True),
         }
-        for name, g in allocs.items():
-            results[name].append(eval_alloc(oracle, x, y, diffs, g, cfg))
+        batch_vals = {name: eval_alloc(oracle, x, y, diffs, g, cfg)
+                      for name, g in allocs.items()}
+        for name, v in batch_vals.items():
+            results[name].append(v)
+        raw.append(batch_vals)
 
     out = {k: float(np.mean(v)) for k, v in results.items()}
     out["headroom_vs_uniform"] = out["uniform"] - out["waterfill"]
