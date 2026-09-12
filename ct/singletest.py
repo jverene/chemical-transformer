@@ -52,7 +52,7 @@ def hard_alloc(score, budget, shuffle=False, gen=None):
 
 def main():
     p = argparse.ArgumentParser()
-    p.add_argument("--arm", required=True, choices=["online", "shuffled", "static"])
+    p.add_argument("--arm", required=True, choices=["online", "shuffled", "static", "dense", "dropout"])
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--steps", type=int, default=3000)
     p.add_argument("--refresh-every", type=int, default=100)
@@ -81,7 +81,13 @@ def main():
         x, y, diffs, _ = get_batch(task, cfg, rng, cfg.batch_size)
         pad = x != TOKENIZER.pad_id
 
-        if args.arm == "static":
+        if args.arm == "dense":
+            g = None
+        elif args.arm == "dropout":
+            g = (torch.rand(x.shape, device=device) < args.budget).float() * \
+                args.budget * 2  # per-step random mask, mean gate = budget
+            g_cur = g
+        elif args.arm == "static":
             g = torch.full(x.shape, args.budget, device=device)
         elif step == 1 or step % args.refresh_every == 0:
             # both adaptive arms refresh at the same cadence
@@ -97,8 +103,9 @@ def main():
         else:
             g = g_cur
 
+        og = [g] * cfg.n_layers if g is not None else None
         logits, info = model(x, pad_mask=pad, meta={"diffs": diffs},
-                             oracle_gates=[g] * cfg.n_layers)
+                             oracle_gates=og)
         ce = F.cross_entropy(logits.view(-1, cfg.vocab_size), y.view(-1),
                              ignore_index=TOKENIZER.pad_id)
         opt.zero_grad()
@@ -106,7 +113,7 @@ def main():
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
         cum_flops += 3.0 * dense_flops_tok * cfg.batch_size * \
-            float(g.mean())
+            (float(g.mean()) if g is not None else 1.0)
 
         if step % 250 == 0 or step == args.steps:
             m = eval_loop(model, held_out, task, cfg, 4)
@@ -120,6 +127,12 @@ def main():
                   flush=True)
 
     out = args.out or f"results-headroom/single_{args.arm}_seed{args.seed}.json"
+    if args.arm in ("shuffled", "online", "dropout") and g_cur is not None:
+        mg = eval_loop(model, held_out, task, cfg, 4)
+        with open(out.replace(".json", "_gated.json"), "w") as f:
+            json.dump({"final_gated_held_loss": mg["loss"],
+                       "final_gated_acc": mg["acc"]}, f)
+        print("deploy-with-gates eval:", mg["loss"], mg["acc"], flush=True)
     with open(out, "w") as f:
         json.dump({"arm": args.arm, "seed": args.seed, "steps": args.steps,
                    "budget": args.budget, "history": dict(history)},
