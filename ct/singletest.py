@@ -57,6 +57,7 @@ def main():
     p.add_argument("--steps", type=int, default=3000)
     p.add_argument("--refresh-every", type=int, default=100)
     p.add_argument("--budget", type=float, default=0.5)
+    p.add_argument("--size", default="small")
     p.add_argument("--device", default=None)
     p.add_argument("--out", default=None)
     args = p.parse_args()

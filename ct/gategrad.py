@@ -132,7 +132,6 @@ def run_p0(seeds, outdir, device=None, stage1_steps=5000, stage2_steps=3000,
             # recipe for every non-testbed size.
             overrides["lr_schedule"] = "cosine"
             overrides["weight_decay"] = 0.1
-            overrides["amp"] = True
         if batch_size is not None:
             overrides["batch_size"] = batch_size
         if seq_len is not None:
