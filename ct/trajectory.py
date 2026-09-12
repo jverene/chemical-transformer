@@ -64,7 +64,7 @@ def main():
     p.add_argument("--budget", type=float, default=0.5)
     p.add_argument("--batches", type=int, default=6)
     p.add_argument("--device", default=None)
-    p.add_argument("--out", default="results-headroom/trajectory_seed0.json")
+    p.add_argument("--out", default=None)
     args = p.parse_args()
     device = args.device or ("mps" if torch.backends.mps.is_available() else "cpu")
     set_seed(args.seed)
@@ -130,6 +130,7 @@ def main():
             saved.add(step)
             snapshot(step)
 
+    args.out = args.out or f"results-headroom/trajectory_seed{args.seed}.json"
     with open(args.out, "w") as f:
         json.dump({"seed": args.seed, "budget": args.budget,
                    "trajectory": traj}, f, indent=2)

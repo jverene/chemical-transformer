@@ -1,0 +1,62 @@
+{
+  "seed": 1,
+  "budget": 0.5,
+  "trajectory": [
+    {
+      "step": 50,
+      "uniform": 2.1283,
+      "waterfill": 2.5495,
+      "random": 2.5056,
+      "anti": 2.4669
+    },
+    {
+      "step": 100,
+      "uniform": 2.012,
+      "waterfill": 2.3855,
+      "random": 2.4699,
+      "anti": 2.6066
+    },
+    {
+      "step": 200,
+      "uniform": 1.7894,
+      "waterfill": 2.7662,
+      "random": 2.688,
+      "anti": 2.7437
+    },
+    {
+      "step": 400,
+      "uniform": 2.2339,
+      "waterfill": 3.0542,
+      "random": 3.2185,
+      "anti": 3.5151
+    },
+    {
+      "step": 800,
+      "uniform": 2.7343,
+      "waterfill": 3.2042,
+      "random": 3.2353,
+      "anti": 3.2645
+    },
+    {
+      "step": 1600,
+      "uniform": 3.0225,
+      "waterfill": 3.0137,
+      "random": 3.1816,
+      "anti": 3.3453
+    },
+    {
+      "step": 3200,
+      "uniform": 2.803,
+      "waterfill": 3.2444,
+      "random": 3.235,
+      "anti": 3.2736
+    },
+    {
+      "step": 5000,
+      "uniform": 2.567,
+      "waterfill": 3.4652,
+      "random": 3.5271,
+      "anti": 3.6981
+    }
+  ]
+}
