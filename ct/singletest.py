@@ -58,6 +58,8 @@ def main():
     p.add_argument("--refresh-every", type=int, default=100)
     p.add_argument("--budget", type=float, default=0.5)
     p.add_argument("--size", default="small")
+    p.add_argument("--batch-size", type=int, default=None)
+    p.add_argument("--seq-len", type=int, default=None)
     p.add_argument("--device", default=None)
     p.add_argument("--out", default=None)
     args = p.parse_args()
@@ -65,10 +67,25 @@ def main():
     set_seed(args.seed)
     cfg = Config(device=device)
     cfg.stage = 1
+    if args.batch_size is not None:
+        cfg.batch_size = args.batch_size
+    if args.seq_len is not None:
+        cfg.seq_len = args.seq_len
     task = get_task("tagged")
     held_out = task.build_held_out(cfg)
     model = build_model("predictor-supervised", cfg).to(device)
-    opt = torch.optim.AdamW(model.parameters(), lr=3e-4)
+    # validated recipe: preset LR (1e-4 @150m), weight decay, warmup+cosine —
+    # the raw 11M recipe (constant 3e-4, no decay) diverges at >=12 layers
+    opt = torch.optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=0.1)
+    warmup = max(1, int(0.02 * args.steps))
+
+    def lr_fn(s):
+        if s <= warmup:
+            return s / warmup
+        pgs = (s - warmup) / max(1, args.steps - warmup)
+        return 0.1 + 0.9 * 0.5 * (1 + np.cos(np.pi * min(1.0, pgs)))
+
+    sched = torch.optim.lr_scheduler.LambdaLR(opt, lr_fn)
     rng = random.Random(args.seed * 100003 + 7)
 
     history = {"step": [], "heldout_loss": [], "heldout_acc": [],
@@ -113,6 +130,7 @@ def main():
         ce.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
         opt.step()
+        sched.step()
         cum_flops += 3.0 * dense_flops_tok * cfg.batch_size * \
             (float(g.mean()) if g is not None else 1.0)
 
