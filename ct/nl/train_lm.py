@@ -95,7 +95,7 @@ def main():
     p.add_argument("--domain", required=True)
     p.add_argument("--model", default="EleutherAI/pythia-1.4b")
     p.add_argument("--method", required=True,
-                   choices=["baseline", "fixed", "mod", "ours-gategrad",
+                   choices=["baseline", "fixed", "mod", "rotation", "ours-gategrad",
                             "ours-loss", "shuffled"])
     p.add_argument("--stage", type=int, default=1)
     p.add_argument("--seed", type=int, default=0)

@@ -28,7 +28,7 @@ class MLPWrapper(nn.Module):
         self.inner = inner
         self.dim = dim
         self.capacity = capacity
-        self.gate_mode = "none"
+        self.gate_mode = "none"  # none|fixed|head|mod|rotation
         self.head = DifficultyHead(dim)   # created for every mode: stable ckpts
         self.router = nn.Linear(dim, 1)
         self.oracle_gate = None           # leaf (B, S) during oracle passes
@@ -51,6 +51,17 @@ class MLPWrapper(nn.Module):
                 g, _ = self.head(x)
             self.last_gate = g
             return self.inner(x) * g.unsqueeze(-1)
+        if mode == "rotation":
+            # per-step random token mask: active tokens get full FFN (g=1),
+            # inactive get none; mean gate = budget. Deploy = dense (g=1).
+            mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity).float()
+            self.last_gate = mask + (1 - mask) * 0.0
+            out = self.inner(x) * mask.unsqueeze(-1)
+            return out
+        if mode == "rotation":
+            mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity).float()
+            self.last_gate = mask
+            return self.inner(x) * mask.unsqueeze(-1)
         if mode == "mod":
             scores = self.router(x).squeeze(-1)
             k = max(1, int(math.ceil(self.capacity * S)))
@@ -89,9 +100,9 @@ class GatedLM:
         for layer in layers:
             mlp = getattr(layer, "mlp", None) or layer.mlp
             w = MLPWrapper(mlp, self.d_model, mod_capacity).to(device)
-            w.gate_mode = {"baseline": "none", "fixed": "fixed",
-                           "ours-gategrad": "head", "ours-loss": "head",
-                           "shuffled": "head", "mod": "mod"}[method]
+            w.gate_mode = {"baseline": "none", "fixed": "fixed", "mod": "mod",
+                           "rotation": "rotation", "ours-gategrad": "head",
+                           "ours-loss": "head", "shuffled": "head"}[method]
             layer.mlp = w
             self.wrappers.append(w)
 
