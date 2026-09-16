@@ -29,11 +29,11 @@ Paper under double-blind review}
 \newcommand{\LN}{\mathrm{LN}}
 \newcommand{\FFN}{\mathrm{FFN}}
 \newcommand{\attn}{\mathrm{attn}}
-% PARITY TOGGLE (decided by the 10k convergence pair): true = rotation
-% matches dense at 10k -> positive headline ("half-cost training");
-% false = scoped to compute-limited regimes.
+% PARITY TOGGLE (decided Sep 15 by the 10k convergence pair): rotation held
+% loss 1.086 vs dense 1.032 = 5.3% gap at 50% billed FLOPs -> inside the
+% pre-registered 2-10% band -> claim SCOPED to compute-limited regimes.
 \newif\ifparity
-\paritytrue
+\parityfalse
 \newcommand{\XX}{\textbf{\color{red}??}}
 \newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}
 
@@ -48,21 +48,23 @@ distinct ways: an entropy-driven gate collapses to a constant, a
 tag-initialized gate inverts, and an unsupervised learned head is vacuous.
 Supervised targets with a budget constraint produce correctly ordered gates,
 but a pre-registered shuffled-targets control shows the ordering carries no
-accuracy benefit at either 11M or 150M scale. Measuring the field
+accuracy benefit at either 11M or 150M scale: any varying supervision under
+the budget constraint does as well. Measuring the field
 directly---the per-token gradient of the loss with respect to each token's
-compute gate---explains why: the field carries transient structure early in
-training and is flat at convergence, so there is nothing for any allocator,
-learned or supervised, to exploit. \ifparity The constructive result:
-training with \emph{token-level FFN dropout}---each token receives full
-feed-forward compute only inside randomly rotating windows---matches dense
-quality at \todoX{half} the FFN training FLOPs on 11M and 150M models and on
-\todoX{1.4B} language-model fine-tuning, with dense deployment requiring no
-architecture change. \else In the compute-limited regime the rotated recipe
-recovers most but not all of dense quality; the parity claim is scoped
-accordingly. \fi The contribution is a measurement methodology
-(permutation-controlled ordering gaps, allocation headroom, the value-field
-life cycle) and a free training recipe the adaptive-compute literature
-skips: the baseline that beats every allocator is random.
+compute gate---explains why. The field has a life cycle: permutation-
+controlled measurement shows real structure mid-training, consumed by
+training and flat at convergence. A causal test shows neither the mid-life
+structure nor any learned allocator survives contact with training:
+chasing the field online is \emph{worse} than random allocation of the same
+budget at both scales. The constructive result: training with
+\emph{token-level FFN dropout}---each token receives full feed-forward
+compute only inside randomly rotating windows---recovers within
+\ConvRotGapPct\% of dense quality at half the FFN training FLOPs on 11M and
+150M models, scoped to compute-limited regimes, with dense deployment requiring no architecture
+change, no labels, and no routers. The contribution is a measurement
+methodology (permutation-controlled ordering gaps, allocation headroom, the
+value-field life cycle) and a free training recipe the adaptive-compute
+literature skips: the baseline that beats every allocator is random.
 \end{abstract}
 
 % ---- ACTIVE INTRO (dropout-lead; parity-conditional sentence marked) ----
@@ -80,19 +82,21 @@ shuffled-targets control shows target content is irrelevant at 11M and
 The positive half of the paper is a measurement that explains these
 failures and a recipe it motivates. We measure the per-token
 \emph{value of compute}---the gradient of the loss with respect to each
-token's FFN gate---and find it has a life cycle: structured transiently
-early in training, consumed by it, and flat at convergence
-(\S\ref{sec:measure}). A permutation-controlled oracle shows the converged
-field has no realizable headroom, and a causal single-stage test shows that
-\emph{chasing} the field online is worse than random allocation of the same
-budget. What works is the degenerate allocator everyone skips: train with
-\emph{token-level FFN dropout}---each token receives full FFN compute only
-inside randomly rotating windows---and deploy dense. At matched tokens this
-matches dense quality at half the FFN training FLOPs
-\ifparity across 11M, 150M, and 1.4B language-model fine-tuning \else at
-11M, with the 150M and 1.4B parity claims scoped to the compute-limited
-regime \fi, requires no labels or routers, and composes with any attention
-architecture because it never touches attention.
+token's FFN gate---and find it has a life cycle: permutation-controlled
+measurement shows real structure mid-training, consumed by training and
+flat at convergence (\S\ref{sec:measure}). A permutation-controlled oracle
+bounds the converged field's realizable headroom, and a causal single-stage
+test shows that \emph{chasing} the field online is worse than random
+allocation of the same budget---at 11M and, replicated, in the starved-150M
+regime where the field's mid-life structure is demonstrably present
+(\S\ref{sec:results}). What works is the degenerate allocator everyone
+skips: train with \emph{token-level FFN dropout}---each token receives full
+FFN compute only inside randomly rotating windows---and deploy dense. At
+matched tokens this lands within \ConvRotGapPct\% of dense quality at half
+the FFN training FLOPs on 11M and 150M models---a claim we scope to
+compute-limited regimes per its pre-registered decision rule---requires no
+labels or routers, and composes with any attention architecture because it
+never touches attention.
 
 \paragraph{Contributions.}
 \begin{enumerate}
@@ -112,10 +116,13 @@ with model scale as the value-not-difficulty distinction predicts
 \emph{billed training FLOPs} (gated billing, forward + backward), with
 within-segment interpolation and a budget sweep; the workshop version's
 ``similar total budget'' caveat is retired (\S\ref{sec:isoflops}).
-\item \textbf{Scale and transfer}: the effect survives scaling from 11M to
-\todoX{1B} parameters on arithmetic and transfers to natural language
-(web text, code, math) on pretrained \todoX{1.4B--2.8B} models where
-difficulty is measured, not given (\S\ref{sec:scale}, \S\ref{sec:nl}).
+\item \textbf{Scale replication, honestly scoped}: the failure taxonomy,
+the shuffled-control content-irrelevance result, and the causal
+field-chasing test all replicate at 150M (probe grid, starved regime); the
+dropout recipe's parity claim is scoped to compute-limited regimes by its
+pre-registered 10k-step decision rule ($-5.3\%$ loss at $50\%$ of billed
+FFN FLOPs), with natural-language transfer as the stated boundary of the
+current evidence (\S\ref{sec:scale}, \S\ref{sec:nl}).
 \item \textbf{Realization}: a tiered-FFN serving benchmark showing
 tokens/sec scaling with the mean gate, converting billed-FLOPs savings into
 wall-clock (\S\ref{sec:realization}).
@@ -259,9 +266,9 @@ count). The hard regime is chosen per scale so the largest model sits inside
 a difficulty window: hard-bin accuracy neither saturated nor collapsed
 (maintained in $[40\%, 85\%]$ by the calibration probes). Frozen held-out
 sets, identical across methods and seeds; accuracy on answer tokens only.
-Models: an 11M testbed (the workshop setting, exactly reproduced) and
-\todoX{150M/400M/1B} scaled models (RoPE, flash attention, bf16, cosine
-schedule; identical across methods).
+Models: an 11M testbed (the workshop setting, exactly reproduced) and a
+150M scaled model (RoPE, flash attention, bf16, cosine schedule; identical
+across methods), probed healthy (10k steps) and starved (2.5k steps).
 
 \paragraph{Natural language.} Pretrained \todoX{Pythia-1.4b / 2.8b}
 continue-trained on three domains where per-token difficulty is latent:
@@ -348,7 +355,73 @@ both irreducible and worth-treating tokens), so its E/M/H spread is smaller
 while its per-token allocation is finer; we report gate--score agreement on
 held-out tokens (\XX) and per-token rather than per-bin summaries.
 
-\subsection{Scale: the effect survives 11M $\to$ \todoX{1B}}
+\subsection{The causal test and the surviving recipe}
+\label{sec:causal}
+
+\begin{table}[t]
+\centering
+\caption{11M causal single-stage test: the gate is live from step 0 at
+budget 0.5, all arms at matched billed training FLOPs (seed 0). Dropout and
+random windows are indistinguishable; chasing the measured field online is
+far worse than random; a constant gate collapses.}
+\label{tab:causal}
+\causaltable
+\end{table}
+
+Table~\ref{tab:causal}: token-level FFN dropout and random 100-step windows
+are indistinguishable ($1.275$ vs $1.274$ held loss)---the mechanism is the
+noise-regularization of intermittent full compute, not any allocation
+signal. Online field-chasing against the measured value field is much worse
+than random ($2.253$ vs $1.274$), and a constant gate collapses ($2.621$).
+Dense wins dense-inference at this horizon ($1.167$); the question is what
+half-FLOP training buys at convergence.
+
+\paragraph{The 150M convergence pair.} At 10k steps, the rotation-trained
+model holds held-out loss $\ConvRotLoss$ vs dense $\ConvDenseLoss$
+(${+}\ConvRotGapPct\%$) at exactly \ConvRotFlopsPct\% of the billed
+training FLOPs. The pre-registered rule (within ${\sim}2\%$ of dense:
+parity advances; $2$--$10\%$: scoped) puts this in the scoped band: the
+claim is compute-limited-regime, stated plainly.
+
+\begin{table}[t]
+\centering
+\caption{150M probe grid: 6 arms $\times$ 2 seeds at matched budget
+(mean$\pm$std over seeds). Dense wins the healthy recipe; every gated
+2-stage arm ties regardless of target content; MoD ties dense on mean
+accuracy with an \emph{anti-ordered} router (hard bins receive the least
+compute).}
+\label{tab:p150}
+\pgridtable
+\end{table}
+
+Table~\ref{tab:p150}: content-irrelevance replicates at 150M---tag,
+shuffled, and fixed 2-stage arms are accuracy-identical ($62.9$ each) and
+dense wins the healthy recipe ($68.0$). MoD's trained router inverts
+(per-bin gates $0.25/0.24/0.21$, spread $-0.05$) while tying dense on mean
+accuracy ($67.5$); seed-paired diffs ($+8.9/{-}9.7$) make that a wash, not
+a win.
+
+\begin{table}[t]
+\centering
+\caption{Starved-150M causal test (the field is structured mid-life here:
+permutation-controlled waterfill beats random by $+0.30/+0.38$ across
+seeds). Yet field-chasing still loses to random windows, and a static gate
+collapses outright. Measurable structure is not a trainable signal.}
+\label{tab:starved}
+\starvedtable
+\end{table}
+
+Table~\ref{tab:starved} is the decisive test. The starved-150M regime is
+where the value field is demonstrably \emph{alive}: the discriminator shows
+real ordering structure (waterfill $+$0.30/$+$0.38 over random across two
+seeds). If that structure were exploitable, training online against the
+measured field should beat random allocation. It does not: online loses to
+random windows ($41.7$ vs $44.2$), replicating the 11M causal result at a
+second scale, and the static gate collapses outright ($22.4$, held loss
+diverging). The life cycle and the causal test together: the field's
+structure is real, measurable---and not a training signal.
+
+\subsection{Scale: the effect survives 11M $\to$ 150M}
 \label{sec:scale}
 
 \paragraph{Pre-registered readout: value migrates with capability.} If the

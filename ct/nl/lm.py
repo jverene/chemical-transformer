@@ -55,11 +55,6 @@ class MLPWrapper(nn.Module):
             # per-step random token mask: active tokens get full FFN (g=1),
             # inactive get none; mean gate = budget. Deploy = dense (g=1).
             mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity).float()
-            self.last_gate = mask + (1 - mask) * 0.0
-            out = self.inner(x) * mask.unsqueeze(-1)
-            return out
-        if mode == "rotation":
-            mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity).float()
             self.last_gate = mask
             return self.inner(x) * mask.unsqueeze(-1)
         if mode == "mod":
@@ -87,7 +82,10 @@ class GatedLM:
         self.device = device
         self.method = method
         self.tok = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(model_name)
+        # fp32 weights + autocast for speed: transformers>=5 preserves the
+        # checkpoint dtype (Pythia ships fp16), and pure-fp16 AdamW NaNs.
+        self.model = AutoModelForCausalLM.from_pretrained(model_name,
+                                                          dtype=torch.float32)
         self.d_model = self.model.config.hidden_size
         self.n_layers = self.model.config.num_hidden_layers
         self.d_ff = getattr(self.model.config, "intermediate_size",
@@ -127,8 +125,10 @@ class GatedLM:
     def loss_and_gates(self, x, y, target=None, mse_weight=5.0,
                        budget_weight=0.5, budget_target=0.5):
         logits = self.model(x).logits
+        # fp32 CE regardless of autocast: Pythia logits reach O(1e2-1e3) and
+        # bf16 rounding there degrades (and can destabilize) the loss.
         ce = torch.nn.functional.cross_entropy(
-            logits.reshape(-1, logits.shape[-1]), y.reshape(-1))
+            logits.float().reshape(-1, logits.shape[-1]), y.reshape(-1))
         loss = ce
         gates = torch.stack([w.last_gate for w in self.wrappers], 0)  # (L,B,S)
         gate_mean = gates.mean(0)

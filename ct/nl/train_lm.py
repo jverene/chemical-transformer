@@ -21,6 +21,7 @@ prepass cost is a shared one-off and is NOT in per-run cum_train_flops
 import argparse
 import json
 import os
+import sys
 import time
 from collections import defaultdict
 
@@ -47,9 +48,12 @@ def shuffled_targets(target):
 
 
 @torch.no_grad()
-def evaluate(lm, held_x, held_y, held_bins, batch_seqs=4):
+def evaluate(lm, held_x, held_y, held_bins, batch_seqs=4, max_batches=None):
     lm.model.eval()
     n = held_x.shape[0]
+    nb = (n + batch_seqs - 1) // batch_seqs
+    if max_batches is not None:
+        nb = min(nb, max_batches)
     ce_sum, tok_n = 0.0, 0
     bin_ce, bin_n = {}, {}
     gate_bins = defaultdict(float)
@@ -58,13 +62,13 @@ def evaluate(lm, held_x, held_y, held_bins, batch_seqs=4):
     nbins = int(held_bins.max()) + 1
     bin_ce = np.zeros(nbins)
     bin_n = np.zeros(nbins)
-    for i in range(0, n, batch_seqs):
+    for i in range(0, nb * batch_seqs, batch_seqs):
         x = held_x[i:i + batch_seqs].to(lm.device)
         y = held_y[i:i + batch_seqs].to(lm.device)
         bins = held_bins[i:i + x.shape[0]]
         logits = lm.model(x).logits
         ce = torch.nn.functional.cross_entropy(
-            logits.view(-1, logits.shape[-1]), y.reshape(-1),
+            logits.float().view(-1, logits.shape[-1]), y.reshape(-1),
             reduction="none").view_as(y)
         ce_sum += float(ce.sum())
         tok_n += y.numel()
@@ -109,10 +113,17 @@ def main():
     p.add_argument("--budget-weight", type=float, default=0.5)
     p.add_argument("--budget-target", type=float, default=0.5)
     p.add_argument("--eval-every", type=int, default=100)
+    p.add_argument("--eval-batches", type=int, default=8,
+                   help="held batches per mid-train eval (full set at final)")
+    p.add_argument("--grad-accum", type=int, default=1,
+                   help="micro-batches per optimizer step (loss/accum each)")
+    p.add_argument("--max-skip", type=int, default=8,
+                   help="abort after this many consecutive nonfinite steps")
     p.add_argument("--data-root", default="data/nl")
     p.add_argument("--out-root", default="results-nl")
     p.add_argument("--device", default="cuda")
     p.add_argument("--amp", action="store_true", default=True)
+    p.add_argument("--no-amp", dest="amp", action="store_false")
     args = p.parse_args()
 
     torch.manual_seed(args.seed)
@@ -128,6 +139,20 @@ def main():
     meta = json.load(open(os.path.join(data_dir, "meta.json")))
     train = np.load(os.path.join(data_dir, "train_tokens.npy"), mmap_mode="r")
     held = np.load(os.path.join(data_dir, "heldout_tokens.npy"), mmap_mode="r")
+    # data sanity: an out-of-vocab id (corrupt packing, uint32 garbage) shows
+    # up as a NaN/garbage loss many steps later; fail here instead.
+    vocab = None
+    try:
+        from transformers import AutoConfig
+        vocab = AutoConfig.from_pretrained(args.model).vocab_size
+    except Exception:
+        pass
+    if vocab is not None:
+        tmax, hmax = int(train[:].max()), int(held[:].max())
+        if tmax >= vocab or hmax >= vocab:
+            raise ValueError(
+                f"token id out of vocab ({max(tmax, hmax)} >= {vocab}) — "
+                f"data pipeline corrupt")
     held_x = torch.from_numpy(np.asarray(held)[:, :-1].astype(np.int64))
     held_y = torch.from_numpy(np.asarray(held)[:, 1:].astype(np.int64))
     oracle = np.load(os.path.join(data_dir, "oracle.npz")) \
@@ -170,37 +195,62 @@ def main():
 
     history = defaultdict(list)
     cum_flops = 0.0
+    n_skipped = 0
+    consecutive_bad = 0
     t0 = time.time()
     for step in range(args.steps):
         opt.zero_grad()
-        idx = rng.choice(pool_n if two_stage else train.shape[0],
-                         size=args.batch_seqs, replace=False)
-        chunk = torch.from_numpy(np.asarray(
-            train[idx] if not two_stage else train[:pool_n][idx],
-            dtype=np.int64)).to(args.device)
-        x, y = chunk[:, :-1], chunk[:, 1:]
-        target = None
-        if two_stage:
-            raw = (oracle["pool_bins_grad"] if kind == "grad"
-                   else oracle["pool_bins_loss"])[idx]
-            b = torch.from_numpy(raw.astype(np.int64)).to(args.device)
-            target = targets_from_bins(b, kind, args.device)
-            if args.method == "shuffled":
-                target = shuffled_targets(target)
-        with torch.autocast("cuda", dtype=torch.bfloat16,
-                            enabled=args.amp and args.device == "cuda"):
-            loss, info = lm.loss_and_gates(
-                x, y, target=target, mse_weight=args.mse_weight,
-                budget_weight=args.budget_weight,
-                budget_target=args.budget_target)
-            (loss / 1).backward()
+        loss_sum, flops_step = 0.0, 0.0
+        step_finite = True
+        for _ in range(args.grad_accum):
+            idx = rng.choice(pool_n if two_stage else train.shape[0],
+                             size=args.batch_seqs, replace=False)
+            chunk = torch.from_numpy(np.asarray(
+                train[idx] if not two_stage else train[:pool_n][idx],
+                dtype=np.int64)).to(args.device)
+            x, y = chunk[:, :-1], chunk[:, 1:]
+            target = None
+            if two_stage:
+                raw = (oracle["pool_bins_grad"] if kind == "grad"
+                       else oracle["pool_bins_loss"])[idx]
+                b = torch.from_numpy(raw.astype(np.int64)).to(args.device)
+                target = targets_from_bins(b, kind, args.device)
+                if args.method == "shuffled":
+                    target = shuffled_targets(target)
+            with torch.autocast("cuda", dtype=torch.bfloat16,
+                                enabled=args.amp and args.device == "cuda"):
+                loss, info = lm.loss_and_gates(
+                    x, y, target=target, mse_weight=args.mse_weight,
+                    budget_weight=args.budget_weight,
+                    budget_target=args.budget_target)
+                if not torch.isfinite(loss):
+                    step_finite = False
+                    break
+                (loss / args.grad_accum).backward()
+            loss_sum += float(loss)
+            flops_step += float(info["flops"])
+        if not step_finite:
+            # discard partial grads; a lone spike should not kill a 10h run
+            opt.zero_grad()
+            n_skipped += 1
+            consecutive_bad += 1
+            print(f"[{args.domain}/{args.method}/s{args.seed}] step {step} | "
+                  f"NONFINITE loss — skipped ({n_skipped} total)", flush=True)
+            if consecutive_bad >= args.max_skip:
+                print(f"aborting: {consecutive_bad} consecutive nonfinite "
+                      f"steps — training is diverging, not spiking", flush=True)
+                sys.exit(3)
+            continue
+        consecutive_bad = 0
         torch.nn.utils.clip_grad_norm_(lm.model.parameters(), 1.0)
         opt.step()
         sched.step()
-        cum_flops += 3.0 * float(info["flops"])
+        cum_flops += 3.0 * flops_step
+        loss = loss_sum / args.grad_accum
 
         if step % args.eval_every == 0 or step == args.steps - 1:
-            m = evaluate(lm, held_x, held_y, held_bins)
+            m = evaluate(lm, held_x, held_y, held_bins,
+                         max_batches=args.eval_batches)
             history["step"].append(step)
             history["train_loss"].append(float(loss))
             history["held_loss"].append(m["held_loss"])
@@ -227,6 +277,7 @@ def main():
             w.gate_mode = "rotation"
     final["cum_train_flops"] = cum_flops
     final["train_wallclock_s"] = time.time() - t0
+    final["skipped_nonfinite_steps"] = n_skipped
     result = {
         "method": args.method, "domain": args.domain, "seed": args.seed,
         "stage": args.stage, "model": args.model,

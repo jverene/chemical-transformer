@@ -225,7 +225,7 @@ def p150_block():
         sp = ms([spread(r) for r in runs], 1, 2)
         rows.append(f"{label} & {acc} & {bal} & {fl} & {gt} & {sp} \\\\")
         key = pat.split("_seed")[0].split("-")[0]
-        macros[f"P150{key}Acc"] = acc
+        macros[f"Grid{key}Acc"] = acc
     if not rows:
         return "% 150M table pending\n", macros
     body = ("\\begin{tabular}{lccccc}\n\\toprule\n"
@@ -293,7 +293,7 @@ def main():
     blocks["causaltable"] = body
     all_macros.update(macros)
     body, macros = p150_block()
-    blocks["p150table"] = body
+    blocks["pgridtable"] = body
     all_macros.update(macros)
     body, macros = starved_block()
     blocks["starvedtable"] = body

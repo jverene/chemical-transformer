@@ -16,12 +16,12 @@
 \expandafter\def\csname ConvRotGapPct\endcsname{5.3}
 \expandafter\def\csname ConvRotLoss\endcsname{1.086}
 \expandafter\def\csname GategradAcc\endcsname{74.5$\pm$1.0}
-\expandafter\def\csname P150baselineAcc\endcsname{68.0$\pm$7.0}
-\expandafter\def\csname P150fixed2stage_150mAcc\endcsname{62.9$\pm$8.9}
-\expandafter\def\csname P150fixedAcc\endcsname{62.7$\pm$1.3}
-\expandafter\def\csname P150modAcc\endcsname{67.5$\pm$6.1}
-\expandafter\def\csname P150predictorAcc\endcsname{62.9$\pm$9.1}
-\expandafter\def\csname P150shuffled_150mAcc\endcsname{62.9$\pm$8.8}
+\expandafter\def\csname GridbaselineAcc\endcsname{68.0$\pm$7.0}
+\expandafter\def\csname Gridfixed2stage_150mAcc\endcsname{62.9$\pm$8.9}
+\expandafter\def\csname GridfixedAcc\endcsname{62.7$\pm$1.3}
+\expandafter\def\csname GridmodAcc\endcsname{67.5$\pm$6.1}
+\expandafter\def\csname GridpredictorAcc\endcsname{62.9$\pm$9.1}
+\expandafter\def\csname Gridshuffled_150mAcc\endcsname{62.9$\pm$8.8}
 \expandafter\def\csname ShuffledAcc\endcsname{74.7$\pm$1.1}
 \expandafter\def\csname StarvedOnlineAcc\endcsname{41.7}
 \expandafter\def\csname StarvedOnlineLoss\endcsname{1.363}
@@ -84,7 +84,7 @@ Static $g{=}0.5$ & 31.8 & 2.621 \\
 \bottomrule
 \end{tabular}
 }
-\newcommand{\p150table}[0]{
+\newcommand{\pgridtable}[0]{
 \begin{tabular}{lccccc}
 \toprule
 Arm & Acc & Balanced & MFLOPs/tok & $\bar g$ & gate spread \\
