@@ -1,0 +1,8 @@
+{
+  "domain": "webtext",
+  "tokenizer": "EleutherAI/pythia-160m",
+  "seq_len": 2048,
+  "train_seqs": 956,
+  "heldout_seqs": 19,
+  "tokens": 2000508
+}
