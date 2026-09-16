@@ -217,6 +217,14 @@ def main():
                   f"{time.time() - t0:.0f}s", flush=True)
 
     final = evaluate(lm, held_x, held_y, held_bins)
+    if args.method == "rotation":
+        # dense-inference eval: gates temporarily off — the parity comparison
+        for w in lm.wrappers:
+            w.gate_mode = "none"
+        m_dense = evaluate(lm, held_x, held_y, held_bins)
+        final["dense_inference_held_loss"] = m_dense["held_loss"]
+        for w in lm.wrappers:
+            w.gate_mode = "rotation"
     final["cum_train_flops"] = cum_flops
     final["train_wallclock_s"] = time.time() - t0
     result = {
