@@ -38,3 +38,4 @@ paper/main.out
 # Tooling markers
 .freebuff/
 .v2c/
+data/nl-smoke/webtext/*.npy
