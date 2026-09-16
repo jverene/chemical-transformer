@@ -60,7 +60,8 @@ budget at both scales. The constructive result: training with
 \emph{token-level FFN dropout}---each token receives full feed-forward
 compute only inside randomly rotating windows---recovers within
 \ConvRotGapPct\% of dense quality at half the FFN training FLOPs on 11M and
-150M models, scoped to compute-limited regimes, with dense deployment requiring no architecture
+150M models, and within \NlRotGapPct\% on 1.4B language-model fine-tuning,
+scoped to compute-limited regimes, with dense deployment requiring no architecture
 change, no labels, and no routers. The contribution is a measurement
 methodology (permutation-controlled ordering gaps, allocation headroom, the
 value-field life cycle) and a free training recipe the adaptive-compute
@@ -93,7 +94,8 @@ regime where the field's mid-life structure is demonstrably present
 skips: train with \emph{token-level FFN dropout}---each token receives full
 FFN compute only inside randomly rotating windows---and deploy dense. At
 matched tokens this lands within \ConvRotGapPct\% of dense quality at half
-the FFN training FLOPs on 11M and 150M models---a claim we scope to
+the FFN training FLOPs on 11M and 150M models, and within \NlRotGapPct\% on
+1.4B natural-language fine-tuning---a claim we scope to
 compute-limited regimes per its pre-registered decision rule---requires no
 labels or routers, and composes with any attention architecture because it
 never touches attention.
@@ -109,9 +111,9 @@ trained model itself---per-token loss, and $\partial\mathcal{L}/\partial g$
 in one backward pass---match label-supervised allocation, with a
 shuffled-targets control (and a pre-registered decision rule) separating
 the specific measured targets from supervised variation alone
-(\S\ref{sec:measure}, \S\ref{sec:p0}); per-bin value signatures migrate
-with model scale as the value-not-difficulty distinction predicts
-(\S\ref{sec:scale}).
+(\S\ref{sec:measure}, \S\ref{sec:p0}); the value field's per-bin signature
+is measured at 42M and 150M, where the pre-registered migration prediction
+fails and the converged field is flat (\S\ref{sec:scale}).
 \item \textbf{Iso-FLOPs methodology}: all method comparisons at matched
 \emph{billed training FLOPs} (gated billing, forward + backward), with
 within-segment interpolation and a budget sweep; the workshop version's
@@ -120,9 +122,9 @@ within-segment interpolation and a budget sweep; the workshop version's
 the shuffled-control content-irrelevance result, and the causal
 field-chasing test all replicate at 150M (probe grid, starved regime); the
 dropout recipe's parity claim is scoped to compute-limited regimes by its
-pre-registered 10k-step decision rule ($-5.3\%$ loss at $50\%$ of billed
-FFN FLOPs), with natural-language transfer as the stated boundary of the
-current evidence (\S\ref{sec:scale}, \S\ref{sec:nl}).
+pre-registered decision rule ($-5.3\%$ loss at $50\%$ of billed FFN FLOPs
+at 150M; $-7.8\%$ at 1.4B natural-language fine-tuning)
+(\S\ref{sec:scale}, \S\ref{sec:nl}).
 \item \textbf{Realization}: a tiered-FFN serving benchmark showing
 tokens/sec scaling with the mean gate, converting billed-FLOPs savings into
 wall-clock (\S\ref{sec:realization}).
@@ -270,17 +272,16 @@ Models: an 11M testbed (the workshop setting, exactly reproduced) and a
 150M scaled model (RoPE, flash attention, bf16, cosine schedule; identical
 across methods), probed healthy (10k steps) and starved (2.5k steps).
 
-\paragraph{Natural language.} Pretrained \todoX{Pythia-1.4b / 2.8b}
-continue-trained on three domains where per-token difficulty is latent:
-web text (FineWeb-Edu), Python code (CodeSearchNet), and chain-of-thought
-math (MetaMathQA). Stage-1 dense continue-training is shared by all forks;
-the oracle of \S\ref{sec:measure} runs once over a pool of training
-sequences plus the held-out split, producing per-token grad bins, loss bins,
-and diagnostics. Metrics: held-out loss at matched billed inference
-FLOPs/token, per-bin loss and teacher-forced accuracy, gate--bin ordering
-$r$, and gate spread. We report pass@k only as texture: a fine-tuned
-\todoX{1.4B} model scores single digits on HumanEval-style evaluation, and
-per-bin teacher-forced metrics are the primary outcome.
+\paragraph{Natural language.} Pretrained Pythia-1.4b continue-trained on
+web text (FineWeb-Edu, 350M packed tokens, sequence length 2048, AdamW at
+$10^{-5}$ with cosine decay and 2\% warmup, bf16 autocast over fp32
+master weights): a dense arm and a token-level-FFN-dropout arm, same data
+and step budget, the recipe pair of \S\ref{sec:causal} at language scale.
+The oracle machinery of \S\ref{sec:measure} and the code/math domains
+(CodeSearchNet, MetaMathQA) are implemented but were not run at NL scale
+and are not claimed. Metric: full-held-out loss; the rotation arm is
+reported at dense deployment (gates off), its pre-registered evaluation
+mode.
 
 \paragraph{Methods compared.} \emph{Baseline} (dense; = Stage-1), ours
 (\emph{gate-grad} targets; \emph{loss-quantile} ablation), \emph{shuffled}
@@ -460,16 +461,23 @@ $10^{-6}$: the converged field is coin-flip at every bin and both scales
 Figure~\ref{fig:frontier-scale}: accuracy vs.\ billed inference FLOPs at
 matched training budgets across \todoX{11M/150M/400M/1B}. \XX
 
-\subsection{Natural language: measured difficulty transfers}
+\subsection{Natural language: the recipe transfers at 1.4B}
 \label{sec:nl}
 
-Table~\ref{tab:nl}: three domains on \todoX{Pythia-1.4b}. \XX
-Diagnostics: fraction of irreducible tokens (score ${\le}0$) \XX;
-score--loss correlation \XX\ (measured value is not difficulty: high-loss
-tokens can be hopeless); bin--position correlation \XX\ (early tokens
-mechanically influence more downstream loss; reported, and the doc-boundary
-tokens landing in the floor bin is the expected irreducibility signature);
-token-type breakdown of the top bin \XX.
+Pythia-1.4b continue-trained on FineWeb-Edu (350M packed tokens, 3000
+steps at sequence length 2048, seed 0; both arms share tokenizer, data, and
+the accounting of \S\ref{sec:isoflops}). Dense reaches held-out loss
+$\NlDenseLoss$ at $\NlDenseMFl$ billed MFLOPs/token. The rotation arm
+trains at exactly \NlRotFlopsPct\% of the dense arm's billed training
+FLOPs; deployed \emph{dense} (gates off, no architecture change) it
+evaluates at $\NlRotLoss$: a ${+}\NlRotGapPct\%$ gap, inside the same
+pre-registered $2$--$10\%$ band as the 150M testbed pair ($+5.3\%$).
+Evaluated \emph{with the random ablation live} the rotation model is much
+worse ($3.378$)---which is the point of the deployment claim: the trained
+body wants full compute at inference, and gets it. Negative-space honesty:
+the NL track here carries the recipe pair only; the oracle-measurement
+machinery and the endogenous-signal taxonomy are testbed-scale results
+(\S\ref{sec:failures-results}, \S\ref{sec:causal}).
 
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}

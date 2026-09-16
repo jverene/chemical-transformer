@@ -1,0 +1,16 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:   9%|▉         | 26/292 [00:00<00:01, 251.22it/s]Loading weights:  18%|█▊        | 52/292 [00:00<00:00, 245.77it/s]Loading weights:  26%|██▋       | 77/292 [00:00<00:01, 175.17it/s]Loading weights:  33%|███▎      | 97/292 [00:00<00:01, 181.88it/s]Loading weights:  40%|████      | 117/292 [00:00<00:00, 186.78it/s]Loading weights:  47%|████▋     | 137/292 [00:00<00:00, 185.54it/s]Loading weights:  54%|█████▍    | 157/292 [00:00<00:00, 149.79it/s]Loading weights:  62%|██████▏   | 180/292 [00:01<00:00, 168.79it/s]Loading weights:  68%|██████▊   | 199/292 [00:01<00:00, 171.95it/s]Loading weights:  79%|███████▉  | 230/292 [00:01<00:00, 208.57it/s]Loading weights:  90%|█████████ | 264/292 [00:01<00:00, 199.60it/s]Loading weights: 100%|██████████| 292/292 [00:01<00:00, 205.41it/s]
+[webtext/baseline/s0] step 0 | loss 2.6473 | held 2.6631 | MFLOPs/tok 3246.4 | gate bins [1.0] | 10s
+[webtext/baseline/s0] step 250 | loss 2.4870 | held 2.6503 | MFLOPs/tok 3246.4 | gate bins [1.0] | 450s
+[webtext/baseline/s0] step 500 | loss 2.5790 | held 2.6457 | MFLOPs/tok 3246.4 | gate bins [1.0] | 895s
+[webtext/baseline/s0] step 750 | loss 2.7643 | held 2.6437 | MFLOPs/tok 3246.4 | gate bins [1.0] | 1339s
+[webtext/baseline/s0] step 1000 | loss 2.5588 | held 2.6394 | MFLOPs/tok 3246.4 | gate bins [1.0] | 1785s
+[webtext/baseline/s0] step 1250 | loss 2.6491 | held 2.6293 | MFLOPs/tok 3246.4 | gate bins [1.0] | 2230s
+[webtext/baseline/s0] step 1500 | loss 2.5644 | held 2.6250 | MFLOPs/tok 3246.4 | gate bins [1.0] | 2675s
+[webtext/baseline/s0] step 1750 | loss 2.5221 | held 2.6204 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3120s
+[webtext/baseline/s0] step 2000 | loss 2.5557 | held 2.6152 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3566s
+[webtext/baseline/s0] step 2250 | loss 2.6411 | held 2.6108 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4011s
+[webtext/baseline/s0] step 2500 | loss 2.5387 | held 2.6079 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4456s
+[webtext/baseline/s0] step 2750 | loss 2.5116 | held 2.6065 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4903s
+[webtext/baseline/s0] step 2999 | loss 2.3585 | held 2.6045 | MFLOPs/tok 3246.4 | gate bins [1.0] | 5347s
+saved results-nl/webtext/baseline_seed0.json

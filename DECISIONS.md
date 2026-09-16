@@ -180,3 +180,16 @@ seed variance, not a win). 10k convergence pair (seed 1): rotation held loss
 1.086 vs dense 1.032 → **5.3% gap at exactly 50% billed FLOPs** → per the
 Sep 12 pre-registration (2–10% band) the claim is scoped to compute-limited
 regimes; paper toggle set to \ifparity false.
+
+**Sep 16 — NL 1.4B parity pair LANDED (rule 8, positive branch).** Pythia-1.4b
+continue-trained on FineWeb-Edu (350M tokens, 3000 steps, seq 2048, lr 1e-5
+cosine, seed 0, RTX 6000 Ada ~$4): dense held loss 2.532 vs rotation
+**2.729 at dense deployment** — +7.8% at exactly 50.0% billed training
+FLOPs. Inside the same pre-registered 2–10% scoped band as the 150M pair
+(+5.3%): the recipe transfers to NL fine-tuning. Gates-live eval of the
+rotation arm is 3.378 (deployment claim: dense). Zero nonfinite steps
+(the Sep 15 fp16-checkpoint-dtype fix held on GPU). Caveats logged: one
+seed per arm; oracle machinery and taxonomy NOT run on NL (testbed-scale
+results only); code/math domains not run. Root cause of the two failed GPU
+attempts: transformers>=5 preserves the fp16 checkpoint dtype (pure-fp16
+AdamW NaNs) — fixed Sep 15.
