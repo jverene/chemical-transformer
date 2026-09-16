@@ -432,7 +432,30 @@ probes ran): per-bin mean gate-grad score on the hard bin rises, and its
 fraction of non-positive scores falls toward the medium bin's, across
 $42$M $\to$ $150$M $\to$ $400$M. A flat signature at \$10 of probe cost
 would have falsified the irreducibility mechanism before the expensive
-stage. Result: Figure~\ref{fig:value-migration} --- \XX.
+stage.
+
+\emph{The rule fired against the prediction.} On healthy bodies trained
+with the validated recipe (42M acc $0.496$, 150M acc $0.563$), the measured
+field is flat at convergence everywhere: frac(score${\le}0)\approx 0.51$
+across E/M/H bins at both sizes, mean $|$score$|$ at $10^{-6}$ scale
+(coin-flip; Table~\ref{tab:migration}). The first-order marginal value of
+FFN compute on a converged body is uninformative---no difficulty-bin
+structure, no migration. The compute-value concept is therefore parked as
+a \emph{training-time} signal; what survives is its mid-life measurability
+(\S\ref{sec:causal}): the starved-regime discriminator shows the field is
+structured where the body is still plastic, even though neither oracle
+allocation after convergence nor online chasing during training converts
+that structure into accuracy.
+
+\begin{table}[t]
+\centering
+\caption{Per-bin measured value signature by model size (converged bodies,
+validated recipe). frac(score${\le}0)\approx 0.5$ and mean scores at
+$10^{-6}$: the converged field is coin-flip at every bin and both scales
+(pre-registered readout executed; prediction not confirmed).}
+\label{tab:migration}
+\migrationtable
+\end{table}
 
 Figure~\ref{fig:frontier-scale}: accuracy vs.\ billed inference FLOPs at
 matched training budgets across \todoX{11M/150M/400M/1B}. \XX
