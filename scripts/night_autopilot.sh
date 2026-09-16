@@ -39,10 +39,20 @@ while [ "$(date +%s)" -lt "$DEADLINE" ]; do
       log "manifest complete — final pull + stop"
       for t in 1 2 3; do rsync -az --timeout=120 -e "ssh $SSHO -p $NP" root@$NH:/workspace/chemical-transformer/results-nl/ ./results-nl/ 2>/dev/null && break; sleep 30; done
       for t in 1 2 3; do rsync -az --timeout=120 -e "ssh $SSHO -p $NP" root@$NH:/workspace/chemical-transformer/results-p3b/ ./results-p3b/ 2>/dev/null && break; sleep 30; done
+      for f in nl.log phase1.log phase2.log phase3.log smoke.log smoke_data.log self_stop.log; do
+        scp -O -q $SSHO -P $NP root@$NH:/workspace/$f ./$f 2>/dev/null
+      done
       git add results-nl results-p3b 2>/dev/null
       git diff --cached --quiet 2>/dev/null || { git commit -q -m "data: NL parity pair + grid remainder (autopilot)"; git push -q origin main 2>/dev/null; }
-      vastai stop instance $CURRENT >/dev/null 2>&1
-      log "COMPLETE — results local, instance stopped"
+      # user directive: destroy (no storage charges) once results are local;
+      # stop (keep disk) only if the pull looks empty — manual salvage then.
+      if [ -n "$(ls results-nl/webtext/*.json 2>/dev/null)" ]; then
+        vastai destroy instance $CURRENT -y >/dev/null 2>&1
+        log "COMPLETE — results local, instance destroyed"
+      else
+        vastai stop instance $CURRENT >/dev/null 2>&1
+        log "COMPLETE but pull looks empty — instance STOPPED for salvage"
+      fi
       exit 0
     fi
   else
