@@ -167,16 +167,141 @@ def window_block():
             + "\n".join(out) + "\n\\bottomrule\n\\end{tabular}\n")
 
 
+def causal11m_block():
+    """11M causal single-stage test: dropout vs field-chasing vs static."""
+    arms = [("dense", "Dense (reference)"),
+            ("dropout", "Token-level FFN dropout"),
+            ("shuffled", "Random windows"),
+            ("online", "Online field-chasing"),
+            ("static", "Static $g{=}0.5$")]
+    rows = []
+    for arm, label in arms:
+        try:
+            r = json.load(open(f"results-headroom/single_{arm}_seed0.json"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        h = r["history"]
+        acc, loss = 100 * h["heldout_acc"][-1], h["heldout_loss"][-1]
+        rows.append(f"{label} & {acc:.1f} & {loss:.3f} \\\\")
+    if not rows:
+        return "% 11M causal table pending\n", {}
+    body = ("\\begin{tabular}{lcc}\n\\toprule\n"
+            "Arm & Held-out acc (\\%) & Held-out loss \\\\\n"
+            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    macros = {}
+    for arm, label in arms:
+        try:
+            r = json.load(open(f"results-headroom/single_{arm}_seed0.json"))
+            h = r["history"]
+            macros[f"Causal{arm.capitalize()}Acc"] = f"{100*h['heldout_acc'][-1]:.1f}"
+            macros[f"Causal{arm.capitalize()}Loss"] = f"{h['heldout_loss'][-1]:.3f}"
+        except (json.JSONDecodeError, OSError):
+            pass
+    return body, macros
+
+
+def p150_block():
+    """The 150M probe-recipe grid (methods x 2 seeds, iso-FLOPs)."""
+    arms = [("baseline_seed{}.json", "Dense (reference)"),
+            ("fixed-schedule_seed{}.json", "Fixed $g{=}0.5$ (from scratch)"),
+            ("fixed2stage_150m_seed{}.json", "Fixed (2-stage)"),
+            ("predictor-supervised_150m_seed{}.json", "Ours (tag targets)"),
+            ("shuffled_150m_seed{}.json", "Shuffled (2-stage)"),
+            ("mod_seed{}.json", "MoD (single-stage)")]
+    rows, macros = [], {}
+    for pat, label in arms:
+        runs = []
+        for p in sorted(glob.glob(f"results-p3b/tagged-v2/{pat.format('*')}")):
+            try:
+                runs.append(json.load(open(p)))
+            except (json.JSONDecodeError, OSError):
+                pass
+        if not runs:
+            continue
+        acc = ms([r["final"]["acc"] for r in runs], 100, 1)
+        bal = ms([r["final"]["balanced_acc"] for r in runs], 100, 1)
+        fl = ms([r["final"]["flops_per_token"] for r in runs], 1e-6, 0)
+        gt = mval([r["final"].get("mean_gate") for r in runs], 1, 2)
+        sp = ms([spread(r) for r in runs], 1, 2)
+        rows.append(f"{label} & {acc} & {bal} & {fl} & {gt} & {sp} \\\\")
+        key = pat.split("_seed")[0].split("-")[0]
+        macros[f"P150{key}Acc"] = acc
+    if not rows:
+        return "% 150M table pending\n", macros
+    body = ("\\begin{tabular}{lccccc}\n\\toprule\n"
+            "Arm & Acc & Balanced & MFLOPs/tok & $\\bar g$ & "
+            "gate spread \\\\\n\\midrule\n" + "\n".join(rows) +
+            "\n\\bottomrule\n\\end{tabular}\n")
+    return body, macros
+
+
+def starved_block():
+    """Starved-150M causal test: can the mid-life field be exploited?"""
+    arms = [("shuffled", "Random windows"),
+            ("online", "Online field-chasing"),
+            ("static", "Static $g{=}0.5$")]
+    rows, macros = [], {}
+    for arm, label in arms:
+        try:
+            r = json.load(open(
+                f"results-p3b/tagged-v2/single_{arm}_150m_seed0.json"))
+        except (json.JSONDecodeError, OSError):
+            continue
+        h = r["history"]
+        acc, loss = 100 * h["heldout_acc"][-1], h["heldout_loss"][-1]
+        rows.append(f"{label} & {acc:.1f} & {loss:.3f} \\\\")
+        macros[f"Starved{arm.capitalize()}Acc"] = f"{acc:.1f}"
+        macros[f"Starved{arm.capitalize()}Loss"] = f"{loss:.3f}"
+    if not rows:
+        return "% starved table pending\n", macros
+    body = ("\\begin{tabular}{lcc}\n\\toprule\n"
+            "Arm & Held-out acc (\\%) & Held-out loss \\\\\n"
+            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    return body, macros
+
+
+def convergence_macros():
+    """The 10k-step 150M parity pair (dense vs token-level FFN dropout)."""
+    macros = {}
+    try:
+        d = json.load(open("results-headroom/convergence_dense_seed1.json"))
+        r = json.load(open("results-headroom/convergence_rotation_seed1.json"))
+        dl, rl = d["history"]["heldout_loss"][-1], r["history"]["heldout_loss"][-1]
+        da, ra = d["history"]["heldout_acc"][-1], r["history"]["heldout_acc"][-1]
+        df, rf = d["history"]["cum_flops"][-1], r["history"]["cum_flops"][-1]
+        macros["ConvDenseLoss"] = f"{dl:.3f}"
+        macros["ConvRotLoss"] = f"{rl:.3f}"
+        macros["ConvRotGapPct"] = f"{100*(rl/dl-1):.1f}"
+        macros["ConvDenseAcc"] = f"{100*da:.1f}"
+        macros["ConvRotAcc"] = f"{100*ra:.1f}"
+        macros["ConvRotFlopsPct"] = f"{100*rf/df:.0f}"
+    except (json.JSONDecodeError, OSError, KeyError):
+        pass
+    return macros
+
+
 def main():
     blocks = {}
+    all_macros = {}
     body, macros = p0_block()
     blocks["pzerotable"] = body
+    all_macros.update(macros)
     blocks["budgettable"] = budget_block()
     blocks["migrationtable"] = migration_block()
     blocks["windowtable"] = window_block()
+    body, macros = causal11m_block()
+    blocks["causaltable"] = body
+    all_macros.update(macros)
+    body, macros = p150_block()
+    blocks["p150table"] = body
+    all_macros.update(macros)
+    body, macros = starved_block()
+    blocks["starvedtable"] = body
+    all_macros.update(macros)
+    all_macros.update(convergence_macros())
     with open(OUT, "w") as fh:
         fh.write("% auto-generated by paper/generate_tables_iclr.py — do not edit\n")
-        for name, m in sorted(macros.items()):
+        for name, m in sorted(all_macros.items()):
             fh.write(f"\\expandafter\\def\\csname {name}\\endcsname{{{m}}}\n")
         for name, b in blocks.items():
             fh.write(f"\\newcommand{{\\{name}}}[0]{{\n{b}}}\n")

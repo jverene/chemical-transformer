@@ -84,3 +84,9 @@ Consider using tensor.detach() first. (Triggered internally at /Users/runner/wor
 [dropout/s0] step 1750 | loss 1.3504 | held 1.3288 | acc 0.469 | 2354s
 [dropout/s0] step 2000 | loss 1.3433 | held 1.3181 | acc 0.473 | 2631s
 [dropout/s0] step 2250 | loss 1.3398 | held 1.3171 | acc 0.466 | 2906s
+[dropout/s0] step 2500 | loss 1.3196 | held 1.2892 | acc 0.495 | 3178s
+[dropout/s0] step 2750 | loss 1.3143 | held 1.3023 | acc 0.483 | 3428s
+[dropout/s0] step 3000 | loss 1.2905 | held 1.2747 | acc 0.513 | 3608s
+deploy-with-gates eval: 1.2747470910117789 0.5132479044223913
+saved results-headroom/single_dropout_seed0.json
+CONTROLS3000_DONE

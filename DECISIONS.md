@@ -123,7 +123,6 @@ the P0 pass was always an accuracy result, never a gradient-structure
 result.
 
 **Sep 7, 2026 (night) — Rule 4 EXECUTED on valid bodies: NOT CONFIRMED.**
-**Sep 7, 2026 (night) — Rule 4 EXECUTED on valid bodies: NOT CONFIRMED.**
 With the validated recipe (cosine + warmup + wd 0.1, preset LRs), healthy
 stage-1 bodies at 42M (acc 0.496) and 150M (acc 0.563) show NO difficulty-bin
 structure in measured gate-gradient value: frac(score<=0) ~= 0.51 across
@@ -153,3 +152,31 @@ while a constant gate from scratch costs ~2 points; allocation structure
 (tag arm's +0.21 spread) is real but not accuracy-load-bearing at 11M.
 Billing note: gategrad/shuffled arms billed 3.76M TF each (oracle overhead
 included, identical by construction); tag arm 1.41M TF.
+
+**Sep 15 — Starved-regime test EXECUTED (pre-registered): the mid-life
+field's structure is NOT exploitable online.** Starved-150M (2500 steps,
+budget 0.5, seed 0, validated recipe: preset LR 1e-4, cosine, 2% warmup,
+wd 0.1): random windows 44.2% / 1.342 > online field-chasing 41.7% / 1.363;
+static g=0.5 from scratch collapses (22.4%, held loss diverging to 3.60).
+Per the pre-registered fork ("if tie/shuffled → the field's structure is not
+exploitable"): **online loses.** The discriminator's mid-life structure
+(waterfill beats random +0.30/+0.38 on frozen bodies) is measurable but does
+not transfer to a training signal — chasing the field during training is
+worse than random windows at matched billed FLOPs, replicating the 11M
+causal result (dense 64.2 > dropout 51.3 ≈ shuffled 51.6 ≫ online 36.7 ≫
+static 31.8) at a second scale. Final verdict for the compute-value concept:
+the field is (a) measurable and structured mid-life, (b) not exploitable by
+online chasing at 11M or 150M, (c) flat at convergence. The surviving recipe
+is token-level FFN dropout, dense-deployable, at half the FFN training FLOPs.
+
+**Sep 15 — 150M probe-recipe grid COMPLETE (6 arms × 2 seeds, iso-FLOPs)
+and 10k convergence pair; parity claim stays SCOPED.** Dense 68.0±7.0 at
+467 MF/tok; the supervised 2-stage arms (tag / shuffled / fixed-2stage) all
+62.9±9 at ~270 MF — content-irrelevance replicated at 150M and dense wins
+the healthy recipe. MoD 67.5±6.1 at 269 MF with an anti-ordered router
+(mean gate 0.25, spread −0.05: hard bins get the least compute); MoD ties
+dense on mean accuracy (seed-paired diffs +8.9/−9.7 — a wash under huge
+seed variance, not a win). 10k convergence pair (seed 1): rotation held loss
+1.086 vs dense 1.032 → **5.3% gap at exactly 50% billed FLOPs** → per the
+Sep 12 pre-registration (2–10% band) the claim is scoped to compute-limited
+regimes; paper toggle set to \ifparity false.
