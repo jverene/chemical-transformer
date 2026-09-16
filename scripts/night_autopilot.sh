@@ -7,8 +7,8 @@ log() { echo "$(date +%H:%M:%S) $*" >> /tmp/autopilot.log; }
 SSHO="-o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR"
 DEADLINE=$(($(date +%s) + 20*3600))
 command -v vastai >/dev/null 2>&1 || PATH="$(pwd)/.venv/bin:$PATH"
-CURRENT=51168200
-FALLBACK_IDS="42274230 45716570"
+CURRENT=51180568
+FALLBACK_IDS=""
 UNREACH_SINCE=""
 STAGED=0
 log "autopilot armed: instance $CURRENT, fallbacks: $FALLBACK_IDS"
