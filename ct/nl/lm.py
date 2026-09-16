@@ -95,8 +95,9 @@ class GatedLM:
         self.n_heads = self.model.config.num_attention_heads
         self.model.to(device)
         self.wrappers = []
-        layers = self.model.model.layers if hasattr(self.model, "model") \
-            else self.model.transformer.h
+        core = getattr(self.model, "model", None) or getattr(self.model, "transformer", None) \
+            or self.model.base_model
+        layers = getattr(core, "layers", None) or core.h
         for layer in layers:
             mlp = getattr(layer, "mlp", None) or layer.mlp
             w = MLPWrapper(mlp, self.d_model, mod_capacity).to(device)
@@ -127,7 +128,7 @@ class GatedLM:
                        budget_weight=0.5, budget_target=0.5):
         logits = self.model(x).logits
         ce = torch.nn.functional.cross_entropy(
-            logits.view(-1, logits.shape[-1]), y.view(-1))
+            logits.reshape(-1, logits.shape[-1]), y.reshape(-1))
         loss = ce
         gates = torch.stack([w.last_gate for w in self.wrappers], 0)  # (L,B,S)
         gate_mean = gates.mean(0)
