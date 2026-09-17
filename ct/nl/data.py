@@ -34,8 +34,10 @@ def _stream_docs(domain: str, max_docs: int):
             if len(t) > 200:
                 yield t
     elif domain == "code":
-        ds = load_dataset("code_search_net", "python", split="train",
-                          streaming=True)
+        # code_search_net (no namespace) was removed from the Hub; this is
+        # the live mirror with the original CSN python schema.
+        ds = load_dataset("code-search-net/code_search_net", "python",
+                          split="train", streaming=True)
         for i, ex in enumerate(ds):
             if i >= max_docs:
                 break
