@@ -221,6 +221,7 @@ def main():
                 dtype=np.int64)).to(args.device)
             x, y = chunk[:, :-1], chunk[:, 1:]
             target = None
+            target_lay = None
             if two_stage:
                 if args.per_layer_targets:
                     raw = oracle["pool_bins_grad_lay"][:, idx]

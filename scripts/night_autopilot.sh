@@ -42,10 +42,10 @@ while [ "$(date +%s)" -lt "$DEADLINE" ]; do
       for t in 1 2 3; do scp -O -q $SSHO -P $NP $MANIFEST root@$NH:/workspace/manifest.sh && break; sleep 30; done
       for t in 1 2 3; do scp -O -q $SSHO -P $NP ~/.config/vastai/vast_tfa_key root@$NH:/workspace/vast_tfa_key && break; sleep 30; done
       ssh $SSHO -p $NP root@$NH "cd /workspace/chemical-transformer && /opt/conda/bin/pip install -q --no-input vastai numpy scipy matplotlib 'transformers>=4.40' 'datasets>=2.19' 'accelerate>=0.30' 2>&1 | tail -1; mkdir -p data/nl results-nl results-nl-smoke"
-      DEADLINE2=$(($(date +%s) + 12*3600))
+      DEADLINE2=$(($(date +%s) + 16*3600))
       ssh $SSHO -p $NP root@$NH "tmux kill-session -t nl 2>/dev/null; tmux kill-session -t selfstop 2>/dev/null; tmux new-session -d -s nl 'bash /workspace/manifest.sh > /workspace/nl.log 2>&1; touch /workspace/$DONE_MARKER'; tmux new-session -d -s selfstop '/workspace/chemical-transformer/scripts/vast_watchdog.sh $CURRENT /workspace/vast_tfa_key $DEADLINE2 /workspace/$DONE_MARKER'"
       STAGED=1
-      logf "launched (internal deadline 12h)"
+      logf "launched (internal deadline 16h)"
     fi
     mirror
     DONE=$(ssh $SSHO -o ConnectTimeout=20 -p $NP root@$NH "ls /workspace/$DONE_MARKER 2>/dev/null" 2>/dev/null)
