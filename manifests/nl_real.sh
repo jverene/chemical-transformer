@@ -8,7 +8,8 @@ trap 'touch /workspace/NL_REAL_DONE' EXIT
 cd /workspace/chemical-transformer
 PY=/opt/conda/bin/python
 $PY -c "import transformers, datasets, accelerate" 2>/dev/null || \
-  /opt/conda/bin/pip install -q --no-input "transformers>=4.40" "datasets>=2.19" "accelerate>=0.30" 2>&1 | tail -1
+  /opt/conda/bin/pip install -q --no-input "transformers>=4.40" "datasets>=2.19" "accelerate>=0.30" 2>&1 | tail -1 || \
+  /opt/conda/bin/pip install -q --no-input -i https://pypi.tuna.tsinghua.edu.cn/simple "transformers>=4.40" "datasets>=2.19" "accelerate>=0.30" 2>&1 | tail -1
 $PY -c "import transformers, datasets, accelerate" || { echo "PHASE0 FAILED: deps missing"; exit 1; }
 
 # Phase 0: 30-step smoke at 160m on a 2M-token corpus — kills the 10h run
