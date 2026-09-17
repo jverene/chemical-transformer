@@ -4,7 +4,7 @@
 # Usage: bash scripts/launch_extras.sh <6-DIGIT-CODE> [SECRET]
 set -eo pipefail
 CODE="${1:?usage: launch_extras.sh <6-DIGIT-CODE> [SECRET]}"
-SECRET="${2:-82c8916bd51c6c086784ba23eaed6433}"
+SECRET="${2:-67e7091842253283c28b58b07895007e}"
 V=".venv/bin/vastai --api-key $(cat ~/.config/vastai/vast_api_key)"
 
 $V tfa login --method-type email --secret "$SECRET" -c "$CODE" 2>&1 | tail -1
