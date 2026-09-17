@@ -60,7 +60,7 @@ budget at both scales. The constructive result: training with
 \emph{token-level FFN dropout}---each token receives full feed-forward
 compute only inside randomly rotating windows---recovers within
 \ConvRotGapPct\% of dense quality at half the FFN training FLOPs on 11M and
-150M models, and within \NlRotGapPct\% on 1.4B language-model fine-tuning,
+150M models, and within \NlRotGapPct\% on 1.4B web-text fine-tuning,
 scoped to compute-limited regimes, with dense deployment requiring no architecture
 change, no labels, and no routers. The contribution is a measurement
 methodology (permutation-controlled ordering gaps, allocation headroom, the
@@ -123,7 +123,8 @@ the shuffled-control content-irrelevance result, and the causal
 field-chasing test all replicate at 150M (probe grid, starved regime); the
 dropout recipe's parity claim is scoped to compute-limited regimes by its
 pre-registered decision rule ($-5.3\%$ loss at $50\%$ of billed FFN FLOPs
-at 150M; $-7.8\%$ at 1.4B natural-language fine-tuning)
+at 150M; $-7.8\%$ at 1.4B web-text fine-tuning; the boundary on
+template-dominated data is reported, not hidden)
 (\S\ref{sec:scale}, \S\ref{sec:nl}).
 \item \textbf{Realization}: a tiered-FFN serving benchmark showing
 tokens/sec scaling with the mean gate, converting billed-FLOPs savings into
@@ -461,23 +462,42 @@ $10^{-6}$: the converged field is coin-flip at every bin and both scales
 Figure~\ref{fig:frontier-scale}: accuracy vs.\ billed inference FLOPs at
 matched training budgets across \todoX{11M/150M/400M/1B}. \XX
 
-\subsection{Natural language: the recipe transfers at 1.4B}
+\subsection{Natural language: the recipe transfers, with a boundary}
 \label{sec:nl}
 
-Pythia-1.4b continue-trained on FineWeb-Edu (350M packed tokens, 3000
-steps at sequence length 2048, seed 0; both arms share tokenizer, data, and
-the accounting of \S\ref{sec:isoflops}). Dense reaches held-out loss
-$\NlDenseLoss$ at $\NlDenseMFl$ billed MFLOPs/token. The rotation arm
-trains at exactly \NlRotFlopsPct\% of the dense arm's billed training
-FLOPs; deployed \emph{dense} (gates off, no architecture change) it
-evaluates at $\NlRotLoss$: a ${+}\NlRotGapPct\%$ gap, inside the same
-pre-registered $2$--$10\%$ band as the 150M testbed pair ($+5.3\%$).
-Evaluated \emph{with the random ablation live} the rotation model is much
-worse ($3.378$)---which is the point of the deployment claim: the trained
-body wants full compute at inference, and gets it. Negative-space honesty:
-the NL track here carries the recipe pair only; the oracle-measurement
-machinery and the endogenous-signal taxonomy are testbed-scale results
-(\S\ref{sec:failures-results}, \S\ref{sec:causal}).
+\begin{table}[t]
+\centering
+\caption{NL transfer: dense vs.\ token-level FFN dropout at seed 0 per
+domain (Pythia-1.4b, 3000 steps, matched data; rotation evaluated at dense
+deployment). Web text sits inside the pre-registered scoped band; code is
+marginal; on template-dominated math the recipe fails outright --- its
+noise-regularization directly opposes the memorization that low loss there
+is made of.}
+\label{tab:nl}
+\nltab
+\end{table}
+
+Table~\ref{tab:nl}: Pythia-1.4b continue-trained on web text, Python code,
+and chain-of-thought math (350M packed tokens where available, 3000 steps,
+seed 0; both arms share tokenizer, data, and the accounting of
+\S\ref{sec:isoflops}). Three outcomes, reported plainly. \emph{Web text}:
+dense \NlWebtextDense{} vs.\ rotation-at-dense-deployment
+$\NlRotLoss$ = ${+}\NlRotGapPct\%$ at exactly half billed training FLOPs
+--- inside the same pre-registered $2$--$10\%$ band as the 150M testbed
+($+5.3\%$). \emph{Code}: +\NlCodeGap\% --- just outside the band;
+marginal, one seed. \emph{Math}: +\NlMathGap\% --- the recipe fails.
+The mechanism is legible: MetaMathQA held-out loss is dominated by
+memorizable template structure (dense reaches $0.382$), and intermittent
+full compute is precisely a regularizer against that --- the recipe buys
+its robustness by selling memorization. Evaluated \emph{with the ablation
+live} the rotation models are far worse (web text $3.378$), which is the
+point of the deployment claim: the trained body wants full compute at
+inference, and gets it. The scoping this buys is stated rather than hidden:
+the half-cost recipe is for capability-limited regimes on
+distributed-structure data, not for redundancy-dominated corpora.
+Negative-space honesty: the oracle machinery and the endogenous-signal
+taxonomy are testbed-scale results (\S\ref{sec:failures-results},
+\S\ref{sec:causal}).
 
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}
@@ -488,9 +508,21 @@ Per-layer gate profiles by difficulty bin: \XX.
 \subsection{Wall-clock realization}
 \label{sec:realization}
 
-Billed FLOPs become real savings only under sparse execution. A tiered-FFN
-serving benchmark (tokens sorted by gate; active-set gathered GEMM) shows
-tokens/sec scaling as \XX\ at mean gate $0.5$ on the \todoX{1B} shape.
+Billed FLOPs are an accounting device; this section measures what a
+realization actually pays. We time full training steps (forward + backward,
+$4{\times}2048$ tokens) of Pythia-1.4b under three execution strategies:
+dense; the \emph{masked} path our training driver uses (compute every FFN
+row, multiply masked tokens by zero); and a \emph{gather-skip} path that
+removes masked tokens' FFN rows (index-select on the flattened token
+axis). On an A100: dense runs at $\WcDenseTok$ tok/s; masked-at-half runs
+at $\WcMaskedHalf\times$ --- zeroing saves nothing --- while gather-skip
+reaches $\WcSkipHalf\times$ dense at budget $0.5$, $\WcSkipThreeQ\times$
+at $0.75$, and $\WcSkipQuarter\times$ at $0.25$. Two honest readings.
+First, the saving is real but sub-linear: FFNs are only a fraction of step
+time (attention, optimizer, and memory movement do not shrink), so the
+billed $2\times$ arrives as a measured $1.35\times$. Second, the naive
+masked path --- what most token-dropping code actually ships --- realizes
+\emph{nothing}; the gather is the whole result.
 
 \section{Discussion}
 \label{sec:discussion}

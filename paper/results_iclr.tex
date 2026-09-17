@@ -22,12 +22,18 @@
 \expandafter\def\csname GridmodAcc\endcsname{67.5$\pm$6.1}
 \expandafter\def\csname GridpredictorAcc\endcsname{62.9$\pm$9.1}
 \expandafter\def\csname Gridshuffled_150mAcc\endcsname{62.9$\pm$8.8}
+\expandafter\def\csname NlCodeDense\endcsname{1.007$\pm$0.000}
+\expandafter\def\csname NlCodeGap\endcsname{11.5$\pm$0.0}
 \expandafter\def\csname NlDenseLoss\endcsname{2.532}
 \expandafter\def\csname NlDenseMFl\endcsname{3246}
+\expandafter\def\csname NlMathDense\endcsname{0.382$\pm$0.000}
+\expandafter\def\csname NlMathGap\endcsname{95.3$\pm$0.0}
 \expandafter\def\csname NlRotFlopsPct\endcsname{50}
 \expandafter\def\csname NlRotGapPct\endcsname{7.8}
 \expandafter\def\csname NlRotLoss\endcsname{2.729}
 \expandafter\def\csname NlSteps\endcsname{3000}
+\expandafter\def\csname NlWebtextDense\endcsname{2.532$\pm$0.000}
+\expandafter\def\csname NlWebtextGap\endcsname{7.8$\pm$0.0}
 \expandafter\def\csname ShuffledAcc\endcsname{74.7$\pm$1.1}
 \expandafter\def\csname StarvedOnlineAcc\endcsname{41.7}
 \expandafter\def\csname StarvedOnlineLoss\endcsname{1.363}
@@ -36,6 +42,11 @@
 \expandafter\def\csname StarvedStaticAcc\endcsname{22.4}
 \expandafter\def\csname StarvedStaticLoss\endcsname{3.597}
 \expandafter\def\csname TagAcc\endcsname{74.8$\pm$1.3}
+\expandafter\def\csname WcDenseTok\endcsname{2029}
+\expandafter\def\csname WcMaskedHalf\endcsname{1.00}
+\expandafter\def\csname WcSkipHalf\endcsname{1.35}
+\expandafter\def\csname WcSkipQuarter\endcsname{1.67}
+\expandafter\def\csname WcSkipThreeQ\endcsname{1.13}
 \newcommand{\pzerotable}[0]{
 \begin{tabular}{lcccc}
 \toprule
@@ -112,6 +123,17 @@ Arm & Held-out acc (\%) & Held-out loss \\
 Random windows & 44.2 & 1.342 \\
 Online field-chasing & 41.7 & 1.363 \\
 Static $g{=}0.5$ & 22.4 & 3.597 \\
+\bottomrule
+\end{tabular}
+}
+\newcommand{\nltab}[0]{
+\begin{tabular}{lccccc}
+\toprule
+Domain & seeds & dense held loss & rot.\ dense-deploy & gap (\%) & billed FLOPs (\%) \\
+\midrule
+Web text (FineWeb-Edu) & 1 & 2.532$\pm$0.000 & 2.729$\pm$0.000 & 7.8$\pm$0.0 & 50 \\
+Code (CodeSearchNet-py) & 1 & 1.007$\pm$0.000 & 1.123$\pm$0.000 & 11.5$\pm$0.0 & 50 \\
+Math (MetaMathQA) & 1 & 0.382$\pm$0.000 & 0.747$\pm$0.000 & 95.3$\pm$0.0 & 50 \\
 \bottomrule
 \end{tabular}
 }
