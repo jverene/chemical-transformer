@@ -1,0 +1,38 @@
+{
+  "model": "EleutherAI/pythia-1.4b",
+  "batch_seqs": 4,
+  "seq_len": 2048,
+  "dense_tok_s": 2028.6,
+  "rows": [
+    {
+      "mode": "none",
+      "budget": 1.0,
+      "tok_s": 2028.6,
+      "ratio": 1.0
+    },
+    {
+      "mode": "rotation",
+      "budget": 0.5,
+      "tok_s": 2024.3,
+      "ratio": 0.998
+    },
+    {
+      "mode": "rotation_skip",
+      "budget": 0.75,
+      "tok_s": 2298.7,
+      "ratio": 1.133
+    },
+    {
+      "mode": "rotation_skip",
+      "budget": 0.5,
+      "tok_s": 2740.8,
+      "ratio": 1.351
+    },
+    {
+      "mode": "rotation_skip",
+      "budget": 0.25,
+      "tok_s": 3396.1,
+      "ratio": 1.674
+    }
+  ]
+}
