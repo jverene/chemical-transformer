@@ -17,7 +17,7 @@ $PY -c "import transformers, datasets, accelerate" || { echo "PHASE0 FAILED: dep
 # (fp32 CE + skip guard now in the driver; abort exit code 3).
 if [ ! -f data/nl-smoke/webtext/meta.json ]; then
   $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-160m \
-    --out-root data/nl-smoke --max-tokens 2000000 2>&1 | tee /workspace/smoke_data.log | tail -1
+    --out-root data/nl-smoke --max-tokens 2000000 2>&1 | tee /workspace/smoke_data.log | tail -1 || true
 fi
 $PY -m ct.nl.train_lm --domain webtext --model EleutherAI/pythia-160m \
   --method rotation --stage 1 --seed 0 --steps 30 --batch-seqs 2 --grad-accum 2 \
@@ -31,7 +31,7 @@ grep -q '"skipped_nonfinite_steps": 0' results-nl-smoke/webtext/rotation_seed0.j
 # Phase 1: corpus (350M tokens)
 if [ ! -f data/nl/webtext/meta.json ]; then
   $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase1.log | tail -2
+    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase1.log | tail -2 || true
 fi
 test -f data/nl/webtext/train_tokens.npy || { echo "PHASE1 FAILED: no corpus"; exit 1; }
 

@@ -10,7 +10,7 @@ $PY -c "import transformers, datasets, accelerate" 2>/dev/null || \
 # D2-1: corpus
 if [ ! -f data/nl/webtext/meta.json ]; then
   $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_d2_1.log | tail -2
+    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_d2_1.log | tail -2 || true
 fi
 test -f data/nl/webtext/train_tokens.npy || { echo "D2-1 FAILED"; exit 1; }
 

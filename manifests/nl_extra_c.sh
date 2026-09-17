@@ -16,7 +16,7 @@ test -f results-nl/wallclock.json || { echo "C0 FAILED"; exit 1; }
 # Phase C1: webtext corpus
 if [ ! -f data/nl/webtext/meta.json ]; then
   $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_c1.log | tail -2
+    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_c1.log | tail -2 || true
 fi
 test -f data/nl/webtext/train_tokens.npy || { echo "C1 FAILED: no corpus"; exit 1; }
 

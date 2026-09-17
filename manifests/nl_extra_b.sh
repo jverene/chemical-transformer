@@ -11,7 +11,7 @@ $PY -c "import transformers, datasets, accelerate" 2>/dev/null || \
 # Phase B1: code corpus (builder stops early if the source exhausts)
 if [ ! -f data/nl/code/meta.json ]; then
   $PY -m ct.nl.data --domain code --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_b1.log | tail -2
+    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_b1.log | tail -2 || true
 fi
 test -f data/nl/code/train_tokens.npy || { echo "B1 FAILED: no code corpus"; exit 1; }
 
@@ -32,7 +32,7 @@ test -f results-nl/code/rotation_seed0.json || { echo "B3 FAILED"; exit 1; }
 # Phase B4: math corpus
 if [ ! -f data/nl/math/meta.json ]; then
   $PY -m ct.nl.data --domain math --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_b4.log | tail -2
+    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_b4.log | tail -2 || true
 fi
 test -f data/nl/math/train_tokens.npy || { echo "B4 FAILED: no math corpus"; exit 1; }
 
