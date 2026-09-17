@@ -12,6 +12,7 @@ CURRENT="${1:?usage: night_autopilot.sh INSTANCE_ID [MANIFEST] [LOGFILE] [DONE_M
 MANIFEST="${2:-manifests/nl_real.sh}"
 LOGFILE="${3:-/tmp/autopilot.log}"
 DONE_MARKER="${4:-NL_REAL_DONE}"
+EXPECTED="${5:-}"   # globs (relative to results-nl) that must exist to destroy
 UNREACH_SINCE=""
 STAGED=0
 logf "autopilot armed: instance $CURRENT manifest=$MANIFEST marker=$DONE_MARKER"
@@ -60,12 +61,19 @@ while [ "$(date +%s)" -lt "$DEADLINE" ]; do
       git diff --cached --quiet 2>/dev/null || { git commit -q -m "data: NL extras (autopilot)"; git push -q origin main 2>/dev/null; }
       # user directive: destroy (no storage charges) once results are local;
       # stop (keep disk) only if the pull looks empty — manual salvage then.
-      if [ -n "$(find results-nl -name '*.json' 2>/dev/null | head -1)" ]; then
+      GOT=""
+      if [ -n "$EXPECTED" ]; then
+        for pat in $EXPECTED; do
+          F=$(find results-nl -path "results-nl/$pat" 2>/dev/null | head -1)
+          [ -n "$F" ] && GOT="$F" && break
+        done
+      fi
+      if [ -n "$GOT" ]; then
         vastai destroy instance $CURRENT -y >/dev/null 2>&1
-        logf "COMPLETE — results local, instance destroyed"
+        logf "COMPLETE — results local ($GOT), instance destroyed"
       else
         vastai stop instance $CURRENT >/dev/null 2>&1
-        logf "COMPLETE but pull looks empty — instance STOPPED for salvage"
+        logf "COMPLETE but expected files missing ($EXPECTED) — instance STOPPED for salvage"
       fi
       exit 0
     fi

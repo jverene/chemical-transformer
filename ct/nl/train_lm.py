@@ -40,6 +40,12 @@ def targets_from_bins(bins, kind, device):
     return table[bins.long()]
 
 
+def targets_from_bins_lay(bins_lay, device):
+    """Per-(token,layer) quartile bins (L,B,S) -> per-layer gate targets."""
+    table = torch.tensor(GRAD_TARGETS, dtype=torch.float32, device=device)
+    return table[bins_lay.long()]
+
+
 def shuffled_targets(target):
     """Per-sequence within-sequence permutation of the target tensor (B,S)."""
     B, S = target.shape
@@ -119,6 +125,11 @@ def main():
                    help="micro-batches per optimizer step (loss/accum each)")
     p.add_argument("--max-skip", type=int, default=8,
                    help="abort after this many consecutive nonfinite steps")
+    p.add_argument("--per-layer-targets", action="store_true",
+                   help="stage-2: use per-(token,layer) oracle bins "
+                        "(requires oracle.npz with pool_bins_grad_lay)")
+    p.add_argument("--suffix", default="",
+                   help="output-filename suffix, e.g. '-full-unfreeze'")
     p.add_argument("--data-root", default="data/nl")
     p.add_argument("--out-root", default="results-nl")
     p.add_argument("--device", default="cuda")
@@ -129,7 +140,7 @@ def main():
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     os.makedirs(os.path.join(args.out_root, args.domain), exist_ok=True)
-    tag = f"{args.method}_seed{args.seed}"
+    tag = f"{args.method}{args.suffix}_seed{args.seed}"
     out_json = os.path.join(args.out_root, args.domain, f"{tag}.json")
     if os.path.exists(out_json):
         print(f"skip {out_json}: exists")
@@ -211,16 +222,25 @@ def main():
             x, y = chunk[:, :-1], chunk[:, 1:]
             target = None
             if two_stage:
-                raw = (oracle["pool_bins_grad"] if kind == "grad"
-                       else oracle["pool_bins_loss"])[idx]
-                b = torch.from_numpy(raw.astype(np.int64)).to(args.device)
-                target = targets_from_bins(b, kind, args.device)
+                if args.per_layer_targets:
+                    raw = oracle["pool_bins_grad_lay"][:, idx]
+                    b = torch.from_numpy(np.asarray(raw, dtype=np.int64)).to(
+                        args.device)                      # (L, B, S)
+                    target = None
+                    target_lay = targets_from_bins_lay(b, args.device)
+                else:
+                    raw = (oracle["pool_bins_grad"] if kind == "grad"
+                           else oracle["pool_bins_loss"])[idx]
+                    b = torch.from_numpy(raw.astype(np.int64)).to(args.device)
+                    target = targets_from_bins(b, kind, args.device)
+                    target_lay = None
                 if args.method == "shuffled":
                     target = shuffled_targets(target)
             with torch.autocast("cuda", dtype=torch.bfloat16,
                                 enabled=args.amp and args.device == "cuda"):
                 loss, info = lm.loss_and_gates(
-                    x, y, target=target, mse_weight=args.mse_weight,
+                    x, y, target=target, target_lay=target_lay,
+                    mse_weight=args.mse_weight,
                     budget_weight=args.budget_weight,
                     budget_target=args.budget_target)
                 if not torch.isfinite(loss):

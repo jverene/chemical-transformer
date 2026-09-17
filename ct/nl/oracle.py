@@ -75,11 +75,14 @@ def _structural_features(tok, seq_ids):
     return {"cls": cls, "indent": indent}
 
 
-def oracle_pass(lm: GatedLM, seqs: np.ndarray, batch_seqs: int):
+def oracle_pass(lm: GatedLM, seqs: np.ndarray, batch_seqs: int,
+                lay_out=None):
     """One fwd+bwd per batch with gate leaves -> per-token score and CE.
 
     Layer gradients are reduced to a running per-layer mean (storing
-    (L, n, S) fp32 for a 20k-seq pool would need terabytes).
+    (L, n, S) fp32 for a 20k-seq pool would need terabytes). If `lay_out`
+    (an (L, n, S) fp32 array) is given, per-(token, layer) scores are
+    filled into it for the per-layer-target ablation.
     """
     n, S = seqs.shape[0], seqs.shape[1] - 1
     score = np.zeros((n, S), dtype=np.float32)
@@ -98,6 +101,8 @@ def oracle_pass(lm: GatedLM, seqs: np.ndarray, batch_seqs: int):
         g = torch.stack([leaf.grad for leaf in leaves], 0)
         b = x.shape[0]
         score[i:i + b] = (-g.sum(0)).float().cpu().numpy()
+        if lay_out is not None:
+            lay_out[:, i:i + b, :] = (-g).float().cpu().numpy()
         ce[i:i + b] = ce_tok.view_as(y).detach().float().cpu().numpy()
         layer_sum += g.sum(dim=(1, 2)).float().cpu().numpy()
         seen += b * S
@@ -117,6 +122,9 @@ def main():
     p.add_argument("--out-root", default="results-nl")
     p.add_argument("--pool-seqs", type=int, default=20000)
     p.add_argument("--batch-seqs", type=int, default=4)
+    p.add_argument("--save-layers", action="store_true",
+                   help="also save per-(token,layer) scores + quartile bins "
+                        "(pool only, fp32; needed for per-layer targets)")
     p.add_argument("--device", default="cuda")
     args = p.parse_args()
 
@@ -137,7 +145,11 @@ def main():
     held_a = np.asarray(held)
 
     print("oracle pass: pool...")
-    s_pool, ce_pool, lg_mean = oracle_pass(lm, pool, args.batch_seqs)
+    S = pool.shape[1] - 1
+    lay_pool = (np.zeros((lm.n_layers, args.pool_seqs, S), dtype=np.float32)
+                if args.save_layers else None)
+    s_pool, ce_pool, lg_mean = oracle_pass(lm, pool, args.batch_seqs,
+                                           lay_out=lay_pool)
     print("oracle pass: heldout...")
     s_he, ce_he, _ = oracle_pass(lm, held_a, args.batch_seqs)
 
@@ -156,15 +168,23 @@ def main():
     gb_pool, lb_pool = grad_bins(s_pool), loss_bins(ce_pool)
     gb_he, lb_he = grad_bins(s_he), loss_bins(ce_he)
 
-    # oracle.npz goes to the DATA dir: that is where the stage-2 driver
-    # (train_lm.py) reads it from; the human-readable diag goes to out_root.
-    np.savez_compressed(
-        os.path.join(data_dir, "oracle.npz"),
+    arrays = dict(
         pool_bins_grad=gb_pool, pool_bins_loss=lb_pool,
         pool_score=s_pool.astype(np.float16), pool_ce=ce_pool.astype(np.float16),
         held_bins_grad=gb_he, held_bins_loss=lb_he,
         held_score=s_he.astype(np.float16), held_ce=ce_he.astype(np.float16),
     )
+    if lay_pool is not None:
+        L = lay_pool.shape[0]
+        bins_lay = np.zeros((L,) + gb_pool.shape, dtype=np.uint8)
+        for l in range(L):
+            bins_lay[l] = grad_bins(lay_pool[l])
+        arrays["pool_score_lay"] = lay_pool          # fp32: scores ~1e-6
+        arrays["pool_bins_grad_lay"] = bins_lay
+    # oracle.npz goes to the DATA dir: that is where the stage-2 driver
+    # (train_lm.py) reads it from; the human-readable diag goes to out_root.
+    np.savez_compressed(
+        os.path.join(data_dir, "oracle.npz"), **arrays)
 
     # ---------------- diagnostics ----------------
     pos = s_pool > 0

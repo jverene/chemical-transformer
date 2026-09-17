@@ -57,6 +57,19 @@ class MLPWrapper(nn.Module):
             mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity).float()
             self.last_gate = mask
             return self.inner(x) * mask.unsqueeze(-1)
+        if mode == "rotation_skip":
+            # same allocation as rotation, but masked tokens' FFN rows are
+            # actually SKIPPED (gather/scatter), so wall-clock scales with
+            # the budget. Used by the wall-clock benchmark.
+            mask = (torch.rand(x.shape[:2], device=x.device) < self.capacity)
+            self.last_gate = mask.float()
+            flat = x.reshape(B * S, D)
+            idx = mask.reshape(-1).nonzero(as_tuple=True)[0]
+            out_flat = torch.zeros_like(flat)
+            if idx.numel() > 0:
+                sel = flat.index_select(0, idx)
+                out_flat = out_flat.index_copy(0, idx, self.inner(sel))
+            return out_flat.reshape(B, S, D)
         if mode == "mod":
             scores = self.router(x).squeeze(-1)
             k = max(1, int(math.ceil(self.capacity * S)))
@@ -122,7 +135,7 @@ class GatedLM:
                 {"params": heads, "lr": lr}]
 
     # ---------- forward + losses ----------
-    def loss_and_gates(self, x, y, target=None, mse_weight=5.0,
+    def loss_and_gates(self, x, y, target=None, target_lay=None, mse_weight=5.0,
                        budget_weight=0.5, budget_target=0.5):
         logits = self.model(x).logits
         # fp32 CE regardless of autocast: Pythia logits reach O(1e2-1e3) and
@@ -137,6 +150,12 @@ class GatedLM:
         if target is not None:
             pred_gate = gate_mean if self.method == "mod" else gate_mean
             mse = torch.nn.functional.mse_loss(pred_gate, target.detach())
+            budget = (gate_mean.mean() - budget_target) ** 2
+            loss = loss + mse_weight * mse + budget_weight * budget
+            info["mse"] = mse.detach()
+            info["budget"] = budget.detach()
+        elif target_lay is not None:
+            mse = torch.nn.functional.mse_loss(gates, target_lay.detach())
             budget = (gate_mean.mean() - budget_target) ** 2
             loss = loss + mse_weight * mse + budget_weight * budget
             info["mse"] = mse.detach()
