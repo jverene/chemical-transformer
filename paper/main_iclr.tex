@@ -58,10 +58,10 @@ structure nor any learned allocator survives contact with training:
 chasing the field online is \emph{worse} than random allocation of the same
 budget at both scales. The constructive result: training with
 \emph{token-level FFN dropout}---each token receives full feed-forward
-compute only inside randomly rotating windows---recovers within
-\ConvRotGapPct\% of dense quality at half the FFN training FLOPs on 11M and
-150M models, and within \NlRotGapPct\% on 1.4B web-text fine-tuning,
-scoped to compute-limited regimes, with dense deployment requiring no architecture
+compute only inside randomly rotating windows---trails dense held-out
+loss by \ConvRotGapPct\% at half the \emph{billed} FFN training FLOPs on
+11M and 150M models, and by \NlRotGapPct\% on 1.4B web-text fine-tuning
+(2 seeds), inside the pre-registered 2--10\% band, with dense deployment requiring no architecture
 change, no labels, and no routers. The contribution is a measurement
 methodology (permutation-controlled ordering gaps, allocation headroom, the
 value-field life cycle) and a free training recipe the adaptive-compute
@@ -93,9 +93,9 @@ regime where the field's mid-life structure is demonstrably present
 (\S\ref{sec:results}). What works is the degenerate allocator everyone
 skips: train with \emph{token-level FFN dropout}---each token receives full
 FFN compute only inside randomly rotating windows---and deploy dense. At
-matched tokens this lands within \ConvRotGapPct\% of dense quality at half
-the FFN training FLOPs on 11M and 150M models, and within \NlRotGapPct\% on
-1.4B natural-language fine-tuning---a claim we scope to
+matched tokens this trails dense held-out loss by \ConvRotGapPct\% at
+half the billed FFN training FLOPs on 11M and 150M models, and by
+\NlRotGapPct\% on 1.4B web-text fine-tuning---a claim we scope to
 compute-limited regimes per its pre-registered decision rule---requires no
 labels or routers, and composes with any attention architecture because it
 never touches attention.
@@ -326,7 +326,9 @@ gate-grad $-$ shuffled accuracy across seeds: $-0.003$, $-0.001$, $-0.000$
 At testbed scale, \emph{any} varying supervision under the budget
 constraint---even targets permuted into noise---recovers the same accuracy
 ($0.747 \pm 0.009$ shuffled vs.\ $0.745 \pm 0.008$ gate-grad vs.\ $0.748 \pm
-0.010$ tag) and the same flat gate structure, while all three dominate a
+0.010$ tag) and indistinguishable gate structure at this scale (the tag arm alone
+orders, with a $+0.21$ spread that does not move accuracy), while all
+three dominate a
 constant gate trained from scratch by ${\sim}2$ points at the same inference
 budget. Two honest readings follow. First, the workshop result sharpens: at
 $11$M, what supervision supplies is not allocation quality but a dense-then-
@@ -539,7 +541,10 @@ masked path --- what most token-dropping code actually ships --- realizes
 no endogenous-signal search and plugs into serving stacks that already
 produce per-token difficulty estimates (speculative-decoding acceptance).
 \paragraph{When static schedules suffice.} \XX
-\paragraph{Limitations.} Arithmetic difficulty is operand-size-defined at
+\paragraph{Limitations.} The 1.4B web-text headline rests on two seeds
+(a third was attempted three times and lost to host failures twice);
+they agree to $0.1$ points, but $n{=}2$ is $n{=}2$. The code and math
+transfers are single-seed. Arithmetic difficulty is operand-size-defined at
 testbed scale; the natural-language bins inherit the reference model's
 notion of difficulty. The two-stage body is near-frozen by default; a
 full-unfreeze ablation is reported in Appendix~\ref{app:ablations}. Billed
@@ -555,8 +560,12 @@ from committed artifacts. Seeds, held-out sets, and the FLOPs accounting are
 specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
 
 \section*{Compute statement}
-Total rented-GPU spend: \todoX{\$\XX} (\todoX{\XX} A100-hours), itemized per
-stage in Appendix~\ref{app:compute}; testbed runs on an Apple M3 (MPS).
+Total rented-GPU spend for every result in this paper: approximately
+\$30 (itemized per stage in Appendix~\ref{app:compute}); testbed runs on
+an Apple M3 (MPS). Roughly half was spent on results and half on re-runs
+after host failures and fixable training bugs --- we report both, because
+the failure half is what the manifests and kill-rules in the repository
+are for.
 
 \bibliography{iclr2027_conference}
 \bibliographystyle{iclr_conference}
