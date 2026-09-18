@@ -207,3 +207,13 @@ generalizes to NL as a negative. Full-unfreeze ablation: 2.6054 (vs
 (adaptation compounds allocation). Per-layer-target arm running; seed-2
 pair dropped after two host deaths — seeds 0/1 agree to 0.1 points
 (+7.8%/+7.7%) and a third adds no information.
+
+**Sep 18 — RESULTS FREEZE (per mentor instruction).** The per-layer-target
+ablation hung at step 1500/2000 on the 40GB A100 and was abandoned —
+reported as not run in App. A. No further experiments. Remaining work is
+editing only: three figures from existing data, steps-matched appendix,
+final consistency pass. The per-layer training code is committed and
+smoked; future work can resume it. Seed-2 (third NL seed) dropped after
+three attempts (one code bug, two host deaths); seeds 0/1 agree to 0.1
+points. Final GPU campaign spend since Sep 15: ~$37.50 of $38.91 credit
+(23.91 + 15.00 top-up); instances: zero; nothing billing.

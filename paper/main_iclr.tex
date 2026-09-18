@@ -584,7 +584,11 @@ gates recovers roughly $40\%$ of the remaining gap, consistent with the
 main-text reading that trained methods can exceed frozen-body allocation
 by adaptation, not by better ordering (gate profiles stay flat:
 $[0.33, 0.34, 0.35, 0.35]$).
-\paragraph{Per-layer target freedom.} \XX
+\paragraph{Per-layer target freedom.} Implemented end-to-end (per-layer
+oracle scores, per-layer quartile bins, per-layer gate targets); the
+single run hung on our 40GB budget and was abandoned under the results
+freeze --- reported as not run, left to future work. The summed-score
+protocol of the main text is unaffected.
 \paragraph{Shuffled control at all scales.} 11M: Table~\ref{tab:p0};
 150M: Table~\ref{tab:p150}; 1.4B web text: \S\ref{sec:nl} --- the paired
 gate-grad $-$ shuffled difference is $0.0008$ at language scale,
