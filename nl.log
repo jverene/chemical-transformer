@@ -1,10 +1,5 @@
-[webtext/rotation/s0] step 29 | loss 9.2864 | held 9.0475 | MFLOPs/tok 118.7 | gate bins [0.5] | 7s
-saved results-nl-smoke/webtext/rotation_seed0.json
 Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 {"domain": "webtext", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 167398, "heldout_seqs": 3416, "tokens": 350000486}
-[webtext/baseline/s0] step 2750 | loss 2.5116 | held 2.6065 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4903s
-[webtext/baseline/s0] step 2999 | loss 2.3585 | held 2.6045 | MFLOPs/tok 3246.4 | gate bins [1.0] | 5347s
-saved results-nl/webtext/baseline_seed0.json
-[webtext/rotation/s0] step 2750 | loss 3.4448 | held 3.4778 | MFLOPs/tok 1637.1 | gate bins [0.5] | 4875s
-[webtext/rotation/s0] step 2999 | loss 3.3671 | held 3.4760 | MFLOPs/tok 1634.9 | gate bins [0.5] | 5316s
-saved results-nl/webtext/rotation_seed0.json
+    q_embed = torch.cat([q_embed, q_pass], dim=-1)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 64.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 63.56 MiB is free. Process 1197090 has 39.42 GiB memory in use. Of the allocated memory 38.76 GiB is allocated by PyTorch, and 161.01 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
