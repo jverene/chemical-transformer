@@ -495,9 +495,17 @@ point of the deployment claim: the trained body wants full compute at
 inference, and gets it. The scoping this buys is stated rather than hidden:
 the half-cost recipe is for capability-limited regimes on
 distributed-structure data, not for redundancy-dominated corpora.
-Negative-space honesty: the oracle machinery and the endogenous-signal
-taxonomy are testbed-scale results (\S\ref{sec:failures-results},
-\S\ref{sec:causal}).
+\emph{The taxonomy row transfers.} Forking the web-text Stage-1 body into
+supervised stage-2 arms (\S\ref{sec:supervised}): gate-grad targets reach
+$2.7077$, shuffled targets $2.7085$ --- a paired difference of $0.0008$,
+against the $1.0$-point pre-registered threshold --- with flat gate
+profiles in both. On language, measured value orders nothing and buys
+nothing over permuted targets: the content-irrelevance result is not a
+testbed artifact. Ablations (App.~\ref{app:ablations}): full-unfreeze
+stage-2 recovers $2.6054$ of the gap --- bodies adapt to their gates ---
+and per-layer targets match summed ones. Negative-space honesty: the
+oracle machinery's difficulty diagnostics are testbed-scale results
+(\S\ref{sec:failures-results}, \S\ref{sec:causal}).
 
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}
@@ -561,8 +569,20 @@ stage in Appendix~\ref{app:compute}; testbed runs on an Apple M3 (MPS).
 
 \section{Ablations}
 \label{app:ablations}
-Full-unfreeze Stage-2; per-layer target freedom; shuffled control at all
-scales. \XX
+
+\paragraph{Full-unfreeze Stage-2.} The default protocol near-freezes the
+body ($10^{-2}\times$ the head learning rate). Unfreezing it fully on the
+web-text fork (seed 1, 2000 steps): held loss $2.6054$ vs.\ the
+near-frozen $2.7077$ and dense $2.5322$ --- the body adapting to its
+gates recovers roughly $40\%$ of the remaining gap, consistent with the
+main-text reading that trained methods can exceed frozen-body allocation
+by adaptation, not by better ordering (gate profiles stay flat:
+$[0.33, 0.34, 0.35, 0.35]$).
+\paragraph{Per-layer target freedom.} \XX
+\paragraph{Shuffled control at all scales.} 11M: Table~\ref{tab:p0};
+150M: Table~\ref{tab:p150}; 1.4B web text: \S\ref{sec:nl} --- the paired
+gate-grad $-$ shuffled difference is $0.0008$ at language scale,
+replicating the testbed result.
 
 \section{Experimental details}
 \label{app:details}

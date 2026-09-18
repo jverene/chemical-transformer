@@ -193,3 +193,17 @@ seed per arm; oracle machinery and taxonomy NOT run on NL (testbed-scale
 results only); code/math domains not run. Root cause of the two failed GPU
 attempts: transformers>=5 preserves the fp16 checkpoint dtype (pure-fp16
 AdamW NaNs) — fixed Sep 15.
+
+**Sep 17 — NL taxonomy row + full-unfreeze ablation LANDED.** Stage-2 arms
+on the webtext seed-1 dense body (2000 steps, near-frozen body): gate-grad
+targets 2.7077 vs shuffled 2.7085 — **paired difference −0.0008, a dead
+tie**, with flat gate profiles in both ([0.43…0.45]). Content-irrelevance
+replicates at 1.4B language: measured value targets carry no advantage
+over permuted targets, and neither materializes difficulty ordering
+(NL gates show no bin spread). Rule-8 fork resolved: the taxonomy
+generalizes to NL as a negative. Full-unfreeze ablation: 2.6054 (vs
+2.7077 near-frozen, 2.5322 dense) — body adaptation to its gates recovers
+~40% of the remaining gap, per the pre-registered interpretation
+(adaptation compounds allocation). Per-layer-target arm running; seed-2
+pair dropped after two host deaths — seeds 0/1 agree to 0.1 points
+(+7.8%/+7.7%) and a third adds no information.
