@@ -20,8 +20,8 @@
 \iclrfinalcopy
 
 \title{Endogenous Signals Fail to Allocate: \\
-Measured Signals and Token-Level FFN Dropout \\
-for Half-Cost Transformer Training}
+Per-Token Compute Value Is Real, \\
+Transient, and Not Learnable}
 
 \author{Anonymous authors\\
 Paper under double-blind review}
@@ -43,29 +43,26 @@ Paper under double-blind review}
 \begin{abstract}
 Token-level adaptive compute usually keys off endogenous signals---attention
 entropy, router scores, confidence---assumed to track per-token difficulty.
-On arithmetic with graded difficulty we show this assumption fails in three
-distinct ways: an entropy-driven gate collapses to a constant, a
-tag-initialized gate inverts, and an unsupervised learned head is vacuous.
-Supervised targets with a budget constraint produce correctly ordered gates,
-but a pre-registered shuffled-targets control shows the ordering carries no
-accuracy benefit at either 11M or 150M scale: any varying supervision under
-the budget constraint does as well. Measuring the field
-directly---the per-token gradient of the loss with respect to each token's
-compute gate---explains why. The field has a life cycle: permutation-
-controlled measurement shows real structure mid-training, consumed by
-training and flat at convergence. A causal test shows neither the mid-life
-structure nor any learned allocator survives contact with training:
-chasing the field online is \emph{worse} than random allocation of the same
-budget at both scales. The constructive result: training with
-\emph{token-level FFN dropout}---each token receives full feed-forward
-compute only inside randomly rotating windows---trails dense held-out
-loss by \ConvRotGapPct\% at half the \emph{billed} FFN training FLOPs on
-11M and 150M models, and by \NlRotGapPct\% on 1.4B web-text fine-tuning
-(2 seeds), inside the pre-registered 2--10\% band, with dense deployment requiring no architecture
-change, no labels, and no routers. The contribution is a measurement
-methodology (permutation-controlled ordering gaps, allocation headroom, the
-value-field life cycle) and a free training recipe the adaptive-compute
-literature skips: the baseline that beats every allocator is random.
+On arithmetic with graded difficulty we show this assumption fails three
+ways: an entropy-driven gate collapses to a constant, a tag-initialized
+gate inverts, and an unsupervised learned head is vacuous.
+Difficulty-supervised targets under a budget constraint do produce ordered
+gates, but a pre-registered shuffled-targets control shows the ordering
+carries no accuracy benefit: gate-grad targets trail permuted targets by
+0.0008 held-out loss at 1.4B, and by at most 0.3 accuracy points at 11M.
+Measuring the field directly---the per-token gradient of loss with respect
+to each token's compute gate---explains why. The field has a life cycle:
+real structure mid-training (permutation-controlled oracle), consumed by
+training, flat at convergence---and a causal test shows its structure is
+not trainable: chasing it online loses to random allocation of the same
+budget at every scale tested. The surviving recipe needs no allocator:
+token-level FFN dropout, where each token receives full FFN compute only
+inside randomly rotating windows. At 1.4B web-text fine-tuning it trails
+dense by 7.8\% held-out loss (2 seeds) at 50\% billed FFN training FLOPs,
+inside the pre-registered 2--10\% band; a gather-based realization
+converts half the billed cost into a measured 1.35$\times$ training
+throughput. Failures on code and template-dominated math are reported,
+not hidden.
 \end{abstract}
 
 % ---- ACTIVE INTRO (dropout-lead; parity-conditional sentence marked) ----
