@@ -16,14 +16,14 @@ test -f data/nl/webtext/train_tokens.npy || { echo "D2-1 FAILED"; exit 1; }
 
 # D2-2: dense seed 2
 $PY -m ct.nl.train_lm --domain webtext --model EleutherAI/pythia-1.4b \
-  --method baseline --stage 1 --seed 2 --steps 3000 --batch-seqs 4 --grad-accum 2 \
+  --method baseline --stage 1 --seed 2 --steps 3000 --batch-seqs 2 --grad-accum 4 \
   --eval-every 250 --device cuda --data-root data/nl --out-root results-nl \
   2>&1 | tee /workspace/phase_d2_2.log | tail -3
 test -f results-nl/webtext/baseline_seed2.json || { echo "D2-2 FAILED"; exit 1; }
 
 # D2-3: rotation seed 2
 $PY -m ct.nl.train_lm --domain webtext --model EleutherAI/pythia-1.4b \
-  --method rotation --stage 1 --seed 2 --steps 3000 --batch-seqs 4 --grad-accum 2 \
+  --method rotation --stage 1 --seed 2 --steps 3000 --batch-seqs 2 --grad-accum 4 \
   --eval-every 250 --device cuda --data-root data/nl --out-root results-nl \
   2>&1 | tee /workspace/phase_d2_3.log | tail -3
 test -f results-nl/webtext/rotation_seed2.json || { echo "D2-3 FAILED"; exit 1; }

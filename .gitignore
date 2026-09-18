@@ -39,3 +39,5 @@ paper/main.out
 .freebuff/
 .v2c/
 data/nl-smoke/webtext/*.npy
+results-nl/**/.*
+results-nl/**/*.pt
