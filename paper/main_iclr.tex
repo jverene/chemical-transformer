@@ -458,8 +458,26 @@ $10^{-6}$: the converged field is coin-flip at every bin and both scales
 \migrationtable
 \end{table}
 
-Figure~\ref{fig:frontier-scale}: accuracy vs.\ billed inference FLOPs at
-matched training budgets across \todoX{11M/150M/400M/1B}. \XX
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.8\linewidth]{frontier.pdf}
+\caption{Accuracy vs.\ billed training compute (relative to the dense arm
+at the same scale, log axis). Gated 2-stage arms cluster at $\sim$0.58$\times$
+dense compute and $\sim$5 points below it at 150M; MoD reaches dense compute
+savings with an inverted router; the 400M probe collapses outright
+(post-LN + Xavier initialization, untrainable at any LR swept --- reported
+as the honest edge of the scaling evidence; 1B was never run).}
+\label{fig:frontier-scale}
+\end{figure}
+
+Figure~\ref{fig:frontier-scale}: accuracy against billed training compute
+at 11M, 150M, and the 400M calibration probe. The same ordering holds at
+both trainable scales: dense first, the gated 2-stage arms (ours, shuffled,
+fixed) clustered together, field-chasing and static further behind. The
+400M point is the honest edge of the scaling evidence: the architecture
+does not train at that size, so no frontier claim is made beyond 150M
+arithmetic (the 1.4B NL results of \S\ref{sec:nl} are the scale
+evidence).
 
 \subsection{Natural language: the recipe transfers, with a boundary}
 \label{sec:nl}
@@ -557,11 +575,11 @@ from committed artifacts. Seeds, held-out sets, and the FLOPs accounting are
 specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
 
 \section*{Compute statement}
-Total rented-GPU spend for every result in this paper: approximately
-\$30 (itemized per stage in Appendix~\ref{app:compute}); testbed runs on
-an Apple M3 (MPS). Roughly half was spent on results and half on re-runs
-after host failures and fixable training bugs --- we report both, because
-the failure half is what the manifests and kill-rules in the repository
+Total rented-GPU spend for every result in this paper: \$36.45, itemized
+in Appendix~\ref{app:compute}; testbed runs on an Apple M3 (MPS) at no
+cost. Roughly half was spent on results and half on re-runs after host
+failures and fixable training bugs --- we report both, because the
+failure half is what the manifests and kill-rules in the repository
 are for.
 
 \bibliography{iclr2027_conference}
@@ -571,7 +589,23 @@ are for.
 
 \section{Steps-matched comparisons}
 \label{app:stepsmatched}
-\XX
+
+\begin{table}[h]
+\centering
+\caption{150M arms at equal optimizer steps. The two-stage pipeline's own
+stage-1 boundary is 5000 steps --- the same count as the single-stage
+arms --- so the comparison isolates what stage 2 adds over the pipeline's
+own base at equal steps, and what it costs relative to dense.}
+\label{tab:stepsmatched}
+\stepsmatchedtable
+\end{table}
+
+Table~\ref{tab:stepsmatched}: at 5000 steps the two-stage pipeline's base
+sits at $62.5$ ($467$ MFLOPs/token, the same billed compute as dense);
+the full pipeline reaches $62.9$ at $276$ MFLOPs/token. Read together:
+stage 2 at 150M adds $+0.4$ points over its own body while cutting $41\%$
+of billed compute --- the value of the pipeline at the healthy recipe is
+the compute reduction, not accuracy (dense wins both at equal steps).
 
 \section{Ablations}
 \label{app:ablations}
@@ -580,7 +614,7 @@ are for.
 body ($10^{-2}\times$ the head learning rate). Unfreezing it fully on the
 web-text fork (seed 1, 2000 steps): held loss $2.6054$ vs.\ the
 near-frozen $2.7077$ and dense $2.5322$ --- the body adapting to its
-gates recovers roughly $40\%$ of the remaining gap, consistent with the
+gates recovers $58\%$ of the remaining gap, consistent with the
 main-text reading that trained methods can exceed frozen-body allocation
 by adaptation, not by better ordering (gate profiles stay flat:
 $[0.33, 0.34, 0.35, 0.35]$).
@@ -600,6 +634,32 @@ replicating the testbed result.
 
 \section{Compute ledger}
 \label{app:compute}
-\XX
+
+\begin{table}[h]
+\centering
+\caption{Rented-GPU ledger, Sep 12--18, 2026. Single numbers are exact
+where receipts exist; ranges are estimates from instance hours at listed
+rates.}
+\label{tab:ledger}
+\begin{tabular}{llr}
+\toprule
+Stage & Hardware & Spend (\$) \\
+\midrule
+150M probe grid, 16 runs (Sep 12--14) & 2$\times$ RTX-class, $\sim$20 h & 11--13 \\
+1.4B NL pair, web text (Sep 16) & RTX 6000 Ada, 8 h & 4.40 \\
+Code + math pairs, 4 arms (Sep 17) & RTX 4090D, 5.3 h & 4.20 \\
+Wall-clock bench + web-text seed-1 chain + wave-2 (Sep 17--18) & A100/6000 Ada, $\sim$13 h & 12.2 \\
+Seed-2 attempts (3 host failures) & mixed & $\sim$2.5 \\
+Dud boots, queue stalls, orchestration failures & mixed & $\sim$2.2 \\
+\midrule
+\textbf{Total (\$36.45 of \$38.91 credit); final remaining \$2.46} & & \\
+\bottomrule
+\end{tabular}
+
+11M testbed runs (all failure-taxonomy, causal, and life-cycle results):
+Apple M3 via MPS, no cost. Two results were lost to the incidents above
+(one rotation arm to a training bug, later re-run; the seed-2 pair to
+host failures) and are reported as such.
+\end{table}
 
 \end{document}

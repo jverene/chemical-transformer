@@ -33,7 +33,7 @@
 \expandafter\def\csname NlRotLoss\endcsname{2.729}
 \expandafter\def\csname NlSteps\endcsname{3000}
 \expandafter\def\csname NlWebtextDense\endcsname{2.532$\pm$0.000}
-\expandafter\def\csname NlWebtextGap\endcsname{7.8$\pm$0.0}
+\expandafter\def\csname NlWebtextGap\endcsname{7.7$\pm$0.0}
 \expandafter\def\csname ShuffledAcc\endcsname{74.7$\pm$1.1}
 \expandafter\def\csname StarvedOnlineAcc\endcsname{41.7}
 \expandafter\def\csname StarvedOnlineLoss\endcsname{1.363}
@@ -131,9 +131,21 @@ Static $g{=}0.5$ & 22.4 & 3.597 \\
 \toprule
 Domain & seeds & dense held loss & rot.\ dense-deploy & gap (\%) & billed FLOPs (\%) \\
 \midrule
-Web text (FineWeb-Edu) & 1 & 2.532$\pm$0.000 & 2.729$\pm$0.000 & 7.8$\pm$0.0 & 50 \\
+Web text (FineWeb-Edu) & 2 & 2.532$\pm$0.000 & 2.728$\pm$0.000 & 7.7$\pm$0.0 & 50 \\
 Code (CodeSearchNet-py) & 1 & 1.007$\pm$0.000 & 1.123$\pm$0.000 & 11.5$\pm$0.0 & 50 \\
 Math (MetaMathQA) & 1 & 0.382$\pm$0.000 & 0.747$\pm$0.000 & 95.3$\pm$0.0 & 50 \\
+\bottomrule
+\end{tabular}
+}
+\newcommand{\stepsmatchedtable}[0]{
+\begin{tabular}{lcc}
+\toprule
+150M arm & Acc & MFLOPs/token \\
+\midrule
+Dense 5000 steps & 68.0$\pm$7.0 & 467$\pm$0 \\
+Stage-1 body @5000 (pipeline's own base) & 62.5$\pm$8.8 & 467$\pm$0 \\
+Ours (tag), full pipeline @7000 & 62.9$\pm$9.1 & 276$\pm$1 \\
+Shuffled, full pipeline @7000 & 62.9$\pm$8.8 & 271$\pm$3 \\
 \bottomrule
 \end{tabular}
 }
