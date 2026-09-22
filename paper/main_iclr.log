@@ -384,8 +384,7 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 \g__pdf_backend_object_int=\count304
 \g__pdf_backend_annotation_int=\count305
 \g__pdf_backend_link_int=\count306
-)
-No file main_iclr.aux.
+) (main_iclr.aux)
 \openout1 = `main_iclr.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 40.
@@ -399,7 +398,7 @@ LaTeX Font Info:    ... okay on input line 40.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 40.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 4
 0.
-(ts1cmr.fd
+ (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 40.
@@ -409,14 +408,9 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 40.
 LaTeX Font Info:    ... okay on input line 40.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 40.
 LaTeX Font Info:    ... okay on input line 40.
-
-Underfull \hbox (badness 2150) in paragraph at lines 41--41
-\TU/lmr/m/sc/17.28 Measured Signals and Token-Level FFN
- []
-
 LaTeX Font Info:    Trying to load font information for U+msa on input line 41.
 
-(umsa.fd
+ (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
 LaTeX Font Info:    Trying to load font information for U+msb on input line 41.
@@ -424,148 +418,42 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 41.
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 1552) in paragraph at lines 44--69
+Underfull \hbox (badness 1552) in paragraph at lines 44--66
 []\TU/lmr/m/n/10 Token-level adaptive compute usually keys off endogenous signa
 ls—
  []
 
 
-LaTeX Warning: Reference `sec:failures' on page 1 undefined on input line 79.
+Underfull \vbox (badness 3536) has occurred while \output is active []
 
-
-LaTeX Warning: Reference `sec:measure' on page 1 undefined on input line 88.
-
-
-LaTeX Warning: Reference `sec:results' on page 1 undefined on input line 93.
-
-[1
+ [1
 
 ]
-
-LaTeX Warning: Reference `sec:failures' on page 2 undefined on input line 107.
-
-
-LaTeX Warning: Reference `sec:measure' on page 2 undefined on input line 114.
-
-
-LaTeX Warning: Reference `sec:p0' on page 2 undefined on input line 114.
-
-
-LaTeX Warning: Reference `sec:scale' on page 2 undefined on input line 116.
-
-
-LaTeX Warning: Reference `sec:isoflops' on page 2 undefined on input line 120.
-
-
-LaTeX Warning: Reference `sec:scale' on page 2 undefined on input line 128.
-
-
-LaTeX Warning: Reference `sec:nl' on page 2 undefined on input line 128.
-
-
-LaTeX Warning: Reference `sec:realization' on page 2 undefined on input line 13
-1.
-
-
-Package natbib Warning: Citation `graves2016act' on page 2 undefined on input l
-ine 138.
-
-
-Package natbib Warning: Citation `raposo2024mixture' on page 2 undefined on inp
-ut line 139.
-
-
-Package natbib Warning: Citation `raposo2024mixture' on page 2 undefined on inp
-ut line 140.
-
-
-LaTeX Warning: Reference `eq:gate' on page 2 undefined on input line 169.
-
-[2]
-
-LaTeX Warning: Reference `eq:gategrad' on page 3 undefined on input line 223.
-
-
-LaTeX Warning: Reference `sec:arch' on page 3 undefined on input line 251.
-
-
-LaTeX Warning: Reference `app:stepsmatched' on page 3 undefined on input line 2
-59.
-
-[3]
-
-LaTeX Warning: Reference `sec:causal' on page 4 undefined on input line 280.
-
-
-LaTeX Warning: Reference `sec:measure' on page 4 undefined on input line 281.
-
-
-LaTeX Warning: Reference `tab:testbed' on page 4 undefined on input line 299.
-
-
-LaTeX Warning: Reference `fig:journey' on page 4 undefined on input line 299.
-
-
-Underfull \hbox (badness 1194) in paragraph at lines 317--322
+[2] [3]
+Underfull \hbox (badness 1194) in paragraph at lines 315--320
  \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
 y shuffled number existed: the
  []
 
+[4]
+Underfull \vbox (badness 3769) has occurred while \output is active []
 
-Underfull \vbox (badness 1107) has occurred while \output is active []
-
- [4]
-
-LaTeX Warning: Reference `tab:p0' on page 5 undefined on input line 325.
-
-
-LaTeX Warning: Reference `eq:gategrad' on page 5 undefined on input line 336.
-
-
-LaTeX Warning: Reference `sec:scale' on page 5 undefined on input line 338.
-
-
-LaTeX Warning: Reference `sec:nl' on page 5 undefined on input line 340.
-
-
-LaTeX Warning: Reference `sec:measure' on page 5 undefined on input line 355.
-
-
-LaTeX Warning: Reference `tab:causal' on page 5 undefined on input line 373.
-
-[5]
-
-LaTeX Warning: Reference `tab:p150' on page 6 undefined on input line 399.
-
-
-LaTeX Warning: Reference `tab:starved' on page 6 undefined on input line 416.
-
-
-LaTeX Warning: Reference `tab:migration' on page 6 undefined on input line 443.
-
-
-
-LaTeX Warning: Reference `sec:causal' on page 6 undefined on input line 447.
-
+ [5]
 [6]
+File: frontier.pdf Graphic file (type pdf)
+<use frontier.pdf>
 
-LaTeX Warning: Reference `fig:frontier-scale' on page 7 undefined on input line
- 462.
+Overfull \hbox (66.75291pt too wide) in paragraph at lines 497--498
+ [][] 
+ []
 
-
-Overfull \hbox (66.75291pt too wide) in paragraph at lines 477--478
+[7] [8] (main_iclr.bbl) [9]
+Overfull \hbox (64.6529pt too wide) in paragraph at lines 694--708
  [][] 
  []
 
 
-LaTeX Warning: Reference `tab:nl' on page 7 undefined on input line 480.
+LaTeX Warning: `h' float specifier changed to `ht'.
 
-
-LaTeX Warning: Reference `sec:isoflops' on page 7 undefined on input line 483.
-
-! Missing $ inserted.
-<inserted text> 
-                $
-l.487 ($+5.3\%$). \emph{Code}: ${+}\NlCodeGap
-                                             \%$ --- just outside the band;
-Output written on main_iclr.xdv (6 pages, 203576 bytes).
+[10] [11] (main_iclr.aux) )
+Output written on main_iclr.xdv (11 pages, 338712 bytes).

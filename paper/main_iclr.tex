@@ -17,7 +17,7 @@
 \usepackage{multirow}
 \input{results_iclr}   % auto-generated macros + table bodies
 
-\iclrfinalcopy
+% \iclrfinalcopy  % camera-ready off: submission is double-blind
 
 \title{Endogenous Signals Fail to Allocate: \\
 Per-Token Compute Value Is Real, \\
@@ -293,8 +293,9 @@ iterations (\emph{entropy}, \emph{random}, \emph{tag-only}) at testbed scale.
 \subsection{Endogenous signals fail; supervision fixes allocation}
 \label{sec:failures-results}
 
-Table~\ref{tab:testbed} and Figure~\ref{fig:journey}: \XX. (Ported from the
-workshop version: entropy $0.232/0.233/0.233$ across E/M/H; tag-init
+The three failure modes are already visible in the workshop-era testbed
+runs (numbers ported verbatim from that version; their artifacts predate
+this repository): entropy $0.232/0.233/0.233$ across E/M/H; tag-init
 inverted; unsupervised vacuous; supervised spread $+0.21$, ordering
 $r = 0.95$ in every seed.)
 
@@ -336,7 +337,8 @@ refuted---it is falsifiable at scale: if Eq.~\eqref{eq:gategrad} measures
 reducible value rather than noise, its per-bin signature must migrate as
 model capability grows (\S\ref{sec:scale}), and under it the natural-language
 targets differ from shuffled ones precisely where compute has leverage
-(\S\ref{sec:nl}). Both tests are pre-registered; \XX\ reports their outcome.
+(\S\ref{sec:nl}). Both tests are pre-registered; \S\ref{sec:scale} and \S\ref{sec:nl}
+report their outcomes --- neither favored the measured targets.
 
 \begin{table}[t]
 \centering
@@ -354,7 +356,8 @@ Bin-level spread is \emph{not} the allocation metric for measured targets
 (\S\ref{sec:measure}): gate-grad varies within problems (a hard bin contains
 both irreducible and worth-treating tokens), so its E/M/H spread is smaller
 while its per-token allocation is finer; we report gate--score agreement on
-held-out tokens (\XX) and per-token rather than per-bin summaries.
+held-out tokens (Pearson $\le 0.04$, Spearman $\le 0.09$ in every
+seed --- near zero) and per-token rather than per-bin summaries.
 
 \subsection{The causal test and the surviving recipe}
 \label{sec:causal}
@@ -527,8 +530,20 @@ oracle machinery's difficulty diagnostics are testbed-scale results
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}
 
-Against the first-order frozen-body oracle (\S\ref{sec:measure}): \XX.
-Per-layer gate profiles by difficulty bin: \XX.
+Against the first-order frozen-body oracle (\S\ref{sec:measure}): at
+starved-150M, the regime where the field is structured, oracle waterfill
+allocation of the $0.5$ budget beats random allocation by $+0.30$/$+0.38$
+held loss across seeds and anti-allocation by $+0.70$/$+0.78$ --- the
+ordering is real zero-shot. Two boundaries sharpen the claim. First,
+every explicit allocation ($3.92$--$5.03$) trails plain full compute
+($2.75$--$2.77$): allocation of a scarce budget is strictly worse than
+not budgeting, at this regime. Second, training-time chasing does not
+convert the ordering into accuracy (\S\ref{sec:causal}).
+Per-layer gate profiles by difficulty bin are heterogeneous rather than
+ordered: for the ours arm at 150M, the hard-minus-easy spread per layer
+is $\le 0.15$ in eight of twelve layers, while a minority (one layer at
+$0.60$) concentrates most of the ordering --- allocation signal, where
+present, is layer-localized, not uniform.
 
 \subsection{Wall-clock realization}
 \label{sec:realization}
@@ -555,7 +570,17 @@ masked path --- what most token-dropping code actually ships --- realizes
 \paragraph{Implications.} The recipe---train dense, measure, impose---needs
 no endogenous-signal search and plugs into serving stacks that already
 produce per-token difficulty estimates (speculative-decoding acceptance).
-\paragraph{When static schedules suffice.} \XX
+\paragraph{When static schedules suffice.} Our results give a sharp,
+asymmetric answer. Static gating never suffices for training: a constant
+$g{=}0.5$ from scratch collapses at every scale tested (11M: $31.8\%$
+accuracy; starved-150M: $22.4\%$ with diverging loss), even under the
+validated recipe. At deployment, however, the static choice is trivially
+optimal --- the converged field is flat, so full compute everywhere (the
+dense deployment our recipe uses) is the right static schedule. Between
+those endpoints, static schedules suffice exactly when the loss is
+dominated by structure that does not benefit from intermittent compute;
+the MetaMathQA boundary of \S\ref{sec:nl} is the cautionary case in the
+other direction, where the noise our recipe injects is pure cost.
 \paragraph{Limitations.} The 1.4B web-text headline rests on two seeds
 (a third was attempted three times and lost to host failures twice);
 they agree to $0.1$ points, but $n{=}2$ is $n{=}2$. The code and math
@@ -583,7 +608,7 @@ failure half is what the manifests and kill-rules in the repository
 are for.
 
 \bibliography{iclr2027_conference}
-\bibliographystyle{iclr_conference}
+\bibliographystyle{iclr2027_conference}
 
 \appendix
 
@@ -630,7 +655,32 @@ replicating the testbed result.
 
 \section{Experimental details}
 \label{app:details}
-\XX
+
+\paragraph{Arithmetic.} Vocabulary of 22 digit/operator tokens; frozen
+held-out sets of 256 sequences per split, identical across arms and
+seeds; accuracy on answer tokens only. 11M: $d{=}384$, 6 layers, 6 heads,
+$d_{ff}{=}1536$, sequence length 256, batch 32, LR $3{\times}10^{-4}$
+(the raw recipe trains stably at this scale). 150M: $d{=}1024$, 12
+layers, RoPE, SDPA attention, sequence length 512, batch 32, validated
+recipe: LR $10^{-4}$, cosine decay to $0.1\times$, 2\% warmup, weight
+decay $0.1$. The 11M causal test runs 3000 steps; the 150M grid 5000;
+the starved regime 2500; the 150M convergence pair 10000.
+
+\paragraph{Natural language.} Pythia-1.4b continue-trained on FineWeb-Edu
+(350M tokens packed to 2049-token rows, 167{,}398 train / 3{,}416 held-out
+sequences), AdamW $10^{-5}$, cosine to $0.1\times$ with 2\% warmup,
+bf16 autocast over fp32 master weights, effective batch 8 sequences via
+4-sequence micro-batches $\times$ gradient accumulation 2, 3000 steps,
+evaluations every 250 steps on a fixed 32-sequence subsample with a full
+held-out evaluation at the final step. Code domain: CodeSearchNet python
+(function docstring + body); math domain: MetaMathQA (question +
+response). The per-layer oracle stores per-(token, layer) scores in fp32
+(negative partial losses) and quartile-bins each layer's positive scores.
+
+\paragraph{Wall-clock.} Measured on an A100: full forward+backward steps
+at batch $4{\times}2048$, 3 warmup + 10 timed iterations, synchronized;
+the gather-skip path index-selects active token rows before each FFN and
+index-copies results back.
 
 \section{Compute ledger}
 \label{app:compute}
