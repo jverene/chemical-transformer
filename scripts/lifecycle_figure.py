@@ -17,11 +17,17 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 SEEDS = [0, 1]
-COLORS = {0: "#1f77b4", 1: "#d62728"}
+# Okabe-Ito colorblind-safe palette
+COLORS = {0: "#0072B2", 1: "#D55E00"}
+plt.rcParams.update({
+    "font.size": 9.5, "axes.titlesize": 10, "axes.labelsize": 9.5,
+    "legend.fontsize": 7.5, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "axes.spines.top": False, "axes.spines.right": False,
+    "figure.dpi": 150})
 
 
 def main():
-    fig, ax = plt.subplots(figsize=(4.6, 2.9))
+    fig, ax = plt.subplots(figsize=(3.4, 2.4))
     means_x = means_y = None
     for s in SEEDS:
         d = json.load(open(f"results-headroom/trajectory_seed{s}.json"))

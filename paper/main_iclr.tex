@@ -340,18 +340,6 @@ targets differ from shuffled ones precisely where compute has leverage
 (\S\ref{sec:nl}). Both tests are pre-registered; \S\ref{sec:scale} and \S\ref{sec:nl}
 report their outcomes --- neither favored the measured targets.
 
-\begin{table}[t]
-\centering
-\caption{Supervision targets vs.\ realized gates (budget redistribution).
-The floor + quartile targets have mean $\approx 0.31$ and nominal spread
-$0.7$; the pinned budget ($\bar g \to 0.5$) lifts and compresses them. The
-compression is the budget term redistributing, not the head failing to
-allocate --- a pinned mean is what makes the inference budget a settable
-dial.}
-\label{tab:budget}
-\budgettable
-\end{table}
-
 Bin-level spread is \emph{not} the allocation metric for measured targets
 (\S\ref{sec:measure}): gate-grad varies within problems (a hard bin contains
 both irreducible and worth-treating tokens), so its E/M/H spread is smaller
@@ -415,6 +403,17 @@ collapses outright. Measurable structure is not a trainable signal.}
 \starvedtable
 \end{table}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.45\linewidth]{lifecycle.pdf}
+\caption{The life cycle, measured. Ordering value (random $-$ waterfill
+held-out loss under zero-shot allocation on frozen checkpoint bodies; two
+seeds plus their mean) peaks at $0.1$--$0.2$ over steps 100--800 and decays
+to zero by step 3200. The step-5000 sign flips are seed-inconsistent and
+pre-registered as noise, not claimed.}
+\label{fig:lifecycle}
+\end{figure}
+
 Table~\ref{tab:starved} is the decisive test. The starved-150M regime is
 where the value field is demonstrably \emph{alive}: the discriminator shows
 real ordering structure (waterfill $+$0.30/$+$0.38 over random across two
@@ -422,8 +421,10 @@ seeds). If that structure were exploitable, training online against the
 measured field should beat random allocation. It does not: online loses to
 random windows ($41.7$ vs $44.2$), replicating the 11M causal result at a
 second scale, and the static gate collapses outright ($22.4$, held loss
-diverging). The life cycle and the causal test together: the field's
-structure is real, measurable---and not a training signal.
+diverging). Figure~\ref{fig:lifecycle} shows the full trajectory: the ordering value
+rises, peaks, and decays to zero as the body converges. The life cycle and
+the causal test together: the field's structure is real, measurable---and
+not a training signal.
 
 \subsection{Scale: the effect survives 11M $\to$ 150M}
 \label{sec:scale}
@@ -463,7 +464,7 @@ $10^{-6}$: the converged field is coin-flip at every bin and both scales
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.8\linewidth]{frontier.pdf}
+\includegraphics[width=0.72\linewidth]{frontier.pdf}
 \caption{Accuracy vs.\ billed training compute (relative to the dense arm
 at the same scale, log axis). Gated 2-stage arms cluster at $\sim$0.58$\times$
 dense compute and $\sim$5 points below it at 150M; MoD reaches dense compute
@@ -593,6 +594,14 @@ wall-clock, and realized speedups depend on kernel support. Gate-target
 quartiles are hand-set; Eq.~\eqref{eq:gategrad} replaces their content but
 not their form.
 
+\section*{AI use statement}
+An LLM coding assistant was used under the authors' direction for
+experiment infrastructure (data pipelines, training and benchmark code,
+manifests, figures) and manuscript drafting. Experimental design, all
+decisions and kill-rules, and every claim are the authors'; each number in
+the paper regenerates from committed artifacts via scripts in the
+repository.
+
 \section*{Reproducibility statement}
 All code, manifests, and per-run JSONs (config, history, billed-FLOPs
 curves) are in the anonymized repository; every table and figure regenerates
@@ -681,6 +690,21 @@ response). The per-layer oracle stores per-(token, layer) scores in fp32
 at batch $4{\times}2048$, 3 warmup + 10 timed iterations, synchronized;
 the gather-skip path index-selects active token rows before each FFN and
 index-copies results back.
+
+\section{Budget redistribution}
+\label{app:budget}
+
+\begin{table}[h]
+\centering
+\caption{Supervision targets vs.\ realized gates (budget redistribution).
+The floor + quartile targets have mean $\approx 0.31$ and nominal spread
+$0.7$; the pinned budget ($\bar g \to 0.5$) lifts and compresses them. The
+compression is the budget term redistributing, not the head failing to
+allocate --- a pinned mean is what makes the inference budget a settable
+dial.}
+\label{tab:budget}
+\budgettable
+\end{table}
 
 \section{Compute ledger}
 \label{app:compute}

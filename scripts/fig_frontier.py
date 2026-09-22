@@ -19,9 +19,16 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-C_11 = "#1f77b4"
-C_150 = "#d62728"
-C_400 = "#7f7f7f"
+# Okabe-Ito colorblind-safe palette
+C_11 = "#56B4E9"    # sky blue
+C_150 = "#D55E00"   # vermillion
+C_400 = "#000000"   # black
+C_DENSE = "#009E73" # bluish green
+plt.rcParams.update({
+    "font.size": 9.5, "axes.titlesize": 10, "axes.labelsize": 9.5,
+    "legend.fontsize": 7.5, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "axes.spines.top": False, "axes.spines.right": False,
+    "figure.dpi": 150})
 
 ARM_STYLE = {
     "dense": ("o", "Dense"),
@@ -68,7 +75,7 @@ def fig150m():
 
 
 def main():
-    fig, ax = plt.subplots(figsize=(5.2, 3.2))
+    fig, ax = plt.subplots(figsize=(4.0, 2.7))
 
     m11 = fig11m()
     xs = [m11[a][0] for a in m11]
