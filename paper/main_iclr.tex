@@ -74,10 +74,12 @@ template-dominated math are reported, not hidden.
 entropy gates are flat (collapse), tag-init end-to-end gates decrease with
 difficulty (inversion; schematic of measured $r{=}-0.59$), unsupervised
 heads are flat and seed-unstable (vacuity, band); only tag supervision
-orders gates---and \S\ref{sec:p0} shows the ordering carries no accuracy
-benefit. \textbf{(b)} The measured value of compute (Eq.~\eqref{eq:gategrad})
+orders gates---with no accuracy benefit (\S\ref{sec:p0}). \textbf{(b)} The measured value of compute (Eq.~\eqref{eq:gategrad})
 has a life cycle: permutation-controlled ordering value on frozen bodies,
-real mid-training, flat at convergence. \textbf{(c)} Causal test at two
+real mid-training, flat at convergence. The dashed reference line is the
+\emph{entire} dense-vs-dropout loss gap the recipe pays ($0.107$)---the
+peak ordering value is ${\sim}2\times$ it: consumed by training, never
+converted. \textbf{(c)} Causal test at two
 scales: chasing the measured field online loses to random allocation of
 the same budget; a constant gate collapses.}
 \label{fig:teaser}
@@ -506,21 +508,11 @@ difficulty-bin structure, no migration. The compute-value concept is
 therefore parked as a \emph{training-time} signal: the starved-regime
 discriminator shows structure where the body is plastic, but neither
 converged-body oracle allocation nor online chasing converts it into
-accuracy.
-
-\begin{table}[t]
-\centering
-\caption{Per-bin measured value signature by model size (converged bodies,
-validated recipe). frac(score${\le}0)\approx 0.5$ and mean scores at
-$10^{-6}$: the converged field is coin-flip at every bin and both scales
-(pre-registered readout executed; prediction not confirmed).}
-\label{tab:migration}
-\migrationtable
-\end{table}
+accuracy (Figure~\ref{fig:ladder}b).
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.66\linewidth]{frontier.pdf}
+\includegraphics[width=0.62\linewidth]{frontier.pdf}
 \caption{Accuracy vs.\ billed training compute (relative to the dense arm
 at the same scale, log axis). Gated 2-stage arms cluster at
 $\sim$0.58$\times$ dense compute and $\sim$5 points below it at 150M; MoD
@@ -584,17 +576,27 @@ oracle machinery's difficulty diagnostics are testbed-scale results
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}
 
-Against the first-order frozen-body oracle (\S\ref{sec:measure}): at
-starved-150M, oracle waterfill allocation of the $0.5$ budget beats random
-by $+0.30$/$+0.38$ held loss across seeds and anti-allocation by
-$+0.70$/$+0.78$---the ordering is real zero-shot. But every explicit
-allocation ($3.92$--$5.03$) trails plain full compute ($2.75$--$2.77$):
-allocating a scarce budget is strictly worse than not budgeting here, and
-chasing does not convert the ordering into accuracy
-(\S\ref{sec:causal}). Per-layer gate profiles are heterogeneous rather
-than ordered: for the ours arm at 150M, the hard-minus-easy spread is
-$\le 0.15$ in eight of twelve layers, while one layer ($0.60$)
-concentrates the ordering---layer-localized, not uniform.
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.68\linewidth]{ladder.pdf}
+\caption{The allocation ladder, starved-150M (zero-shot held-out loss on
+frozen bodies; dots are seeds). \textbf{(a)} Ordering is real---waterfill
+beats random ($+0.30$/$+0.38$) and anti-allocation ($+0.70$/$+0.78$;
+$2.1$--$2.3\times$)---yet every rung, including oracle-best, sits above
+the no-budgeting line: perfect allocation of a $0.5$ budget pays
+$+1.2$--$1.5$ vs.\ full compute. \textbf{(b)} At convergence: a 51/49
+coin flip (Table~\ref{tab:migration}, App.~\ref{app:p0table}).}
+\label{fig:ladder}
+\end{figure}
+
+Figure~\ref{fig:ladder} prices allocation itself: ordering is real
+zero-shot, but allocating at all is strictly worse than not budgeting
+($2.75$--$2.77$ uniform vs.\ $3.92$--$5.03$ for every explicit
+allocation), and chasing converts none of it (\S\ref{sec:causal}).
+Per-layer gate profiles are heterogeneous
+rather than ordered: at 150M the hard-minus-easy spread is $\le 0.15$ in
+eight of twelve layers, while one layer ($0.60$) concentrates the
+ordering---layer-localized, not uniform.
 
 \subsection{Wall-clock realization}
 \label{sec:realization}
@@ -625,33 +627,30 @@ produce per-token difficulty estimates (speculative-decoding acceptance
 \paragraph{Which chasers does ``not trainable'' rule out?} The causal arms
 test the natural first-order chaser: measure $\partial\mathcal{L}/\partial
 g$ on the current body, allocate hard against it, refresh every 100 steps.
-Stronger search over the same objective (bandits, RL over gate policies,
-second-order corrections) faces the same structural problem: the scores are
-a property of the current body, training under them changes the body, and
-the life cycle shows the ordering value decaying precisely as the body
-absorbs compute---the chaser destroys the signal it chases. Meanwhile the
-frozen-body oracle (\S\ref{sec:oracle-gap}) caps what \emph{any} ordering
-could buy without retraining, below not budgeting at all in every regime
-we measured. We read ``not trainable'' as a property of gradient-defined
-value fields, not an impossibility proof for all conceivable allocators.
+Stronger search over the same objective (bandits, RL, second-order
+corrections) faces the same structural problem: the scores are
+a property of the current body; training under them changes the body; and
+the ordering value decays as the body absorbs compute---the chaser
+destroys the signal it chases. The frozen-body oracle
+(Fig.~\ref{fig:ladder}) caps what \emph{any} ordering could buy---below
+not budgeting at all in every regime measured. We read ``not trainable''
+as a property of gradient-defined value fields, not an impossibility
+proof for all conceivable allocators.
 \paragraph{When static schedules suffice.} A constant $g{=}0.5$ from
 scratch collapses at every scale tested (11M: $31.8\%$; starved-150M:
 $22.4\%$, diverging), but at deployment the static choice is trivially
 optimal---the converged field is flat, so full compute everywhere is the
 right static schedule. Between those endpoints, static schedules suffice
-exactly when the loss is dominated by structure that does not benefit
-from intermittent compute; MetaMathQA (\S\ref{sec:nl}) is the cautionary
-counter-case.
-\paragraph{Limitations.} The 1.4B headline rests on two seeds (a third
-attempt was lost twice to host failures); their per-seed gaps agree to
-$0.02$ points (\NlRotGapA\% vs.\ \NlRotGapB\%), but $n{=}2$ is $n{=}2$,
+exactly when the loss does not benefit from intermittent compute;
+MetaMathQA (\S\ref{sec:nl}) is the counter-case.
+\paragraph{Limitations.} The 1.4B headline rests on two seeds whose
+per-seed gaps agree to $0.02$ points (\NlRotGapA\% vs.\ \NlRotGapB\%)---%
+$n{=}2$ is $n{=}2$, a third attempt having died twice to host failures---%
 and code and math are single-seed. Arithmetic difficulty is
 operand-size-defined; NL bins inherit the reference model's notion of
-difficulty. The two-stage body is near-frozen by default
-(App.~\ref{app:ablations}); billed FLOPs are an accounting device
-(\S\ref{sec:realization} is the wall-clock bridge), and realized
-speedups depend on kernel support. Gate-target quartiles are hand-set;
-Eq.~\eqref{eq:gategrad} replaces their content but not their form.
+difficulty. The two-stage body is near-frozen (App.~\ref{app:ablations});
+billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile
+\emph{form} is hand-set, its content measured.
 
 \section*{AI use statement}
 An LLM coding assistant was used under the authors' direction for
@@ -742,6 +741,17 @@ $g{=}0.5$ target: $72.3 \pm 2.1$ accuracy at the same $19.0$
 MFLOPs/token.}
 \label{tab:p0}
 \pzerotable
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Per-bin measured value signature by model size (converged bodies,
+validated recipe). frac(score${\le}0)\approx 0.5$ and mean scores at
+$10^{-6}$: the converged field is coin-flip at every bin and both scales
+(pre-registered readout executed; prediction not confirmed); plotted as
+Figure~\ref{fig:ladder}(b).}
+\label{tab:migration}
+\migrationtable
 \end{table}
 
 \section{Experimental details}
