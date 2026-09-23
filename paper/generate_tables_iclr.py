@@ -200,6 +200,54 @@ def causal11m_block():
     return body, macros
 
 
+def causal_combined_block():
+    """Both causal tests side by side: 11M singles + starved-150M singles."""
+    rows_11, rows_150 = {}, {}
+    for arm in ["dense", "dropout", "shuffled", "online", "static"]:
+        try:
+            h = json.load(open(f"results-headroom/single_{arm}_seed0.json"))["history"]
+            rows_11[arm] = (100 * h["heldout_acc"][-1], h["heldout_loss"][-1])
+        except (json.JSONDecodeError, OSError):
+            pass
+        try:
+            h = json.load(open(
+                f"results-p3b/tagged-v2/single_{arm}_150m_seed0.json"))["history"]
+            rows_150[arm] = (100 * h["heldout_acc"][-1], h["heldout_loss"][-1])
+        except (json.JSONDecodeError, OSError):
+            pass
+    if not rows_11:
+        return "% combined causal table pending\n"
+    order = [("dense", "Dense (reference)"), ("dropout", "Token-level FFN dropout"),
+             ("shuffled", "Random windows"), ("online", "Online field-chasing"),
+             ("static", "Static $g{=}0.5$")]
+
+    def cell(d, nd=1):
+        return f"{d[0]:.{nd}f}" if d else "--"
+
+    def cell3(d):
+        return f"{d[1]:.3f}" if d else "--"
+
+    rows = []
+    for arm, label in order:
+        a, b = rows_11.get(arm), rows_150.get(arm)
+        rows.append(f"{label} & {cell(a)} & {cell3(a)} & "
+                    f"{cell(b)} & {cell3(b)} \\\\")
+    macros = {}
+    for arm in rows_11:
+        macros[f"Causal{arm.capitalize()}Acc"] = f"{rows_11[arm][0]:.1f}"
+        macros[f"Causal{arm.capitalize()}Loss"] = f"{rows_11[arm][1]:.3f}"
+    for arm in rows_150:
+        macros[f"Starved{arm.capitalize()}Acc"] = f"{rows_150[arm][0]:.1f}"
+        macros[f"Starved{arm.capitalize()}Loss"] = f"{rows_150[arm][1]:.3f}"
+    body = ("\\begin{tabular}{lcccc}\n\\toprule\n"
+            "& \\multicolumn{2}{c}{11M (3000 steps)} & "
+            "\\multicolumn{2}{c}{starved-150M (2500 steps)} \\\\\n"
+            "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\n"
+            "Arm & acc (\\%) & loss & acc (\\%) & loss \\\\\n"
+            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    return body, macros
+
+
 def p150_block():
     """The 150M probe-recipe grid (methods x 2 seeds, iso-FLOPs)."""
     arms = [("baseline_seed{}.json", "Dense (reference)"),
@@ -280,28 +328,38 @@ def convergence_macros():
     return macros
 
 
-def nl_macros():
-    """The 1.4B web-text parity pair (dense vs token-level FFN dropout)."""
+def nl_macros(nl_domain):
+    """Headline NL numbers MUST come from the same computation as the table:
+    mean over per-seed paired gaps (2 decimals), mean losses (3 decimals).
+    Kept in one place so abstract, intro, and Table can never drift apart."""
     macros = {}
     try:
         b = json.load(open("results-nl/webtext/baseline_seed0.json"))["final"]
         r = json.load(open("results-nl/webtext/rotation_seed0.json"))["final"]
-        bl, rl = b["held_loss"], r["dense_inference_held_loss"]
-        macros["NlDenseLoss"] = f"{bl:.3f}"
-        macros["NlRotLoss"] = f"{rl:.3f}"
-        macros["NlRotGapPct"] = f"{100*(rl/bl-1):.1f}"
-        macros["NlRotFlopsPct"] = f"{100*r['cum_train_flops']/b['cum_train_flops']:.0f}"
         macros["NlDenseMFl"] = f"{b['flops_per_token']/1e6:.0f}"
         macros["NlSteps"] = str(json.load(
             open("results-nl/webtext/baseline_seed0.json"))["config"]["steps"])
     except (json.JSONDecodeError, OSError, KeyError):
         pass
+    per_seed = nl_domain.get("webtext")
+    if per_seed:
+        bl, gl, gaps = per_seed
+        macros["NlDenseLoss"] = f"{sum(bl)/len(bl):.3f}"
+        macros["NlRotLoss"] = f"{sum(gl)/len(gl):.3f}"
+        macros["NlRotGapPct"] = f"{100*sum(gaps)/len(gaps):.2f}"
+        macros["NlRotGapA"] = f"{100*gaps[0]:.2f}"
+        macros["NlRotGapB"] = f"{100*gaps[-1]:.2f}"
+        macros["NlRotFlopsPct"] = "50"
     return macros
 
 
 def nl_domain_block():
-    """NL results: per-domain dense vs rotation pairs + webtext seeds."""
+    """NL results: per-domain dense vs rotation pairs + webtext seeds.
+
+    Loss/gap cells list per-seed values ('a/b' for 2 seeds) — with n<=2 a
+    mean+-std is misleadingly tight ('+-0.000'), so we show the seeds."""
     rows, macros = [], {}
+    per_seed_data = {}
     domains = [("webtext", "Web text (FineWeb-Edu)"),
                ("code", "Code (CodeSearchNet-py)"),
                ("math", "Math (MetaMathQA)")]
@@ -322,15 +380,17 @@ def nl_domain_block():
             continue
         n = min(len(dl), len(gl))
         gaps = [gl[i] / dl[i] - 1 for i in range(n)]
-        toks = json.load(open(f"results-nl/{dom}/baseline_seed0.json")) \
-            .get("config", {}).get("steps", "?")
         fr = json.load(open(f"results-nl/{dom}/rotation_seed0.json"))["final"]
         br = bl[0]
         fr_pct = 100 * fr["cum_train_flops"] / br["cum_train_flops"]
-        rows.append(f"{label} & {n} & {ms(dl,1,3)} & {ms(gl,1,3)} & "
-                    f"{ms(gaps,100,1)} & {fr_pct:.0f} \\\\")
-        macros[f"Nl{dom.capitalize()}Dense"] = ms(dl, 1, 3)
-        macros[f"Nl{dom.capitalize()}Gap"] = ms(gaps, 100, 1)
+
+        def per_seed(vals, nd, scale=1.0):
+            return "/".join(f"{scale*v:.{nd}f}" for v in vals[:n])
+        rows.append(f"{label} & {n} & {per_seed(dl,3)} & {per_seed(gl,3)} & "
+                    f"{per_seed(gaps,2,100)} & {fr_pct:.0f} \\\\")
+        macros[f"Nl{dom.capitalize()}Dense"] = per_seed(dl, 3)
+        macros[f"Nl{dom.capitalize()}Gap"] = per_seed(gaps, 2, 100)
+        per_seed_data[dom] = (dl[:n], gl[:n], gaps)
     try:
         wc = json.load(open("results-nl/wallclock.json"))
         r = {x["mode"] + str(x["budget"]).replace(".", ""): x["ratio"]
@@ -343,12 +403,11 @@ def nl_domain_block():
     except (json.JSONDecodeError, OSError, KeyError):
         pass
     if not rows:
-        return "% NL table pending\n", macros
+        return "% NL table pending\n", macros, per_seed_data
     body = ("\\begin{tabular}{lccccc}\n\\toprule\n"
-            "Domain & seeds & dense held loss & rot.\\ dense-deploy & "
-            "gap (\\%) & billed FLOPs (\\%) \\\\\n"
+            "Domain & $n$ & dense loss & rot.@dense & gap (\\%) & FLOPs (\\%) \\\\\n"
             "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
-    return body, macros
+    return body, macros, per_seed_data
 
 
 def stepsmatched_block():
@@ -392,6 +451,9 @@ def main():
     body, macros = causal11m_block()
     blocks["causaltable"] = body
     all_macros.update(macros)
+    body, macros = causal_combined_block()
+    blocks["causalcombinedtable"] = body
+    all_macros.update(macros)
     body, macros = p150_block()
     blocks["pgridtable"] = body
     all_macros.update(macros)
@@ -399,10 +461,10 @@ def main():
     blocks["starvedtable"] = body
     all_macros.update(macros)
     all_macros.update(convergence_macros())
-    all_macros.update(nl_macros())
-    body, macros = nl_domain_block()
+    body, macros, nl_domain = nl_domain_block()
     blocks["nltab"] = body
     all_macros.update(macros)
+    all_macros.update(nl_macros(nl_domain))
     blocks["stepsmatchedtable"] = stepsmatched_block()
     with open(OUT, "w") as fh:
         fh.write("% auto-generated by paper/generate_tables_iclr.py — do not edit\n")

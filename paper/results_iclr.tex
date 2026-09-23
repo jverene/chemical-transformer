@@ -22,18 +22,20 @@
 \expandafter\def\csname GridmodAcc\endcsname{67.5$\pm$6.1}
 \expandafter\def\csname GridpredictorAcc\endcsname{62.9$\pm$9.1}
 \expandafter\def\csname Gridshuffled_150mAcc\endcsname{62.9$\pm$8.8}
-\expandafter\def\csname NlCodeDense\endcsname{1.007$\pm$0.000}
-\expandafter\def\csname NlCodeGap\endcsname{11.5$\pm$0.0}
+\expandafter\def\csname NlCodeDense\endcsname{1.007}
+\expandafter\def\csname NlCodeGap\endcsname{11.47}
 \expandafter\def\csname NlDenseLoss\endcsname{2.532}
 \expandafter\def\csname NlDenseMFl\endcsname{3246}
-\expandafter\def\csname NlMathDense\endcsname{0.382$\pm$0.000}
-\expandafter\def\csname NlMathGap\endcsname{95.3$\pm$0.0}
+\expandafter\def\csname NlMathDense\endcsname{0.382}
+\expandafter\def\csname NlMathGap\endcsname{95.34}
 \expandafter\def\csname NlRotFlopsPct\endcsname{50}
-\expandafter\def\csname NlRotGapPct\endcsname{7.8}
-\expandafter\def\csname NlRotLoss\endcsname{2.729}
+\expandafter\def\csname NlRotGapA\endcsname{7.76}
+\expandafter\def\csname NlRotGapB\endcsname{7.74}
+\expandafter\def\csname NlRotGapPct\endcsname{7.75}
+\expandafter\def\csname NlRotLoss\endcsname{2.728}
 \expandafter\def\csname NlSteps\endcsname{3000}
-\expandafter\def\csname NlWebtextDense\endcsname{2.532$\pm$0.000}
-\expandafter\def\csname NlWebtextGap\endcsname{7.7$\pm$0.0}
+\expandafter\def\csname NlWebtextDense\endcsname{2.532/2.532}
+\expandafter\def\csname NlWebtextGap\endcsname{7.76/7.74}
 \expandafter\def\csname ShuffledAcc\endcsname{74.7$\pm$1.1}
 \expandafter\def\csname StarvedOnlineAcc\endcsname{41.7}
 \expandafter\def\csname StarvedOnlineLoss\endcsname{1.363}
@@ -101,6 +103,21 @@ Static $g{=}0.5$ & 31.8 & 2.621 \\
 \bottomrule
 \end{tabular}
 }
+\newcommand{\causalcombinedtable}[0]{
+\begin{tabular}{lcccc}
+\toprule
+& \multicolumn{2}{c}{11M (3000 steps)} & \multicolumn{2}{c}{starved-150M (2500 steps)} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Arm & acc (\%) & loss & acc (\%) & loss \\
+\midrule
+Dense (reference) & 64.2 & 1.167 & -- & -- \\
+Token-level FFN dropout & 51.3 & 1.275 & -- & -- \\
+Random windows & 51.6 & 1.274 & 44.2 & 1.342 \\
+Online field-chasing & 36.7 & 2.253 & 41.7 & 1.363 \\
+Static $g{=}0.5$ & 31.8 & 2.621 & 22.4 & 3.597 \\
+\bottomrule
+\end{tabular}
+}
 \newcommand{\pgridtable}[0]{
 \begin{tabular}{lccccc}
 \toprule
@@ -129,11 +146,11 @@ Static $g{=}0.5$ & 22.4 & 3.597 \\
 \newcommand{\nltab}[0]{
 \begin{tabular}{lccccc}
 \toprule
-Domain & seeds & dense held loss & rot.\ dense-deploy & gap (\%) & billed FLOPs (\%) \\
+Domain & $n$ & dense loss & rot.@dense & gap (\%) & FLOPs (\%) \\
 \midrule
-Web text (FineWeb-Edu) & 2 & 2.532$\pm$0.000 & 2.728$\pm$0.000 & 7.7$\pm$0.0 & 50 \\
-Code (CodeSearchNet-py) & 1 & 1.007$\pm$0.000 & 1.123$\pm$0.000 & 11.5$\pm$0.0 & 50 \\
-Math (MetaMathQA) & 1 & 0.382$\pm$0.000 & 0.747$\pm$0.000 & 95.3$\pm$0.0 & 50 \\
+Web text (FineWeb-Edu) & 2 & 2.532/2.532 & 2.729/2.728 & 7.76/7.74 & 50 \\
+Code (CodeSearchNet-py) & 1 & 1.007 & 1.123 & 11.47 & 50 \\
+Math (MetaMathQA) & 1 & 0.382 & 0.747 & 95.34 & 50 \\
 \bottomrule
 \end{tabular}
 }
