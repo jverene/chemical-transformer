@@ -75,8 +75,15 @@ def panel_b(ax):
     mean = [(a + b) / 2 for a, b in zip(*curves)]
     ax.plot(steps, mean, "s--", ms=3.4, lw=1.5, color="black",
             label="seed mean", zorder=5)
+    # plastic window: seed-mean ordering value is positive here
+    ax.axvspan(100, 1600, color=C_GREEN, alpha=0.09, lw=0)
+    ax.annotate("plastic window:\nordering value $> 0$", (850, 0.255),
+                fontsize=5.8, color=C_GREEN, ha="center")
+    ax.annotate("converged: flat\n(frac score$\\leq 0 \\approx 0.51$)",
+                (2900, -0.145), fontsize=5.8, color="0.35", ha="center")
     ax.axhline(0, color="gray", lw=0.7, ls=":")
     ax.set_xscale("log")
+    ax.set_ylim(-0.185, 0.315)
     ax.set_xticks(steps)
     show = {"50", "200", "800", "3200"}
     ax.set_xticklabels([s if s in show else "" for s in map(str, steps)],
@@ -111,7 +118,7 @@ def panel_c(ax):
 
 
 def main():
-    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.8))
+    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.72))
     panel_a(axes[0])
     panel_b(axes[1])
     panel_c(axes[2])
