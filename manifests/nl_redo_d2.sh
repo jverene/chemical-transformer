@@ -7,12 +7,17 @@ $PY -c "import transformers, datasets, accelerate" 2>/dev/null || \
   /opt/conda/bin/pip install -q --no-input "transformers>=4.40" "datasets>=2.19" "accelerate>=0.30" 2>&1 | tail -1 || \
   /opt/conda/bin/pip install -q --no-input -i https://pypi.tuna.tsinghua.edu.cn/simple "transformers>=4.40" "datasets>=2.19" "accelerate>=0.30" 2>&1 | tail -1
 
-# D2-1: corpus
+# D2-1: corpus (HF downloads throw transient 499/5xx — retry up to 4x)
 if [ ! -f data/nl/webtext/meta.json ]; then
-  $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b \
-    --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_d2_1.log | tail -2 || true
+  for ATTEMPT in 1 2 3 4; do
+    $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b \
+      --out-root data/nl --max-tokens 350000000 2>&1 | tee /workspace/phase_d2_1.log | tail -2 \
+      && break
+    echo "D2-1 attempt $ATTEMPT failed; sleeping 120s before retry" | tee -a /workspace/phase_d2_1.log
+    sleep 120
+  done
 fi
-test -f data/nl/webtext/train_tokens.npy || { echo "D2-1 FAILED"; exit 1; }
+test -f data/nl/webtext/meta.json -a -f data/nl/webtext/train_tokens.npy || { echo "D2-1 FAILED (4 attempts)"; exit 1; }
 
 # D2-2: dense seed 2
 $PY -m ct.nl.train_lm --domain webtext --model EleutherAI/pythia-1.4b \

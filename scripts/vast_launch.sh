@@ -74,6 +74,7 @@ DEADLINE=\$((\$(date +%s) + $MAX_HOURS*3600))
 echo "$ID $KEY \$DEADLINE" > /workspace/wdt_args
 chmod +x scripts/vast_watchdog.sh
 tmux kill-session -t ct 2>/dev/null; tmux kill-session -t selfstop 2>/dev/null
+rm -f /workspace/MANIFEST_DONE /workspace/NLX_DONE /workspace/NL_REAL_DONE
 tmux new-session -d -s ct 'cd /workspace/$REPO; bash /workspace/manifest.sh 2>&1 | tee /workspace/ct.log; touch /workspace/MANIFEST_DONE'
 tmux new-session -d -s selfstop "scripts/vast_watchdog.sh $ID /workspace/vast_tfa_key \$DEADLINE /workspace/MANIFEST_DONE"
 echo "watchdog: stops at \$DEADLINE or on MANIFEST_DONE"
