@@ -425,24 +425,34 @@ ls—
 
 File: teaser.pdf Graphic file (type pdf)
 <use teaser.pdf>
-[1
 
-] [2] [3] [4]
-Underfull \hbox (badness 1194) in paragraph at lines 388--393
+Underfull \vbox (badness 3260) has occurred while \output is active []
+
+ [1
+
+]
+[2] [3] [4]
+File: content.pdf Graphic file (type pdf)
+<use content.pdf>
+
+Underfull \hbox (badness 1194) in paragraph at lines 394--399
  \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
 y shuffled number existed: the
  []
 
-
-Underfull \vbox (badness 1107) has occurred while \output is active []
-
- [5]
-[6]
+[5] [6]
 File: frontier.pdf Graphic file (type pdf)
 <use frontier.pdf>
- [7] [8] [9] (main_iclr.bbl [10] [11]) [12]
+ [7]
+Underfull \vbox (badness 4316) has occurred while \output is active []
+
+ [8]
+Underfull \vbox (badness 1533) has occurred while \output is active []
+
+ [9]
+(main_iclr.bbl [10] [11]) [12]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 458368 bytes).
+Output written on main_iclr.xdv (14 pages, 457904 bytes).
