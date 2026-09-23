@@ -81,6 +81,11 @@ def panel_b(ax):
                 fontsize=5.8, color=C_GREEN, ha="center")
     ax.annotate("converged: flat\n(frac score$\\leq 0 \\approx 0.51$)",
                 (2900, -0.145), fontsize=5.8, color="0.35", ha="center")
+    # reference height: the entire dense-vs-dropout gap the recipe pays,
+    # drawn under the peak so the peak's ~2x magnitude is visible
+    ax.axhline(0.107, color="0.45", ls="--", lw=0.9, zorder=1)
+    ax.annotate("dense$-$dropout gap", (3300, 0.128), fontsize=5.4,
+                color="0.35", ha="right")
     ax.axhline(0, color="gray", lw=0.7, ls=":")
     ax.set_xscale("log")
     ax.set_ylim(-0.185, 0.315)
@@ -118,7 +123,7 @@ def panel_c(ax):
 
 
 def main():
-    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.72))
+    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.64))
     panel_a(axes[0])
     panel_b(axes[1])
     panel_c(axes[2])
