@@ -81,28 +81,6 @@ Size & frac(score$\le$0) per bin (E/M/H) & mean score per bin \\
 \bottomrule
 \end{tabular}
 }
-\newcommand{\windowtable}[0]{
-\begin{tabular}{lccc}
-\toprule
-Size & tokens & E/M/H acc (\%) \\
-\midrule
-400m & 66M & 8/9/9 \\
-\bottomrule
-\end{tabular}
-}
-\newcommand{\causaltable}[0]{
-\begin{tabular}{lcc}
-\toprule
-Arm & Held-out acc (\%) & Held-out loss \\
-\midrule
-Dense (reference) & 64.2 & 1.167 \\
-Token-level FFN dropout & 51.3 & 1.275 \\
-Random windows & 51.6 & 1.274 \\
-Online field-chasing & 36.7 & 2.253 \\
-Static $g{=}0.5$ & 31.8 & 2.621 \\
-\bottomrule
-\end{tabular}
-}
 \newcommand{\causalcombinedtable}[0]{
 \begin{tabular}{lcccc}
 \toprule
@@ -132,14 +110,17 @@ MoD (single-stage) & 67.5$\pm$6.1 & 77.2$\pm$6.1 & 269$\pm$0 & 0.25 & -0.05$\pm$
 \bottomrule
 \end{tabular}
 }
-\newcommand{\starvedtable}[0]{
-\begin{tabular}{lcc}
+\newcommand{\pgridperseedtable}[0]{
+\begin{tabular}{lccc}
 \toprule
-Arm & Held-out acc (\%) & Held-out loss \\
+Arm & seed 0 & seed 1 & MFLOPs/tok \\
 \midrule
-Random windows & 44.2 & 1.342 \\
-Online field-chasing & 41.7 & 1.363 \\
-Static $g{=}0.5$ & 22.4 & 3.597 \\
+Dense & 63.0 & 72.9 & 467 \\
+Fixed $g{=}0.5$ (scratch) & 63.6 & 61.8 & 265 \\
+Fixed (2-stage) & 56.6 & 69.2 & 273 \\
+Ours (tag targets) & 56.4 & 69.4 & 276 \\
+Shuffled (2-stage) & 56.6 & 69.1 & 269 \\
+MoD (single-stage) & 71.9 & 63.2 & 269 \\
 \bottomrule
 \end{tabular}
 }

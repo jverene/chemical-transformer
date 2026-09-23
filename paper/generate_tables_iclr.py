@@ -146,58 +146,37 @@ def migration_block():
             "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
 
 
-def window_block():
-    """P1a window probes: hard-bin acc at the largest token budget per size."""
-    out = []
-    for path in sorted(glob.glob("results-p1/tagged-v2/baseline_seed*.json")):
-        r = json.load(open(path))
-        hist = r["history"]
-        if not hist.get("bin_acc"):
-            continue
-        hard = [h[-1] for h in hist["bin_acc"]]
-        toks = r["history"]["step"][-1] * r["config"]["batch_size"] * \
-            r["config"]["seq_len"]
-        size = r["config"].get("size_name", f"{r['params']/1e6:.0f}M")
-        out.append(f"{size} & {toks/1e6:.0f}M & "
-                   f"{100*hard[0]:.0f}/{100*hard[1]:.0f}/{100*hard[-1]:.0f} \\\\")
-    if not out:
-        return "% window table pending\n"
-    return ("\\begin{tabular}{lccc}\n\\toprule\n"
-            "Size & tokens & E/M/H acc (\\%) \\\\\n\\midrule\n"
-            + "\n".join(out) + "\n\\bottomrule\n\\end{tabular}\n")
 
 
-def causal11m_block():
-    """11M causal single-stage test: dropout vs field-chasing vs static."""
-    arms = [("dense", "Dense (reference)"),
-            ("dropout", "Token-level FFN dropout"),
-            ("shuffled", "Random windows"),
-            ("online", "Online field-chasing"),
-            ("static", "Static $g{=}0.5$")]
+def p150_perseed_block():
+    """150M grid, per-seed accuracies (n=2; mean+-std in the main table
+    hides the seed pairing reviewers will ask about)."""
+    arms = [("baseline_seed{}.json", "Dense"),
+            ("fixed-schedule_seed{}.json", "Fixed $g{=}0.5$ (scratch)"),
+            ("fixed2stage_150m_seed{}.json", "Fixed (2-stage)"),
+            ("predictor-supervised_150m_seed{}.json", "Ours (tag targets)"),
+            ("shuffled_150m_seed{}.json", "Shuffled (2-stage)"),
+            ("mod_seed{}.json", "MoD (single-stage)")]
     rows = []
-    for arm, label in arms:
-        try:
-            r = json.load(open(f"results-headroom/single_{arm}_seed0.json"))
-        except (json.JSONDecodeError, OSError):
+    for pat, label in arms:
+        runs = []
+        for p in sorted(glob.glob(f"results-p3b/tagged-v2/{pat.format('*')}")):
+            try:
+                runs.append(json.load(open(p)))
+            except (json.JSONDecodeError, OSError):
+                pass
+        if not runs:
             continue
-        h = r["history"]
-        acc, loss = 100 * h["heldout_acc"][-1], h["heldout_loss"][-1]
-        rows.append(f"{label} & {acc:.1f} & {loss:.3f} \\\\")
+        accs = [f"{100*r['final']['acc']:.1f}" for r in runs]
+        fl = f"{runs[0]['final']['flops_per_token']/1e6:.0f}"
+        while len(accs) < 2:
+            accs.append("--")
+        rows.append(f"{label} & {accs[0]} & {accs[1]} & {fl} \\\\")
     if not rows:
-        return "% 11M causal table pending\n", {}
-    body = ("\\begin{tabular}{lcc}\n\\toprule\n"
-            "Arm & Held-out acc (\\%) & Held-out loss \\\\\n"
-            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
-    macros = {}
-    for arm, label in arms:
-        try:
-            r = json.load(open(f"results-headroom/single_{arm}_seed0.json"))
-            h = r["history"]
-            macros[f"Causal{arm.capitalize()}Acc"] = f"{100*h['heldout_acc'][-1]:.1f}"
-            macros[f"Causal{arm.capitalize()}Loss"] = f"{h['heldout_loss'][-1]:.3f}"
-        except (json.JSONDecodeError, OSError):
-            pass
-    return body, macros
+        return "% 150M per-seed table pending\n"
+    return ("\\begin{tabular}{lccc}\n\\toprule\n"
+            "Arm & seed 0 & seed 1 & MFLOPs/tok \\\\\n\\midrule\n" +
+            "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
 
 
 def causal_combined_block():
@@ -282,30 +261,6 @@ def p150_block():
             "\n\\bottomrule\n\\end{tabular}\n")
     return body, macros
 
-
-def starved_block():
-    """Starved-150M causal test: can the mid-life field be exploited?"""
-    arms = [("shuffled", "Random windows"),
-            ("online", "Online field-chasing"),
-            ("static", "Static $g{=}0.5$")]
-    rows, macros = [], {}
-    for arm, label in arms:
-        try:
-            r = json.load(open(
-                f"results-p3b/tagged-v2/single_{arm}_150m_seed0.json"))
-        except (json.JSONDecodeError, OSError):
-            continue
-        h = r["history"]
-        acc, loss = 100 * h["heldout_acc"][-1], h["heldout_loss"][-1]
-        rows.append(f"{label} & {acc:.1f} & {loss:.3f} \\\\")
-        macros[f"Starved{arm.capitalize()}Acc"] = f"{acc:.1f}"
-        macros[f"Starved{arm.capitalize()}Loss"] = f"{loss:.3f}"
-    if not rows:
-        return "% starved table pending\n", macros
-    body = ("\\begin{tabular}{lcc}\n\\toprule\n"
-            "Arm & Held-out acc (\\%) & Held-out loss \\\\\n"
-            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
-    return body, macros
 
 
 def convergence_macros():
@@ -447,19 +402,13 @@ def main():
     all_macros.update(macros)
     blocks["budgettable"] = budget_block()
     blocks["migrationtable"] = migration_block()
-    blocks["windowtable"] = window_block()
-    body, macros = causal11m_block()
-    blocks["causaltable"] = body
-    all_macros.update(macros)
     body, macros = causal_combined_block()
     blocks["causalcombinedtable"] = body
     all_macros.update(macros)
     body, macros = p150_block()
     blocks["pgridtable"] = body
     all_macros.update(macros)
-    body, macros = starved_block()
-    blocks["starvedtable"] = body
-    all_macros.update(macros)
+    blocks["pgridperseedtable"] = p150_perseed_block()
     all_macros.update(convergence_macros())
     body, macros, nl_domain = nl_domain_block()
     blocks["nltab"] = body

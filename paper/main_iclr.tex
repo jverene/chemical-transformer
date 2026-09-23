@@ -1,12 +1,9 @@
-%% ICLR 2027 submission — chemical-transformer expansion (v3: dropout-lead).
-%%
-%% POLICY CHECKLIST (executed by hand, not by LaTeX):
-%%  [ ] Sep 16: freeze conservative abstract (below). Sep 17: register.
-%%      Abstract editable until Sep 25 — sharpen as results land.
-%%  [ ] OpenReview profile accuracy; authors frozen Sep 18; one-paper cap.
-%%  [ ] 6-10 pages main text HARD. Appendix unlimited.
-%%  [ ] Swap iclr2026_conference.sty -> official iclr2027 when published.
-%%  [ ] PARITY TOGGLE: decided by the 10k convergence pair — see \ifparity.
+%% ICLR 2027 submission — chemical-transformer expansion.
+%% Status: main text fits 9 pages; statements + refs + appendix follow.
+%% Numbers regenerate via paper/generate_tables_iclr.py; figures via
+%% scripts/fig_{teaser,content,ladder}.py + scripts/fig_frontier.py.
+%% Remaining manual step: sync the OpenReview registered abstract with the
+%% final abstract before its edit window closes.
 \documentclass{article}
 \usepackage{iclr2027_conference}
 \usepackage{tikz}
@@ -29,16 +26,8 @@ Paper under double-blind review}
 \newcommand{\LN}{\mathrm{LN}}
 \newcommand{\FFN}{\mathrm{FFN}}
 \newcommand{\attn}{\mathrm{attn}}
-% PARITY TOGGLE (decided Sep 15 by the 10k convergence pair): rotation held
-% loss 1.086 vs dense 1.032 = 5.3% gap at 50% billed FLOPs -> inside the
-% pre-registered 2-10% band -> claim SCOPED to compute-limited regimes.
-\newif\ifparity
-\parityfalse
-\newcommand{\XX}{\textbf{\color{red}??}}
-\newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}
-% Fill with the anonymous.4open.science (or equivalent) link BEFORE
-% submitting — it renders bright red so it cannot slip through unnoticed.
-\newcommand{\repoURL}{\textcolor{red}{[ANONYMIZED REPOSITORY URL]}}
+% Filled from the published anonymous mirror:
+\newcommand{\repoURL}{\texttt{https://anonymous.4open.science/r/chemical-transformer-BB35}}
 
 \begin{document}
 \maketitle
@@ -727,7 +716,7 @@ protocol of the main text is unaffected.
 gate-grad $-$ shuffled difference is $0.0008$ at language scale,
 replicating the testbed result.
 
-\section{P0 numeric table}
+\section{Per-seed numeric tables}
 \label{app:p0table}
 
 \begin{table}[h]
@@ -741,6 +730,18 @@ $g{=}0.5$ target: $72.3 \pm 2.1$ accuracy at the same $19.0$
 MFLOPs/token.}
 \label{tab:p0}
 \pzerotable
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{150M probe grid per-seed accuracies (the main-text
+Table~\ref{tab:p150} reports mean$\pm$std over these; MFLOPs/token are
+seed-invariant). With $n{=}2$, the seed pairing---not the
+std---is the honest read: dense wins both seeds over every 2-stage arm;
+MoD splits; the 2-stage arms are within noise of each other in both
+seeds.}
+\label{tab:p150perseed}
+\pgridperseedtable
 \end{table}
 
 \begin{table}[h]
