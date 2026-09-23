@@ -36,6 +36,9 @@ Paper under double-blind review}
 \parityfalse
 \newcommand{\XX}{\textbf{\color{red}??}}
 \newcommand{\todoX}[1]{\textcolor{red}{[X: #1]}}
+% Fill with the anonymous.4open.science (or equivalent) link BEFORE
+% submitting — it renders bright red so it cannot slip through unnoticed.
+\newcommand{\repoURL}{\textcolor{red}{[ANONYMIZED REPOSITORY URL]}}
 
 \begin{document}
 \maketitle
@@ -48,22 +51,37 @@ ways: an entropy-driven gate collapses to a constant, a tag-initialized
 gate inverts, and an unsupervised learned head is vacuous.
 Difficulty-supervised targets under a budget constraint do produce ordered
 gates, but a pre-registered shuffled-targets control shows the ordering
-carries no accuracy benefit: gate-grad targets trail permuted targets by
-0.0008 held-out loss at 1.4B, and by at most 0.3 accuracy points at 11M.
+carries no accuracy benefit: gate-grad targets differ from permuted targets
+by 0.0008 held-out loss at 1.4B, and by at most 0.3 accuracy points at 11M.
 Measuring the field directly---the per-token gradient of loss with respect
-to each token's compute gate---explains why. The field has a life cycle:
-real structure mid-training (permutation-controlled oracle), consumed by
-training, flat at convergence---and a causal test shows its structure is
-not trainable: chasing it online loses to random allocation of the same
-budget at every scale tested. The surviving recipe needs no allocator:
-token-level FFN dropout, where each token receives full FFN compute only
-inside randomly rotating windows. At 1.4B web-text fine-tuning it trails
-dense by 7.8\% held-out loss (2 seeds) at 50\% billed FFN training FLOPs,
-inside the pre-registered 2--10\% band; a gather-based realization
-converts half the billed cost into a measured 1.35$\times$ training
-throughput. Failures on code and template-dominated math are reported,
-not hidden.
+to each token's compute gate---explains why: the field has a life cycle
+(real structure mid-training, consumed by training, flat at convergence),
+and a causal test shows its structure is not trainable---chasing it online
+loses to random allocation of the same budget at every scale tested. The
+surviving recipe needs no allocator: token-level FFN dropout, where each
+token receives full FFN compute only inside randomly rotating windows. At
+1.4B web-text fine-tuning it trails dense by \NlRotGapPct\% held-out loss
+(2 seeds) at 50\% billed FFN training FLOPs, inside the pre-registered
+2--10\% band; a gather-based realization converts half the billed cost into
+a measured 1.35$\times$ training throughput. Failures on code and
+template-dominated math are reported, not hidden.
 \end{abstract}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{teaser.pdf}
+\caption{The paper in three panels. \textbf{(a)} Endogenous signals fail:
+entropy gates are flat (collapse), tag-init end-to-end gates decrease with
+difficulty (inversion; schematic of measured $r{=}-0.59$), unsupervised
+heads are flat and seed-unstable (vacuity, band); only tag supervision
+orders gates---and \S\ref{sec:p0} shows the ordering carries no accuracy
+benefit. \textbf{(b)} The measured value of compute (Eq.~\eqref{eq:gategrad})
+has a life cycle: permutation-controlled ordering value on frozen bodies,
+real mid-training, flat at convergence. \textbf{(c)} Causal test at two
+scales: chasing the measured field online loses to random allocation of
+the same budget; a constant gate collapses.}
+\label{fig:teaser}
+\end{figure}
 
 % ---- ACTIVE INTRO (dropout-lead; parity-conditional sentence marked) ----
 Transformers spend most of their training compute on feed-forward blocks
@@ -76,24 +94,22 @@ per-token ground truth: endogenous signals collapse, invert, or stay vacuous
 (\S\ref{sec:failures}), supervised targets produce correctly ordered gates
 whose ordering carries no accuracy benefit, and a pre-registered
 shuffled-targets control shows target content is irrelevant at 11M and
-150M scale.
+150M scale. Figure~\ref{fig:teaser} previews the three findings.
 The positive half of the paper is a measurement that explains these
 failures and a recipe it motivates. We measure the per-token
 \emph{value of compute}---the gradient of the loss with respect to each
-token's FFN gate---and find it has a life cycle: permutation-controlled
-measurement shows real structure mid-training, consumed by training and
-flat at convergence (\S\ref{sec:measure}). A permutation-controlled oracle
-bounds the converged field's realizable headroom, and a causal single-stage
-test shows that \emph{chasing} the field online is worse than random
-allocation of the same budget---at 11M and, replicated, in the starved-150M
-regime where the field's mid-life structure is demonstrably present
-(\S\ref{sec:results}). What works is the degenerate allocator everyone
+token's FFN gate---and find it has a life cycle: real structure
+mid-training, consumed by training, flat at convergence (\S\ref{sec:measure}).
+An oracle bounds the converged field's headroom, and a causal test shows
+that \emph{chasing} the field online is worse than random allocation of the
+same budget---at 11M and, replicated, in the starved-150M regime where the
+field's mid-life structure is demonstrably present (\S\ref{sec:results}). What works is the degenerate allocator everyone
 skips: train with \emph{token-level FFN dropout}---each token receives full
-FFN compute only inside randomly rotating windows---and deploy dense. At
-matched tokens this trails dense held-out loss by \ConvRotGapPct\% at
-half the billed FFN training FLOPs on 11M and 150M models, and by
-\NlRotGapPct\% on 1.4B web-text fine-tuning---a claim we scope to
-compute-limited regimes per its pre-registered decision rule---requires no
+FFN compute only inside randomly rotating windows---and deploy dense. At the
+150M convergence pair it trails dense held-out loss by \ConvRotGapPct\% at
+exactly half the billed FFN training FLOPs, and by \NlRotGapPct\% on 1.4B
+web-text fine-tuning (2 seeds)---claims we scope to compute-limited regimes
+per their pre-registered decision rules---and it requires no
 labels or routers, and composes with any attention architecture because it
 never touches attention.
 
@@ -113,15 +129,16 @@ is measured at 42M and 150M, where the pre-registered migration prediction
 fails and the converged field is flat (\S\ref{sec:scale}).
 \item \textbf{Iso-FLOPs methodology}: all method comparisons at matched
 \emph{billed training FLOPs} (gated billing, forward + backward), with
-within-segment interpolation and a budget sweep; the workshop version's
-``similar total budget'' caveat is retired (\S\ref{sec:isoflops}).
+within-segment interpolation and a budget sweep; the ``similar total
+budget'' caveat of an earlier workshop version of this work is retired
+(\S\ref{sec:isoflops}).
 \item \textbf{Scale replication, honestly scoped}: the failure taxonomy,
 the shuffled-control content-irrelevance result, and the causal
 field-chasing test all replicate at 150M (probe grid, starved regime); the
 dropout recipe's parity claim is scoped to compute-limited regimes by its
-pre-registered decision rule ($-5.3\%$ loss at $50\%$ of billed FFN FLOPs
-at 150M; $-7.8\%$ at 1.4B web-text fine-tuning; the boundary on
-template-dominated data is reported, not hidden)
+pre-registered decision rule ($-5.3\%$ loss at $50\%$ billed FFN FLOPs at
+150M; $-\NlRotGapPct\%$ at 1.4B web-text fine-tuning; the
+template-dominated-data boundary is reported, not hidden)
 (\S\ref{sec:scale}, \S\ref{sec:nl}).
 \item \textbf{Realization}: a tiered-FFN serving benchmark showing
 tokens/sec scaling with the mean gate, converting billed-FLOPs savings into
@@ -131,21 +148,74 @@ wall-clock (\S\ref{sec:realization}).
 \section{Related Work}
 \label{sec:related}
 
-\paragraph{Adaptive compute.} Adaptive Computation Time
-\citep{graves2016act}, early-exit and cascades, and Mixture-of-Depths
-\citep{raposo2024mixture} route tokens by learned signals; MoE+router work
-attaches learned routers to expert selection. \citet{raposo2024mixture} train
-routers from scratch; our MoD baseline on the language-model track inherits
-the resulting handicap---a router trained during a short fine-tune, not a
-full pretraining run---which we acknowledge as a baseline limitation, not a
-strawman.
-\paragraph{Conditional computation and mixture-of-experts.}
-\paragraph{Entropy and confidence as uncertainty proxies.} Draft-model
-disagreement in speculative decoding is a deployed, per-token difficulty
-signal: acceptance probability measures ``hard for a small model,'' and our
-gate-gradient targets are the same quantity computed for layers instead of
-models.
-\paragraph{Resource-aware agents.}
+\paragraph{Adaptive computation and early exit.} Adaptive Computation Time
+\citep{graves2016act} and its transformer descendant \citep{dehghani2019universal}
+learn per-input halting and are known for halting scores collapsing to
+constants; our collapse diagnostic is the per-token version of the same
+failure, with the same underlying cause---weak, task-loss-only feedback
+\citep{bengio2013estimating}. Early-exit and cascades
+\citep{teerapittayanon2016branchynet,xin2020deebert,elbayad2020depth,
+schuster2022calm} and dynamic routing \citep{wang2018skipnet} key compute
+depth to learned confidence signals; the confidence-versus-value gap we
+measure (easy tokens carry the largest loss gradients) is a training-time
+account of why confidence signals under-serve hard inputs at deployment
+\citep{guo2017calibration}. Mixture-of-Depths \citep{raposo2024mixture} is
+the strongest recent allocator; our MoD baseline inherits a handicap we
+state plainly---its router is trained during a short fine-tune rather than a
+full pretraining run---so that comparison bounds router-from-scratch at our
+budget, not MoD at scale.
+
+\paragraph{Conditional computation and mixture-of-experts routing.} Sparse
+MoE \citep{jacobs1991adaptive,shazeer2017outrageously,lepikhin2021gshard,
+fedus2022switch} attaches learned routers to expert selection, and router
+training is notoriously brittle: load-balancing losses, router z-losses, and
+initialization are load-bearing \citep{zoph2022stmoe}, and gradient
+estimation through discrete routing decisions is a recognized obstacle
+\citep{bengio2013estimating}. Our difficulty heads inherit exactly this
+feedback poverty---through the task loss alone, nothing tells the head what
+difficulty is (the vacuity diagnostic). Slimmable networks
+\citep{yu2019universally} switch capacity at deployment; our budget-pinned
+gates are a per-token analogue with a settable mean.
+
+\paragraph{Regularization as the null allocator.} The surviving recipe is
+structured dropout, a lineage we position against explicitly rather than
+claim novelty over: elementwise dropout \citep{srivastava2014dropout},
+stochastic depth \citep{huang2016stochastic}, LayerDrop's per-layer
+structured dropout \citep{fan2019layerdrop}, and random token dropping
+during language-model training \citep{fan2021nlpscratch}. The contribution
+is not the regularizer but the iso-FLOPs result that surrounds it: at
+matched billed compute, every signal-carrying allocator we test is matched
+by (or loses to) the random one, and the measured value field that would
+justify non-random allocation is not trainable online. Our variant also
+differs in granularity (per-token, per-layer FFN windows; attention
+untouched) and in deployment (dense inference, never gated).
+
+\paragraph{Saliency and the value of compute.} Eq.~\eqref{eq:gategrad} is a
+per-token, per-layer saliency score for \emph{compute} rather than weights,
+in the lineage of Optimal Brain Damage \citep{lecun1990obd} and
+Taylor-expansion pruning \citep{molchanov2019importance}; to our knowledge
+its life cycle---real mid-training, consumed by training, flat at
+convergence---has not previously been measured for token-level compute
+allocation. The same first-order quantity underlies draft-model
+disagreement in speculative decoding
+\citep{leviathan2023speculative,chen2023speculative}: acceptance rates
+measure ``hard for a small model''; our gate gradients measure ``helpable
+by this layer,'' for layers instead of models.
+
+\paragraph{Token importance at inference.} Attention-mass and heavy-hitter
+token selection \citep{zhang2023h2o} and token pruning/merging in vision
+\citep{rao2021dynamicvit,bolya2023tome} exploit stable importance structure
+at inference; our converged-field result---measured loss-gradient saliency
+is coin-flip at convergence---explains why such signals must come from
+architecture (attention mass) rather than from loss gradients in a deployed
+model.
+
+\paragraph{Controls and memorization.} The shuffled-targets control follows
+the logic of random-label controls \citep{zhang2017rethinking}: if permuted
+supervision matches real supervision, the specific content is not what
+carries the effect. Curriculum ordering \citep{bengio2009curriculum} is the
+supervised-allocation hypothesis our tag arm tests, at token rather than
+example granularity.
 
 \section{Method}
 \label{sec:method}
@@ -153,7 +223,7 @@ models.
 \subsection{Architecture and per-token gating}
 \label{sec:arch}
 
-Each layer computes
+Each transformer layer \citep{vaswani2017attention} computes
 \begin{equation}
 x_2 = \LN\!\bigl(x_1 + \attn(x_1)\bigr), \qquad
 x_3 = \LN\!\bigl(x_2 + g_t \cdot \FFN(x_2)\bigr),
@@ -173,8 +243,9 @@ information that later positions may need.
 \label{sec:failures}
 
 End-to-end training offers the gate one channel of feedback: the task loss.
-\emph{Collapse}: a signal with no difficulty information (attention entropy,
-$r \approx -0.06$ per token with difficulty) drives the gate to a constant.
+\emph{Collapse}: a signal with no difficulty information (attention entropy
+\citep{clark2019bert}, $r \approx -0.06$ per token with difficulty) drives
+the gate to a constant.
 \emph{Inversion}: a ground-truth initialization makes the gate vary, but easy
 problems are memorizable, so their cross-entropy gradient is largest and
 training allocates them \emph{more} compute (per-problem gate--difficulty
@@ -224,7 +295,7 @@ loss says ``hard,'' the gate gradient says ``helpable''---and a token's tag
 bin does not constrain its score (a hard bin mixes irreducible tokens with
 worth-treating ones). We therefore expect, and report, that compute-value
 supervision does \emph{not} order gates by difficulty bins at the testbed
-scale: bin-level spread is not its target. The workshop-era inversion---%
+scale: bin-level spread is not its target. The inversion---%
 end-to-end training overfeeding easy tokens---is the same phenomenon seen
 from the other side: training chases reducibility wherever it lives, but
 uncontrollably; the budget term is what makes chasing value safe. A
@@ -234,12 +305,11 @@ sequence, testing whether any varying supervision would do.
 
 \paragraph{First-order oracle allocation.} The same measurements give a
 reference point: sorting per-(token, layer) scores and filling until the
-budget is exhausted yields the first-order-optimal allocation under a
-\emph{frozen} body, evaluated zero-shot by overriding the gates at
-inference. We label it accordingly: it bounds what allocation alone buys
-without retraining. Trained methods may exceed it---their bodies adapt to
-their gates---and we interpret that as adaptation compounding allocation,
-not as a paradox.
+budget is exhausted is the first-order-optimal allocation under a
+\emph{frozen} body, evaluated zero-shot by overriding gates at inference;
+it bounds what allocation alone buys without retraining. Trained methods
+may exceed it---their bodies adapt to their gates---which we read as
+adaptation compounding allocation, not as a paradox.
 
 \subsection{Iso-FLOPs training protocol}
 \label{sec:isoflops}
@@ -266,25 +336,28 @@ count). The hard regime is chosen per scale so the largest model sits inside
 a difficulty window: hard-bin accuracy neither saturated nor collapsed
 (maintained in $[40\%, 85\%]$ by the calibration probes). Frozen held-out
 sets, identical across methods and seeds; accuracy on answer tokens only.
-Models: an 11M testbed (the workshop setting, exactly reproduced) and a
-150M scaled model (RoPE, flash attention, bf16, cosine schedule; identical
-across methods), probed healthy (10k steps) and starved (2.5k steps).
+Models: an 11M testbed (the earlier workshop setting, exactly reproduced) and
+a 150M scaled model (RoPE \citep{su2024roformer}, flash attention
+\citep{dao2022flashattention}, bf16, cosine schedule; identical across
+methods), probed healthy (10k steps) and starved (2.5k steps).
 
-\paragraph{Natural language.} Pretrained Pythia-1.4b continue-trained on
-web text (FineWeb-Edu, 350M packed tokens, sequence length 2048, AdamW at
+\paragraph{Natural language.} Pretrained Pythia-1.4b \citep{biderman2023pythia}
+continue-trained on web text (FineWeb-Edu \citep{penedo2024fineweb}, 350M
+packed tokens, sequence length 2048, AdamW at
 $10^{-5}$ with cosine decay and 2\% warmup, bf16 autocast over fp32
 master weights): a dense arm and a token-level-FFN-dropout arm, same data
 and step budget, the recipe pair of \S\ref{sec:causal} at language scale.
 The oracle machinery of \S\ref{sec:measure} and the code/math domains
-(CodeSearchNet, MetaMathQA) are implemented but were not run at NL scale
-and are not claimed. Metric: full-held-out loss; the rotation arm is
+(CodeSearchNet \citep{husain2019codesearchnet}, MetaMathQA
+\citep{yu2024metamath}) are implemented but the oracle was not run at NL
+scale and is not claimed. Metric: full-held-out loss; the rotation arm is
 reported at dense deployment (gates off), its pre-registered evaluation
 mode.
 
 \paragraph{Methods compared.} \emph{Baseline} (dense; = Stage-1), ours
 (\emph{gate-grad} targets; \emph{loss-quantile} ablation), \emph{shuffled}
 control, \emph{Fixed-schedule} (static $g{=}0.5$), \emph{MoD} at matched
-capacity, \emph{Chemical-off} (architecture control), and the endogenous
+capacity, and the endogenous
 iterations (\emph{entropy}, \emph{random}, \emph{tag-only}) at testbed scale.
 
 \section{Results}
@@ -293,11 +366,11 @@ iterations (\emph{entropy}, \emph{random}, \emph{tag-only}) at testbed scale.
 \subsection{Endogenous signals fail; supervision fixes allocation}
 \label{sec:failures-results}
 
-The three failure modes are already visible in the workshop-era testbed
-runs (numbers ported verbatim from that version; their artifacts predate
-this repository): entropy $0.232/0.233/0.233$ across E/M/H; tag-init
-inverted; unsupervised vacuous; supervised spread $+0.21$, ordering
-$r = 0.95$ in every seed.)
+The three failure modes are already visible in the 11M testbed runs
+(numbers ported verbatim from an earlier workshop version of this work,
+whose artifacts predate this repository): entropy $0.232/0.233/0.233$
+across E/M/H; tag-init inverted; unsupervised vacuous; supervised spread
+$+0.21$, ordering $r = 0.95$ in every seed.
 
 \subsection{Measured value matches labels at the testbed}
 \label{sec:p0}
@@ -312,60 +385,66 @@ tag arm has no oracle pass.}
 \pzerotable
 \end{table}
 
-\paragraph{Pre-registered decision rule.} Written before any shuffled number
-existed: the measured-targets claim survives iff the gate-grad arm beats the
-shuffled control by ${\ge}1.0$ point of held-out accuracy, paired by seed,
-at matched billed training FLOPs, across all three seeds. No post-hoc
+\paragraph{Pre-registered decision rule.} Written before any shuffled
+number existed: the measured-targets claim survives iff gate-grad beats
+the shuffled control by ${\ge}1.0$ accuracy point, paired by seed at
+matched billed training FLOPs, in all three seeds; no post-hoc
 reinterpretation either way.
 
 \paragraph{Outcome: the rule fired against the measured targets.} Paired
-gate-grad $-$ shuffled accuracy across seeds: $-0.003$, $-0.001$, $-0.000$
-(Table~\ref{tab:p0}).
+gate-grad $-$ shuffled accuracy across seeds: $-0.3$, $-0.1$, and $-0.0$
+points (Table~\ref{tab:p0}).
 At testbed scale, \emph{any} varying supervision under the budget
 constraint---even targets permuted into noise---recovers the same accuracy
-($0.747 \pm 0.009$ shuffled vs.\ $0.745 \pm 0.008$ gate-grad vs.\ $0.748 \pm
-0.010$ tag) and indistinguishable gate structure at this scale (the tag arm alone
+($74.7 \pm 1.1$ shuffled vs.\ $74.5 \pm 1.0$ gate-grad vs.\ $74.8 \pm 1.3$
+tag) and indistinguishable gate structure at this scale (the tag arm alone
 orders, with a $+0.21$ spread that does not move accuracy), while all
 three dominate a
 constant gate trained from scratch by ${\sim}2$ points at the same inference
 budget (the budget redistribution this induces is quantified in
-Appendix~\ref{app:budget}). Two honest readings follow. First, the workshop result sharpens: at
-$11$M, what supervision supplies is not allocation quality but a dense-then-
-gate protocol whose accuracy is insensitive to target content; allocation
-structure (the tag arm's $+0.21$ spread) is real but not
-accuracy-load-bearing here. Second, the value-of-compute concept is not
-refuted---it is falsifiable at scale: if Eq.~\eqref{eq:gategrad} measures
-reducible value rather than noise, its per-bin signature must migrate as
-model capability grows (\S\ref{sec:scale}), and under it the natural-language
-targets differ from shuffled ones precisely where compute has leverage
-(\S\ref{sec:nl}). Both tests are pre-registered; \S\ref{sec:scale} and \S\ref{sec:nl}
-report their outcomes --- neither favored the measured targets.
+Appendix~\ref{app:budget}). Two honest readings follow. First, at $11$M
+supervision supplies not allocation quality but a dense-then-gate protocol
+whose accuracy is insensitive to target content; the tag arm's $+0.21$
+ordering spread is real but not accuracy-load-bearing. Second, the
+value-of-compute concept is not refuted but falsifiable at scale: its
+per-bin signature must migrate with capability (\S\ref{sec:scale}), and its
+natural-language targets must beat shuffled ones precisely where compute
+has leverage (\S\ref{sec:nl}). Both tests were pre-registered; neither
+favored the measured targets.
 
 Bin-level spread is \emph{not} the allocation metric for measured targets
-(\S\ref{sec:measure}): gate-grad varies within problems (a hard bin contains
-both irreducible and worth-treating tokens), so its E/M/H spread is smaller
-while its per-token allocation is finer; we report gate--score agreement on
-held-out tokens (Pearson $\le 0.04$, Spearman $\le 0.09$ in every
-seed --- near zero) and per-token rather than per-bin summaries.
+(\S\ref{sec:measure}): gate-grad varies within problems, so its per-bin
+spread is smaller while its per-token allocation is finer; gate--score
+agreement on held-out tokens is near zero in every seed (Pearson
+$\le 0.04$, Spearman $\le 0.09$).
 
 \subsection{The causal test and the surviving recipe}
 \label{sec:causal}
 
 \begin{table}[t]
 \centering
-\caption{11M causal single-stage test: the gate is live from step 0 at
-budget 0.5, all arms at matched billed training FLOPs (seed 0). Dropout and
-random windows are indistinguishable; chasing the measured field online is
-far worse than random; a constant gate collapses.}
+\caption{The causal test, both scales: the gate is live from step 0 at
+budget 0.5, all arms at matched billed training FLOPs. The starved-150M
+regime is where the field is structured mid-life (waterfill beats random
+by $+0.30$/$+0.38$ across seeds). Dropout and random windows are
+indistinguishable; chasing the measured field online loses to random at
+both scales; a constant gate collapses.}
 \label{tab:causal}
-\causaltable
+\causalcombinedtable
 \end{table}
 
 Table~\ref{tab:causal}: token-level FFN dropout and random 100-step windows
 are indistinguishable ($1.275$ vs $1.274$ held loss)---the mechanism is the
 noise-regularization of intermittent full compute, not any allocation
-signal. Online field-chasing against the measured value field is much worse
-than random ($2.253$ vs $1.274$), and a constant gate collapses ($2.621$).
+signal. The two arms are temporally white and temporally correlated noise
+respectively (the dropout arm resamples an i.i.d.\ Bernoulli$(0.5)$ gate
+mask at every step; the window arm holds a random mask fixed for 100
+steps), so their tie rules out schedule structure as the active ingredient;
+both are structured dropout
+\citep{srivastava2014dropout,huang2016stochastic,fan2019layerdrop} at FFN
+granularity. Online field-chasing against the measured value field is much
+worse than random ($2.253$ vs $1.274$), and a constant gate collapses
+($2.621$).
 Dense wins dense-inference at this horizon ($1.167$); the question is what
 half-FLOP training buys at convergence.
 
@@ -379,12 +458,11 @@ claim is compute-limited-regime, stated plainly.
 \begin{table}[t]
 \centering
 \caption{150M probe grid: 6 arms $\times$ 2 seeds at matched budget
-(mean$\pm$std over seeds). Dense wins the healthy recipe; every gated
-2-stage arm ties regardless of target content; MoD ties dense on mean
-accuracy with an \emph{anti-ordered} router (hard bins receive the least
-compute).}
+(mean$\pm$std). Dense wins the healthy recipe; every gated 2-stage arm
+ties regardless of target content; MoD ties dense with an
+\emph{anti-ordered} router.}
 \label{tab:p150}
-\pgridtable
+{\small\pgridtable}
 \end{table}
 
 Table~\ref{tab:p150}: content-irrelevance replicates at 150M---tag,
@@ -394,62 +472,40 @@ dense wins the healthy recipe ($68.0$). MoD's trained router inverts
 accuracy ($67.5$); seed-paired diffs ($+8.9/{-}9.7$) make that a wash, not
 a win.
 
-\begin{table}[t]
-\centering
-\caption{Starved-150M causal test (the field is structured mid-life here:
-permutation-controlled waterfill beats random by $+0.30/+0.38$ across
-seeds). Yet field-chasing still loses to random windows, and a static gate
-collapses outright. Measurable structure is not a trainable signal.}
-\label{tab:starved}
-\starvedtable
-\end{table}
-
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.45\linewidth]{lifecycle.pdf}
-\caption{The life cycle, measured. Ordering value (random $-$ waterfill
-held-out loss under zero-shot allocation on frozen checkpoint bodies; two
-seeds plus their mean) peaks at $0.1$--$0.2$ over steps 100--800 and decays
-to zero by step 3200. The step-5000 sign flips are seed-inconsistent and
-pre-registered as noise, not claimed.}
-\label{fig:lifecycle}
-\end{figure}
-
-Table~\ref{tab:starved} is the decisive test. The starved-150M regime is
+Table~\ref{tab:causal} is the decisive test. The starved-150M regime is
 where the value field is demonstrably \emph{alive}: the discriminator shows
 real ordering structure (waterfill $+$0.30/$+$0.38 over random across two
 seeds). If that structure were exploitable, training online against the
 measured field should beat random allocation. It does not: online loses to
 random windows ($41.7$ vs $44.2$), replicating the 11M causal result at a
 second scale, and the static gate collapses outright ($22.4$, held loss
-diverging). Figure~\ref{fig:lifecycle} shows the full trajectory: the ordering value
-rises, peaks, and decays to zero as the body converges. The life cycle and
+diverging). Figure~\ref{fig:teaser}(b) shows the full trajectory: the
+ordering value rises, peaks, and decays to zero as the body converges (the
+step-5000 sign flips are seed-inconsistent and pre-registered as noise).
+The life cycle and
 the causal test together: the field's structure is real, measurable---and
 not a training signal.
 
 \subsection{Scale: the effect survives 11M $\to$ 150M}
 \label{sec:scale}
 
-\paragraph{Pre-registered readout: value migrates with capability.} If the
-oracle measures value rather than difficulty, its per-bin signature must
-change with model scale: an 11M model finds most hard-bin tokens
-irreducible, but a $400$M model does not. Prediction (written before the P1
-probes ran): per-bin mean gate-grad score on the hard bin rises, and its
-fraction of non-positive scores falls toward the medium bin's, across
-$42$M $\to$ $150$M $\to$ $400$M. A flat signature at \$10 of probe cost
-would have falsified the irreducibility mechanism before the expensive
-stage.
+\paragraph{Pre-registered readout: value migrates with capability.} An 11M
+model finds most hard-bin tokens irreducible; a 400M model would not.
+Prediction (written before the probes ran): the hard bin's mean gate-grad
+score rises and its fraction of non-positive scores falls toward the
+medium bin's, across $42$M $\to$ $150$M $\to$ $400$M. A flat signature at
+\$10 of probe cost would have falsified the irreducibility mechanism
+cheaply.
 
 \emph{The rule fired against the prediction.} On healthy bodies trained
-with the validated recipe (42M acc $0.496$, 150M acc $0.563$), the measured
-field is flat at convergence everywhere: frac(score${\le}0)\approx 0.51$
-across E/M/H bins at both sizes, mean $|$score$|$ at $10^{-6}$ scale
+with the validated recipe (42M acc $0.496$, 150M acc $0.563$), the
+measured field is flat at convergence everywhere: frac(score${\le}0)\approx
+0.51$ across E/M/H bins at both sizes, mean $|$score$|$ at $10^{-6}$ scale
 (coin-flip; Table~\ref{tab:migration}). The first-order marginal value of
 FFN compute on a converged body is uninformative---no difficulty-bin
 structure, no migration. The compute-value concept is therefore parked as
-a \emph{training-time} signal; what survives is its mid-life measurability
-(\S\ref{sec:causal}): the starved-regime discriminator shows the field is
-structured where the body is still plastic, even though neither oracle
+a \emph{training-time} signal: the starved-regime discriminator shows the
+field is structured where the body is still plastic, but neither oracle
 allocation after convergence nor online chasing during training converts
 that structure into accuracy.
 
@@ -465,58 +521,56 @@ $10^{-6}$: the converged field is coin-flip at every bin and both scales
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.72\linewidth]{frontier.pdf}
+\includegraphics[width=0.66\linewidth]{frontier.pdf}
 \caption{Accuracy vs.\ billed training compute (relative to the dense arm
-at the same scale, log axis). Gated 2-stage arms cluster at $\sim$0.58$\times$
-dense compute and $\sim$5 points below it at 150M; MoD reaches dense compute
-savings with an inverted router; the 400M probe collapses outright
-(post-LN + Xavier initialization, untrainable at any LR swept --- reported
-as the honest edge of the scaling evidence; 1B was never run).}
+at the same scale, log axis). Gated 2-stage arms cluster at
+$\sim$0.58$\times$ dense compute and $\sim$5 points below it at 150M; MoD
+reaches dense compute savings with an inverted router. The 400M probe
+collapses (post-LN + Xavier init, untrainable at any LR swept)---the
+honest edge of the scaling evidence; 1B was never run.}
 \label{fig:frontier-scale}
 \end{figure}
 
-Figure~\ref{fig:frontier-scale}: accuracy against billed training compute
-at 11M, 150M, and the 400M calibration probe. The same ordering holds at
-both trainable scales: dense first, the gated 2-stage arms (ours, shuffled,
-fixed) clustered together, field-chasing and static further behind. The
-400M point is the honest edge of the scaling evidence: the architecture
-does not train at that size, so no frontier claim is made beyond 150M
-arithmetic (the 1.4B NL results of \S\ref{sec:nl} are the scale
-evidence).
+Figure~\ref{fig:frontier-scale}: the same ordering holds at both trainable
+scales---dense first, the gated 2-stage arms clustered together,
+field-chasing and static further behind. The architecture does not train
+at 400M, so no frontier claim is made beyond 150M arithmetic (the 1.4B NL
+results of \S\ref{sec:nl} are the scale evidence).
 
 \subsection{Natural language: the recipe transfers, with a boundary}
 \label{sec:nl}
 
 \begin{table}[t]
 \centering
-\caption{NL transfer: dense vs.\ token-level FFN dropout at seed 0 per
-domain (Pythia-1.4b, 3000 steps, matched data; rotation evaluated at dense
-deployment). Web text sits inside the pre-registered scoped band; code is
-marginal; on template-dominated math the recipe fails outright --- its
-noise-regularization directly opposes the memorization that low loss there
-is made of.}
+\caption{NL transfer: dense vs.\ token-level FFN dropout (Pythia-1.4b,
+3000 steps, matched data; rotation evaluated at dense deployment). Loss
+and gap cells list per-seed values (web text: 2 seeds; code, math: 1).
+Web text sits inside the pre-registered band; code is marginal; on
+template-dominated math the recipe fails outright---its
+noise-regularization opposes the memorization that low loss there is
+made of.}
 \label{tab:nl}
 \nltab
 \end{table}
 
 Table~\ref{tab:nl}: Pythia-1.4b continue-trained on web text, Python code,
 and chain-of-thought math (350M packed tokens where available, 3000 steps,
-seed 0; both arms share tokenizer, data, and the accounting of
+both arms share tokenizer, data, and the accounting of
 \S\ref{sec:isoflops}). Three outcomes, reported plainly. \emph{Web text}:
-dense \NlWebtextDense{} vs.\ rotation-at-dense-deployment
-$\NlRotLoss$ = ${+}\NlRotGapPct\%$ at exactly half billed training FLOPs
---- inside the same pre-registered $2$--$10\%$ band as the 150M testbed
-($+5.3\%$). \emph{Code}: +\NlCodeGap\% --- just outside the band;
-marginal, one seed. \emph{Math}: +\NlMathGap\% --- the recipe fails.
-The mechanism is legible: MetaMathQA held-out loss is dominated by
-memorizable template structure (dense reaches $0.382$), and intermittent
-full compute is precisely a regularizer against that --- the recipe buys
-its robustness by selling memorization. Evaluated \emph{with the ablation
-live} the rotation models are far worse (web text $3.378$), which is the
-point of the deployment claim: the trained body wants full compute at
-inference, and gets it. The scoping this buys is stated rather than hidden:
-the half-cost recipe is for capability-limited regimes on
-distributed-structure data, not for redundancy-dominated corpora.
+dense \NlDenseLoss{} vs.\ rotation-at-dense-deployment \NlRotLoss{}
+(${+}\NlRotGapPct\%$; per-seed gaps \NlRotGapA/\NlRotGapB\%) at exactly
+half billed training FLOPs --- inside the same pre-registered $2$--$10\%$
+band as the 150M testbed ($+5.3\%$). \emph{Code}: $+\NlCodeGap\%$ --- just
+outside the band; marginal, one seed. \emph{Math}: $+\NlMathGap\%$ --- the
+recipe fails. The mechanism is legible: MetaMathQA held-out loss is
+dominated by memorizable template structure, and intermittent full compute
+is precisely a regularizer against it---the recipe buys robustness by
+selling memorization. Evaluated \emph{with the ablation live} the rotation
+models are far worse (web text $3.378$), which is the point of the
+deployment claim: the trained body wants full compute at inference, and
+gets it. The scoping is stated rather than hidden: the half-cost recipe is
+for capability-limited regimes on distributed-structure data, not for
+redundancy-dominated corpora.
 \emph{The taxonomy row transfers.} Forking the web-text Stage-1 body into
 supervised stage-2 arms (\S\ref{sec:supervised}): gate-grad targets reach
 $2.7077$, shuffled targets $2.7085$ --- a paired difference of $0.0008$,
@@ -524,8 +578,9 @@ against the $1.0$-point pre-registered threshold --- with flat gate
 profiles in both. On language, measured value orders nothing and buys
 nothing over permuted targets: the content-irrelevance result is not a
 testbed artifact. Ablations (App.~\ref{app:ablations}): full-unfreeze
-stage-2 recovers $2.6054$ of the gap --- bodies adapt to their gates ---
-and per-layer targets match summed ones. Negative-space honesty: the
+stage-2 recovers $2.6054$ of the gap --- bodies adapt to their gates; the
+per-layer-target variant did not complete and is reported as not run.
+Negative-space honesty: the
 oracle machinery's difficulty diagnostics are testbed-scale results
 (\S\ref{sec:failures-results}, \S\ref{sec:causal}).
 
@@ -533,19 +588,17 @@ oracle machinery's difficulty diagnostics are testbed-scale results
 \label{sec:oracle-gap}
 
 Against the first-order frozen-body oracle (\S\ref{sec:measure}): at
-starved-150M, the regime where the field is structured, oracle waterfill
-allocation of the $0.5$ budget beats random allocation by $+0.30$/$+0.38$
-held loss across seeds and anti-allocation by $+0.70$/$+0.78$ --- the
-ordering is real zero-shot. Two boundaries sharpen the claim. First,
-every explicit allocation ($3.92$--$5.03$) trails plain full compute
-($2.75$--$2.77$): allocation of a scarce budget is strictly worse than
-not budgeting, at this regime. Second, training-time chasing does not
-convert the ordering into accuracy (\S\ref{sec:causal}).
-Per-layer gate profiles by difficulty bin are heterogeneous rather than
-ordered: for the ours arm at 150M, the hard-minus-easy spread per layer
-is $\le 0.15$ in eight of twelve layers, while a minority (one layer at
-$0.60$) concentrates most of the ordering --- allocation signal, where
-present, is layer-localized, not uniform.
+starved-150M, oracle waterfill allocation of the $0.5$ budget beats random
+by $+0.30$/$+0.38$ held loss across seeds and anti-allocation by
+$+0.70$/$+0.78$---the ordering is real zero-shot. Two boundaries sharpen
+the claim: every explicit allocation ($3.92$--$5.03$) trails plain full
+compute ($2.75$--$2.77$), so allocating a scarce budget is strictly worse
+than not budgeting here; and training-time chasing does not convert the
+ordering into accuracy (\S\ref{sec:causal}). Per-layer gate profiles are
+heterogeneous rather than ordered: for the ours arm at 150M, the
+hard-minus-easy spread is $\le 0.15$ in eight of twelve layers, while one
+layer ($0.60$) concentrates most of the ordering---where present, the
+signal is layer-localized, not uniform.
 
 \subsection{Wall-clock realization}
 \label{sec:realization}
@@ -571,42 +624,60 @@ masked path --- what most token-dropping code actually ships --- realizes
 
 \paragraph{Implications.} The recipe---train dense, measure, impose---needs
 no endogenous-signal search and plugs into serving stacks that already
-produce per-token difficulty estimates (speculative-decoding acceptance).
+produce per-token difficulty estimates (speculative-decoding acceptance
+\citep{leviathan2023speculative,chen2023speculative}).
+\paragraph{Which chasers does ``not trainable'' rule out?} The causal arms
+test the natural first-order chaser: measure $\partial\mathcal{L}/\partial
+g$ on the current body, allocate hard against it, refresh every 100 steps.
+Stronger search over the same objective (bandits, RL over gate policies,
+second-order corrections) faces the same structural problem: the scores are
+a property of the current body, training under them changes the body, and
+the life cycle shows the ordering value decaying precisely as the body
+absorbs compute---the chaser destroys the signal it chases. Meanwhile the
+frozen-body oracle (\S\ref{sec:oracle-gap}) caps what \emph{any} ordering
+could buy without retraining, below not budgeting at all in every regime
+we measured. We read ``not trainable'' as a property of gradient-defined
+value fields, not an impossibility proof for all conceivable allocators.
 \paragraph{When static schedules suffice.} Our results give a sharp,
-asymmetric answer. Static gating never suffices for training: a constant
-$g{=}0.5$ from scratch collapses at every scale tested (11M: $31.8\%$
-accuracy; starved-150M: $22.4\%$ with diverging loss), even under the
-validated recipe. At deployment, however, the static choice is trivially
-optimal --- the converged field is flat, so full compute everywhere (the
+asymmetric answer. A constant $g{=}0.5$ from scratch collapses at every
+scale tested (11M: $31.8\%$ accuracy; starved-150M: $22.4\%$ with
+diverging loss), but at deployment the static choice is trivially
+optimal---the converged field is flat, so full compute everywhere (the
 dense deployment our recipe uses) is the right static schedule. Between
 those endpoints, static schedules suffice exactly when the loss is
 dominated by structure that does not benefit from intermittent compute;
-the MetaMathQA boundary of \S\ref{sec:nl} is the cautionary case in the
-other direction, where the noise our recipe injects is pure cost.
+the MetaMathQA boundary of \S\ref{sec:nl} is the cautionary counter-case.
 \paragraph{Limitations.} The 1.4B web-text headline rests on two seeds
-(a third was attempted three times and lost to host failures twice);
-they agree to $0.1$ points, but $n{=}2$ is $n{=}2$. The code and math
-transfers are single-seed. Arithmetic difficulty is operand-size-defined at
-testbed scale; the natural-language bins inherit the reference model's
-notion of difficulty. The two-stage body is near-frozen by default; a
-full-unfreeze ablation is reported in Appendix~\ref{app:ablations}. Billed
-FLOPs are an accounting device; \S\ref{sec:realization} is the bridge to
-wall-clock, and realized speedups depend on kernel support. Gate-target
-quartiles are hand-set; Eq.~\eqref{eq:gategrad} replaces their content but
-not their form.
+(a third was attempted three times and lost to host failures twice); their
+per-seed gaps agree to $0.02$ points (\NlRotGapA\% vs.\ \NlRotGapB\%), but
+$n{=}2$ is $n{=}2$, and the code and math transfers are single-seed.
+Arithmetic difficulty is operand-size-defined; natural-language bins
+inherit the reference model's notion of difficulty. The two-stage body is
+near-frozen by default (Appendix~\ref{app:ablations}); billed FLOPs are an
+accounting device whose wall-clock bridge is \S\ref{sec:realization};
+realized speedups depend on kernel support. Gate-target quartiles are
+hand-set; Eq.~\eqref{eq:gategrad} replaces their content but not their
+form.
 
 \section*{AI use statement}
 An LLM coding assistant was used under the authors' direction for
 experiment infrastructure (data pipelines, training and benchmark code,
 manifests, figures) and manuscript drafting. Experimental design, all
-decisions and kill-rules, and every claim are the authors'; each number in
-the paper regenerates from committed artifacts via scripts in the
-repository.
+decisions and kill-rules, and every claim are the authors'; each number
+generated in this repository regenerates from committed artifacts via
+scripts in the repository (the sole exceptions, the workshop-era
+failure-taxonomy numbers, are labeled in \S\ref{sec:failures-results}).
 
 \section*{Reproducibility statement}
 All code, manifests, and per-run JSONs (config, history, billed-FLOPs
-curves) are in the anonymized repository; every table and figure regenerates
-from committed artifacts. Seeds, held-out sets, and the FLOPs accounting are
+curves) are in the anonymized repository.\footnote{\repoURL} Every table
+and figure generated in this repository regenerates from committed
+artifacts via \texttt{paper/generate\_tables\_iclr.py} and the
+\texttt{scripts/*figure*} scripts; pre-registered decision rules are
+committed with dates in \texttt{DECISIONS.md}. The failure-taxonomy
+numbers of \S\ref{sec:failures-results} are ported from an earlier
+workshop version of this work whose artifacts predate this repository, and
+are labeled as such. Seeds, held-out sets, and the FLOPs accounting are
 specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
 
 \section*{Compute statement}
@@ -716,14 +787,16 @@ dial.}
 where receipts exist; ranges are estimates from instance hours at listed
 rates.}
 \label{tab:ledger}
-\begin{tabular}{llr}
+\small
+\begin{tabular}{p{6.6cm}p{3.4cm}r}
 \toprule
 Stage & Hardware & Spend (\$) \\
 \midrule
 150M probe grid, 16 runs (Sep 12--14) & 2$\times$ RTX-class, $\sim$20 h & 11--13 \\
 1.4B NL pair, web text (Sep 16) & RTX 6000 Ada, 8 h & 4.40 \\
 Code + math pairs, 4 arms (Sep 17) & RTX 4090D, 5.3 h & 4.20 \\
-Wall-clock bench + web-text seed-1 chain + wave-2 (Sep 17--18) & A100/6000 Ada, $\sim$13 h & 12.2 \\
+Wall-clock bench + web-text seed-1 chain + wave-2 (Sep 17--18) &
+A100/6000 Ada, $\sim$13 h & 12.2 \\
 Seed-2 attempts (3 host failures) & mixed & $\sim$2.5 \\
 Dud boots, queue stalls, orchestration failures & mixed & $\sim$2.2 \\
 \midrule
