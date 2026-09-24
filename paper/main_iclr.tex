@@ -50,7 +50,7 @@ loses to random allocation of the same budget at every scale tested. The
 surviving recipe needs no allocator: token-level FFN dropout, where each
 token receives full FFN compute only inside randomly rotating windows. At
 1.4B web-text fine-tuning it trails dense by \NlRotGapPct\% held-out loss
-(2 seeds) at 50\% billed FFN training FLOPs, inside the pre-registered
+(3 seeds) at 50\% billed FFN training FLOPs, inside the pre-registered
 2--10\% band; a gather-based realization converts half the billed cost into
 a measured 1.35$\times$ training throughput. Failures on code and
 template-dominated math are reported, not hidden.
@@ -99,7 +99,7 @@ skips: train with \emph{token-level FFN dropout}---each token receives full
 FFN compute only inside randomly rotating windows---and deploy dense. At the
 150M convergence pair it trails dense held-out loss by \ConvRotGapPct\% at
 exactly half the billed FFN training FLOPs, and by \NlRotGapPct\% on 1.4B
-web-text fine-tuning (2 seeds)---claims we scope to compute-limited regimes
+web-text fine-tuning (3 seeds)---claims we scope to compute-limited regimes
 per their pre-registered decision rules---and it requires no
 labels or routers, and composes with any attention architecture because it
 never touches attention.
@@ -525,13 +525,13 @@ evidence).
 \centering
 \caption{NL transfer: dense vs.\ token-level FFN dropout (Pythia-1.4b,
 3000 steps, matched data; rotation evaluated at dense deployment). Loss
-and gap cells list per-seed values (web text: 2 seeds; code, math: 1).
+and gap cells list per-seed values (web text: 3 seeds; code, math: 1).
 Web text sits inside the pre-registered band; code is marginal; on
 template-dominated math the recipe fails outright---its
 noise-regularization opposes the memorization that low loss there is
 made of.}
 \label{tab:nl}
-\nltab
+{\footnotesize\setlength{\tabcolsep}{2.5pt}\nltab}
 \end{table}
 
 Table~\ref{tab:nl}: Pythia-1.4b continue-trained on web text, Python code,
@@ -539,7 +539,7 @@ and chain-of-thought math (350M packed tokens where available, 3000 steps,
 both arms share tokenizer, data, and the accounting of
 \S\ref{sec:isoflops}). Three outcomes, reported plainly. \emph{Web text}:
 dense \NlDenseLoss{} vs.\ rotation-at-dense-deployment \NlRotLoss{}
-(${+}\NlRotGapPct\%$; per-seed gaps \NlRotGapA/\NlRotGapB\%) at exactly
+(${+}\NlRotGapPct\%$; per-seed gaps \NlRotGapList\%) at exactly
 half billed training FLOPs --- inside the same pre-registered $2$--$10\%$
 band as the 150M testbed ($+5.3\%$). \emph{Code}: $+\NlCodeGap\%$ --- just
 outside the band; marginal, one seed. \emph{Math}: $+\NlMathGap\%$ --- the
@@ -633,10 +633,9 @@ optimal---the converged field is flat, so full compute everywhere is the
 right static schedule. Between those endpoints, static schedules suffice
 exactly when the loss does not benefit from intermittent compute;
 MetaMathQA (\S\ref{sec:nl}) is the counter-case.
-\paragraph{Limitations.} The 1.4B headline rests on two seeds whose
-per-seed gaps agree to $0.02$ points (\NlRotGapA\% vs.\ \NlRotGapB\%)---%
-$n{=}2$ is $n{=}2$, a third attempt having died twice to host failures---%
-and code and math are single-seed. Arithmetic difficulty is
+\paragraph{Limitations.} The 1.4B headline rests on three seeds
+(per-seed gaps \NlRotGapMin--\NlRotGapMax\%; the third attempt
+initially failed twice to host failures); code and math are single-seed. Arithmetic difficulty is
 operand-size-defined; NL bins inherit the reference model's notion of
 difficulty. The two-stage body is near-frozen (App.~\ref{app:ablations});
 billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile

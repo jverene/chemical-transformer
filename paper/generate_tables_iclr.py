@@ -304,6 +304,9 @@ def nl_macros(nl_domain):
         macros["NlRotGapPct"] = f"{100*sum(gaps)/len(gaps):.2f}"
         macros["NlRotGapA"] = f"{100*gaps[0]:.2f}"
         macros["NlRotGapB"] = f"{100*gaps[-1]:.2f}"
+        macros["NlRotGapList"] = "/".join(f"{100*g:.2f}" for g in gaps)
+        macros["NlRotGapMax"] = f"{100*max(gaps):.2f}"
+        macros["NlRotGapMin"] = f"{100*min(gaps):.2f}"
         macros["NlRotFlopsPct"] = "50"
     return macros
 
