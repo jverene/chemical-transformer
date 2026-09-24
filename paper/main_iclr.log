@@ -418,16 +418,12 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 33.
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-Underfull \hbox (badness 1552) in paragraph at lines 36--57
-[]\TU/lmr/m/n/10 Token-level adaptive compute usually keys off endogenous signa
-ls—
- []
-
 File: teaser.pdf Graphic file (type pdf)
 <use teaser.pdf>
-[1
+ [1
 
-] [2] [3] [4]
+]
+[2] [3] [4]
 File: content.pdf Graphic file (type pdf)
 <use content.pdf>
 
@@ -443,12 +439,12 @@ File: frontier.pdf Graphic file (type pdf)
 File: ladder.pdf Graphic file (type pdf)
 <use ladder.pdf>
 
-Underfull \vbox (badness 4647) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [8]
-[9] (main_iclr.bbl [10] [11]) [12] [13]
+[9] (main_iclr.bbl [10] [11]) [12]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[14] [15] (main_iclr.aux) )
-Output written on main_iclr.xdv (15 pages, 467572 bytes).
+[13] [14] (main_iclr.aux) )
+Output written on main_iclr.xdv (14 pages, 466124 bytes).
