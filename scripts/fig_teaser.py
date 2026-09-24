@@ -5,13 +5,16 @@
     quoted in Sec. 4.1 / Table 1 (entropy 0.232/0.233/0.233; tag mean 0.51,
     spread +0.21). Tag-init is shown as a schematic of the measured
     inversion (per-problem gate-difficulty r = -0.59); unsupervised is flat
-    with a seed-instability band (vacuity).
+    with a seed-instability band (vacuity). Legend sits BELOW the axes so
+    it never collides with the curves.
 (b) The value field's life cycle: ordering value (random - waterfill
     held-out loss, zero-shot on frozen checkpoint bodies) from
     results-headroom/trajectory_seed{0,1}.json.
 (c) The causal test: chasing the measured field online loses to random
     allocation of the same budget at both scales tested; a constant gate
-    collapses. Bars from the causal (11M) and starved-150M tables.
+    collapses. Bars from the causal (11M) and starved-150M tables. Legend
+    in the free upper-left zone (bars there top out at 51.6; the dense
+    reference line runs above it).
 
 Writes paper/teaser.pdf. Run from repo root:
   .venv/bin/python scripts/fig_teaser.py
@@ -40,25 +43,22 @@ def panel_a(ax):
     labels = ["E", "M", "H"]
     # realized gates, Table 1 / Sec 4.1: entropy 0.232/0.233/0.233 (collapse);
     # tag targets: mean 0.51, E/M/H spread +0.21 (ordered).
-    ax.plot(bins, [0.232, 0.233, 0.233], "o-", color=C_GRAY, lw=1.3, ms=3,
+    ax.plot(bins, [0.232, 0.233, 0.233], "o-", color=C_GRAY, lw=1.4, ms=3.4,
             label="entropy gate (collapses)")
     tag = [0.51 - 0.21 / 2, 0.51, 0.51 + 0.21 / 2]
-    ax.plot(bins, tag, "o-", color=C_GREEN, lw=1.6, ms=3,
+    ax.plot(bins, tag, "o-", color=C_GREEN, lw=1.8, ms=3.4,
             label="tag-supervised (orders)")
-    # inversion, schematic of r = -0.59 (tag-init, end-to-end); kept in the
-    # mid band so the upper-left legend area stays clear
-    ax.plot(bins, [0.56, 0.50, 0.44], "v--", color=C_VERM, lw=1.2, ms=3,
+    # inversion, schematic of r = -0.59 (tag-init, end-to-end)
+    ax.plot(bins, [0.56, 0.50, 0.44], "v--", color=C_VERM, lw=1.4, ms=3.4,
             alpha=0.9, label="tag-init end-to-end (inverts)")
     # vacuity: flat, seed-unstable
     ax.fill_between(bins, 0.42, 0.58, color=C_BLUE, alpha=0.15, lw=0)
-    ax.plot(bins, [0.50] * 3, "s:", color=C_BLUE, lw=1.1, ms=3,
+    ax.plot(bins, [0.50] * 3, "s:", color=C_BLUE, lw=1.3, ms=3.4,
             label="unsupervised head (vacuous)")
     ax.set_xticks(bins, labels)
     ax.set_xlabel("difficulty bin")
     ax.set_ylabel("mean FFN gate")
     ax.set_ylim(0.15, 0.72)
-    ax.legend(loc="upper left", frameon=False, handlelength=1.6,
-              borderaxespad=0.1, labelspacing=0.25)
     ax.set_title("(a) Endogenous signals fail", loc="left")
 
 
@@ -70,10 +70,10 @@ def panel_b(ax):
         steps = [t["step"] for t in tr]
         v = [t["random"] - t["waterfill"] for t in tr]
         curves.append(v)
-        ax.plot(steps, v, "o-", ms=2.6, lw=1.0, color=c, alpha=0.75,
+        ax.plot(steps, v, "o-", ms=3.2, lw=1.2, color=c, alpha=0.8,
                 label=f"seed {s}")
     mean = [(a + b) / 2 for a, b in zip(*curves)]
-    ax.plot(steps, mean, "s--", ms=3.4, lw=1.5, color="black",
+    ax.plot(steps, mean, "s--", ms=3.8, lw=1.7, color="black",
             label="seed mean", zorder=5)
     # plastic window: seed-mean ordering value is positive here
     ax.axvspan(100, 1600, color=C_GREEN, alpha=0.09, lw=0)
@@ -117,17 +117,23 @@ def panel_c(ax):
     ax.set_xticks(x, groups)
     ax.set_ylabel("held-out accuracy (%)")
     ax.set_ylim(0, 72)
-    ax.legend(loc="upper right", frameon=False, borderaxespad=0.1,
+    # free zone: above the left bars (top 51.6), below the dense line (64.2)
+    ax.legend(loc="upper left", frameon=False, borderaxespad=0.1,
               labelspacing=0.25)
     ax.set_title("(c) Chasing loses to random", loc="left")
 
 
 def main():
-    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.64))
+    fig, axes = plt.subplots(1, 3, figsize=(5.5, 1.86), layout="constrained")
     panel_a(axes[0])
     panel_b(axes[1])
     panel_c(axes[2])
-    fig.tight_layout(w_pad=1.4)
+    # panel (a)'s legend lives OUTSIDE the axes (below), reserved properly
+    # by constrained layout via the figure-level 'outside' legend location
+    hnd, lbl = axes[0].get_legend_handles_labels()
+    fig.legend(hnd, lbl, loc="outside lower left", ncol=2, frameon=False,
+               handlelength=1.3, labelspacing=0.25, columnspacing=0.8,
+               fontsize=5.6)
     fig.savefig("paper/teaser.pdf")
     print("wrote paper/teaser.pdf")
 

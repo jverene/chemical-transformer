@@ -118,19 +118,19 @@ def panel_a(ax, accs):
     axi = ax.inset_axes([0.56, 0.06, 0.41, 0.44])
     dense, gg, sh = nl_losses()
     axi.axhline(dense, color=C_GREEN, ls="--", lw=0.9)
-    axi.text(1.62, dense + 0.004, "dense", fontsize=5.0, color=C_GREEN,
+    axi.text(1.62, dense + 0.004, "dense", fontsize=5.4, color=C_GREEN,
              ha="left", va="bottom")
     axi.scatter([0.85], [gg], s=13, color=C_BLUE, zorder=3)
     axi.scatter([1.15], [sh], s=13, color=C_GRAY, zorder=3)
     axi.plot([0.85, 1.15], [gg, sh], color="0.6", lw=0.7)
     axi.annotate("$|\\Delta|=0.0008$\n(threshold: 1.0 pt)", (1.0, 2.732),
-                 fontsize=5.0, ha="center")
+                 fontsize=5.4, ha="center")
     axi.set_xticks([0.85, 1.15], ["gate-grad", "shuf."])
     axi.set_xlim(0.5, 1.5)
-    axi.tick_params(axis="x", labelsize=5.0)
-    axi.tick_params(axis="y", labelsize=5.0)
+    axi.tick_params(axis="x", labelsize=5.5)
+    axi.tick_params(axis="y", labelsize=5.5)
     axi.set_ylim(2.50, 2.80)
-    axi.set_title("1.4B web text (loss)", fontsize=5.6, pad=2)
+    axi.set_title("1.4B web text (loss)", fontsize=6.0, pad=2)
     for sp in axi.spines.values():
         sp.set_visible(True); sp.set_linewidth(0.7); sp.set_color("0.3")
     axi.patch.set_facecolor("white"); axi.patch.set_alpha(1.0)

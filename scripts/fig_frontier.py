@@ -1,13 +1,23 @@
 """Frontier figure: accuracy vs billed training compute, per scale.
 
-One panel, three scales. x-axis = billed training FLOPs per token
-RELATIVE to the dense arm at the same scale (dense = 1.0x), so scales
-share an axis honestly; y = held-out accuracy. Points regenerate from
-committed artifacts only:
+Redesign for legibility (the original had thin 'x' markers, five arms
+stacked at nearly identical x, and 6.5pt annotations that collided):
+- shared marker vocabulary: dense = circle, dropout/windows = triangle-up,
+  field-chasing = diamond, static = square, ours-tag = star, MoD = pentagon
+- filled markers with dark edges (no thin crosses); scale = color
+- the 11M gated arms share x ~ 0.5 (same budget): they are drawn as a
+  vertical stem with one label group; dropout/windows are a tie and are
+  labeled together
+- 150M arms (2 seeds, seed-invariant FLOPs): vertical seed-range line +
+  mean marker, direct arm labels to the right of the cluster
+- legend outside the data area (top strip): markers = arms, colors =
+  scales
+
+Points regenerate from committed artifacts only:
   11M  : results-headroom/single_*_seed0.json (causal singles, 3000 steps)
   150M : results-p3b/tagged-v2/*_seed{0,1}.json (probe grid, 5000 steps)
-  400M : results-p1/tagged-v2/baseline_seed0.json (calibration probe —
-         collapsed; untrainable at any LR swept, per DECISIONS.md)
+  400M : results-p1/tagged-v2/baseline_seed0.json (collapsed calibration
+         probe, untrainable at any LR swept, per DECISIONS.md)
 
 Writes paper/frontier.pdf. Run from repo root:
   .venv/bin/python scripts/fig_frontier.py
@@ -18,24 +28,26 @@ import json
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 
-# Okabe-Ito colorblind-safe palette
-C_11 = "#56B4E9"    # sky blue
-C_150 = "#D55E00"   # vermillion
-C_400 = "#000000"   # black
-C_DENSE = "#009E73" # bluish green
+# Okabe-Ito
+C_11 = "#0072B2"    # blue (11M)
+C_150 = "#D55E00"   # vermillion (150M)
+C_400 = "#000000"   # black (400M)
+C_DENSE = "#009E73"
 plt.rcParams.update({
-    "font.size": 9.5, "axes.titlesize": 10, "axes.labelsize": 9.5,
-    "legend.fontsize": 7.5, "xtick.labelsize": 7.5, "ytick.labelsize": 7.5,
+    "font.size": 7.2, "axes.titlesize": 8, "axes.labelsize": 7.4,
+    "legend.fontsize": 6.6, "xtick.labelsize": 6.8, "ytick.labelsize": 6.8,
     "axes.spines.top": False, "axes.spines.right": False,
-    "figure.dpi": 150})
+    "figure.dpi": 200})
 
-ARM_STYLE = {
-    "dense": ("o", "Dense"),
-    "dropout": ("^", "FFN dropout"),
-    "shuffled": ("x", "Random windows"),
-    "online": ("D", "Field-chasing"),
-    "static": ("s", "Static g=0.5"),
+MARKERS = {
+    "dense": ("o", "dense"),
+    "dropout": ("^", "dropout / windows"),
+    "static": ("s", "static $g{=}0.5$"),
+    "online": ("D", "field-chasing"),
+    "ours": ("*", "ours (tag)"),
+    "mod": ("p", "MoD"),
 }
 
 
@@ -51,19 +63,19 @@ def fig11m():
 
 
 def fig150m():
-    arms = [("baseline", "dense"), ("fixed-schedule", "static"),
-            ("fixed2stage_150m", "static2stage"),
-            ("predictor-supervised_150m", "ours"), ("shuffled_150m", "shuffled"),
-            ("mod", "mod")]
-    ref = None
-    pts = {}
+    arms = [("baseline_seed{}.json", "dense"),
+            ("fixed-schedule_seed{}.json", "static"),
+            ("fixed2stage_150m_seed{}.json", "static2stage"),
+            ("predictor-supervised_150m_seed{}.json", "ours"),
+            ("shuffled_150m_seed{}.json", "dropout"),
+            ("mod_seed{}.json", "mod")]
+    ref, pts = None, {}
     for pat, name in arms:
         accs, ratios = [], []
-        for p in sorted(glob.glob(f"results-p3b/tagged-v2/{pat}_seed*.json")):
+        for p in sorted(glob.glob(f"results-p3b/tagged-v2/{pat.format('*')}")):
             r = json.load(open(p))
             fpt = r["final"]["flops_per_token"]
-            if name == "dense":
-                ref = fpt
+            ref = fpt if name == "dense" else ref
             accs.append(100 * r["final"]["acc"])
             ratios.append(fpt)
         if not accs:
@@ -75,47 +87,105 @@ def fig150m():
 
 
 def main():
-    fig, ax = plt.subplots(figsize=(4.0, 2.7))
+    fig, ax = plt.subplots(figsize=(4.2, 2.9))
 
+    # ---- 11M: dense at 1.0; gated cluster on a stem at its mean budget
     m11 = fig11m()
-    xs = [m11[a][0] for a in m11]
-    ys = [m11[a][1] for a in m11]
-    ax.scatter(xs, ys, s=46, facecolors="none", edgecolors=C_11, linewidths=1.6,
-               label="11M (3000 steps)", marker="s")
-    for a, (x, y) in m11.items():
-        mk, lab = ARM_STYLE.get(a, ("o", a))
-        ax.annotate(lab if a != "dense" else "dense", (x, y),
-                    textcoords="offset points", xytext=(6, -3), fontsize=6.5,
-                    color=C_11)
+    xs_gated = [m11[a][0] for a in ("dropout", "shuffled", "online", "static")]
+    x_stem = float(np.mean(xs_gated))
+    ax.scatter([m11["dense"][0]], [m11["dense"][1]], s=44, marker="o",
+               color=C_11, edgecolor="black", linewidths=0.6, zorder=5)
+    ax.annotate(f"dense {m11['dense'][1]:.1f}", (1.0, m11["dense"][1]),
+                textcoords="offset points", xytext=(-2, 6), fontsize=6.6,
+                color=C_11, ha="right")
+    ys = {a: m11[a][1] for a in ("dropout", "shuffled", "online", "static")}
+    ax.plot([x_stem, x_stem], [ys["static"], max(ys["dropout"], ys["shuffled"])],
+            color=C_11, lw=1.0, alpha=0.55, zorder=3)
+    for arm in ("static", "online"):
+        ax.scatter([x_stem], [ys[arm]], s=34, marker=MARKERS[arm][0],
+                   color=C_11, edgecolor="black", linewidths=0.6, zorder=5)
+    tie_y = (ys["dropout"] + ys["shuffled"]) / 2
+    ax.scatter([x_stem, x_stem], [ys["dropout"], ys["shuffled"]], s=34,
+               marker="^", color=C_11, edgecolor="black", linewidths=0.6,
+               zorder=5)
+    ax.annotate(f"windows $\\approx$ dropout\n"
+                f"{max(ys['shuffled'], ys['dropout']):.1f}"
+                f"/{min(ys['shuffled'], ys['dropout']):.1f}",
+                (x_stem, tie_y), textcoords="offset points", xytext=(6, 3),
+                fontsize=6.4, color=C_11, va="bottom")
+    ax.annotate(f"field-chasing {ys['online']:.1f}", (x_stem, ys["online"]),
+                textcoords="offset points", xytext=(7, -1), fontsize=6.4,
+                color=C_11, va="center")
+    ax.annotate(f"static {ys['static']:.1f}", (x_stem, ys["static"]),
+                textcoords="offset points", xytext=(7, -1), fontsize=6.4,
+                color=C_11, va="center")
 
+    # ---- 150M: seed-range stems + mean markers + right-side labels
     p150 = fig150m()
-    for name, (xs, ys) in p150.items():
-        mk, lab = {"dense": ("o", None), "static": ("s", None),
-                   "static2stage": ("s", None), "ours": ("*", "Ours (tag)"),
-                   "shuffled": ("x", "Random 2-stage"), "mod": ("D", "MoD")}.get(
-            name, ("o", name))
-        ax.scatter(xs, ys, s=54, color=C_150, marker=mk,
-                   label="150M grid (5000 steps)" if name == "baseline" else None,
-                   zorder=3)
-        if name == "ours":
-            ax.annotate("Ours (tag)", (xs[0], ys[0]), textcoords="offset points",
-                        xytext=(6, 3), fontsize=6.5, color=C_150)
+    label_of = {"dense": "dense", "static": "static (scratch)",
+                "static2stage": "static 2-stage", "ours": "ours (tag)",
+                "dropout": "shuffled", "mod": "MoD"}
+    for name, (ratios, accs) in p150.items():
+        x = ratios[0]
+        if name == "dense":
+            ax.scatter([x], [np.mean(accs)], s=44, marker="o", color=C_150,
+                       edgecolor="black", linewidths=0.6, zorder=5)
+            ax.annotate(f"dense {np.mean(accs):.1f}", (x, np.mean(accs)),
+                        textcoords="offset points", xytext=(-2, 6),
+                        fontsize=6.6, color=C_150, ha="right")
+            continue
+        if len(accs) > 1:
+            ax.plot([x, x], [min(accs), max(accs)], color=C_150, lw=1.0,
+                    alpha=0.55, zorder=3)
+        mk = MARKERS.get(name, ("s", None))[0]
+        ax.scatter([x], [np.mean(accs)], s=40 if name != "ours" else 62,
+                   marker=mk, color=C_150, edgecolor="black", linewidths=0.6,
+                   zorder=5)
 
+    # one shared label block for the 150M cluster (right of it, stacked)
+    cluster_x = np.mean([v[0][0] for k, v in p150.items() if k != "dense"])
+    lines_150 = sorted(((k, np.mean(v[1])) for k, v in p150.items()
+                        if k not in ("dense",)), key=lambda t: -t[1])
+    ax.annotate("150M cluster:", (cluster_x, 71.6), textcoords="offset points",
+                xytext=(15, 0), fontsize=6.4, color=C_150)
+    for i, (k, acc) in enumerate(lines_150):
+        ax.annotate(f"{label_of[k]} {acc:.1f}", (cluster_x, 71.6),
+                    textcoords="offset points", xytext=(15, -8 - 7.5 * i),
+                    fontsize=6.4, color=C_150)
+
+    # ---- 400M collapsed probe
     w = json.load(open("results-p1/tagged-v2/baseline_seed0.json"))
     acc = 100 * w["history"]["heldout_acc"][-1] if w["history"].get("heldout_acc") \
         else 100 * w["history"]["bin_acc"][0][-1]
-    ax.scatter([1.0], [acc], s=46, color=C_400, marker="^",
-               label="400M probe (collapsed)")
-    ax.annotate("400M: untrainable\n(any LR swept)", (1.0, acc),
-                textcoords="offset points", xytext=(8, -4), fontsize=6.5,
-                color=C_400)
+    ax.scatter([1.0], [acc], s=40, marker="^", color=C_400,
+               edgecolor="black", linewidths=0.6, zorder=5)
+    ax.annotate("400M probe:\nuntrainable", (1.0, acc),
+                textcoords="offset points", xytext=(-4, 8), fontsize=6.4,
+                color=C_400, ha="right")
 
     ax.set_xscale("log")
+    ax.set_xlim(0.40, 1.62)
+    ax.set_ylim(0, 84)
     ax.set_xlabel("billed training FLOPs/token, relative to dense (=1.0)")
     ax.set_ylabel("held-out accuracy (%)")
     ax.axvline(1.0, color="gray", lw=0.7, ls=":")
-    ax.legend(fontsize=7, loc="lower right")
-    ax.set_title("Accuracy vs.\\ billed training compute, by scale", fontsize=9)
+    ax.set_title("Accuracy vs.\\ billed training compute, by scale",
+                 fontsize=8, loc="left")
+
+    # legend strip above the axes, outside the data
+    from matplotlib.lines import Line2D
+    handles = [Line2D([], [], ls="", marker=m, color="0.25",
+                      markeredgecolor="black", markeredgewidth=0.6,
+                      markersize=6, label=lab)
+               for m, lab in MARKERS.values()]
+    handles += [Line2D([], [], ls="", marker="o", color=c,
+                       markeredgecolor="black", markeredgewidth=0.6,
+                       markersize=6, label=sc)
+                for c, sc in [(C_11, "11M"), (C_150, "150M"), (C_400, "400M")]]
+    ax.legend(handles=handles, frameon=False, fontsize=6.2, ncol=4,
+              loc="lower left", bbox_to_anchor=(0.0, 1.01), columnspacing=0.9,
+              handletextpad=0.25, borderaxespad=0.0)
+
     fig.tight_layout()
     fig.savefig("paper/frontier.pdf")
     print("wrote paper/frontier.pdf")
