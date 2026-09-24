@@ -56,6 +56,19 @@ a measured 1.35$\times$ training throughput. Failures on code and
 template-dominated math are reported, not hidden.
 \end{abstract}
 
+% ---- intro (dropout-lead) ----
+Transformers spend most of their training compute on feed-forward blocks
+applied uniformly to every token at every step. We ask a simple question:
+does every token need the FFN at every step? The adaptive-compute literature
+answers with learned allocators (routers, entropy gates, difficulty
+heads) trained end-to-end to switch compute on where it ``matters.'' We
+first show this program fails on its own terms in a controlled testbed with
+per-token ground truth: endogenous signals collapse, invert, or stay vacuous
+(\S\ref{sec:failures}), supervised targets produce correctly ordered gates
+whose ordering carries no accuracy benefit, and a pre-registered
+shuffled-targets control shows target content is irrelevant at 11M and
+150M scale. Figure~\ref{fig:teaser} previews the three findings.
+
 \begin{figure}[t]
 \centering
 \includegraphics[width=\linewidth]{teaser.pdf}
@@ -74,18 +87,6 @@ the same budget; a constant gate collapses.}
 \label{fig:teaser}
 \end{figure}
 
-% ---- intro (dropout-lead) ----
-Transformers spend most of their training compute on feed-forward blocks
-applied uniformly to every token at every step. We ask a simple question:
-does every token need the FFN at every step? The adaptive-compute literature
-answers with learned allocators (routers, entropy gates, difficulty
-heads) trained end-to-end to switch compute on where it ``matters.'' We
-first show this program fails on its own terms in a controlled testbed with
-per-token ground truth: endogenous signals collapse, invert, or stay vacuous
-(\S\ref{sec:failures}), supervised targets produce correctly ordered gates
-whose ordering carries no accuracy benefit, and a pre-registered
-shuffled-targets control shows target content is irrelevant at 11M and
-150M scale. Figure~\ref{fig:teaser} previews the three findings.
 The positive half of the paper is a measurement that explains these
 failures and a recipe it motivates. We measure the per-token
 \emph{value of compute}, the gradient of the loss with respect to each
@@ -630,13 +631,13 @@ billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile
 form is hand-set, content measured.
 
 \section*{AI use statement}
-An LLM coding assistant was used under the authors' direction for
-experiment infrastructure (data pipelines, training and benchmark code,
-manifests, figures) and manuscript drafting. Experimental design, all
-decisions and kill-rules, and every claim are the authors'; each number
-generated in this repository regenerates from committed artifacts via
-scripts in the repository (the sole exceptions, the workshop-era
-failure-taxonomy numbers, are labeled in \S\ref{sec:failures-results}).
+An LLM assistant was used under the authors' direction for four purposes:
+finding prior art, running terminal commands and automation, copyediting,
+and code generation. Experimental design, all decisions and kill-rules,
+and every claim are the authors'; each number generated in this
+repository regenerates from committed artifacts via scripts in the
+repository (the sole exceptions, the workshop-era failure-taxonomy
+numbers, are labeled in \S\ref{sec:failures-results}).
 
 \section*{Reproducibility statement}
 All code, manifests, and per-run JSONs (config, history, billed-FLOPs

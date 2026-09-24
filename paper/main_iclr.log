@@ -420,6 +420,9 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
 File: teaser.pdf Graphic file (type pdf)
 <use teaser.pdf>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
  [1
 
 ]
@@ -427,7 +430,7 @@ File: teaser.pdf Graphic file (type pdf)
 File: content.pdf Graphic file (type pdf)
 <use content.pdf>
 
-Underfull \hbox (badness 1194) in paragraph at lines 385--390
+Underfull \hbox (badness 1194) in paragraph at lines 386--391
  \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
 y shuffled number existed: the
  []
@@ -447,4 +450,4 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 466124 bytes).
+Output written on main_iclr.xdv (14 pages, 465956 bytes).
