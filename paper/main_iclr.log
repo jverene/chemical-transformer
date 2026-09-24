@@ -446,5 +446,9 @@ File: ladder.pdf Graphic file (type pdf)
 Underfull \vbox (badness 4647) has occurred while \output is active []
 
  [8]
-[9] (main_iclr.bbl [10] [11]) [12] [13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 464516 bytes).
+[9] (main_iclr.bbl [10] [11]) [12] [13]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[14] [15] (main_iclr.aux) )
+Output written on main_iclr.xdv (15 pages, 467572 bytes).

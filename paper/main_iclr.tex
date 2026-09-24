@@ -634,8 +634,9 @@ right static schedule. Between those endpoints, static schedules suffice
 exactly when the loss does not benefit from intermittent compute;
 MetaMathQA (\S\ref{sec:nl}) is the counter-case.
 \paragraph{Limitations.} The 1.4B headline rests on three seeds
-(per-seed gaps \NlRotGapMin--\NlRotGapMax\%; the third attempt
-initially failed twice to host failures); code and math are single-seed. Arithmetic difficulty is
+(per-seed gaps \NlRotGapMin--\NlRotGapMax\%; two earlier attempts at the
+third seed were lost to host failures before the successful re-run);
+code and math are single-seed. Arithmetic difficulty is
 operand-size-defined; NL bins inherit the reference model's notion of
 difficulty. The two-stage body is near-frozen (App.~\ref{app:ablations});
 billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile
@@ -663,11 +664,11 @@ are labeled as such. Seeds, held-out sets, and the FLOPs accounting are
 specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
 
 \section*{Compute statement}
-Total rented-GPU spend for every result in this paper: \$36.45, itemized
-in Appendix~\ref{app:compute}; testbed runs on an Apple M3 (MPS) at no
-cost. Roughly half was spent on results and half on re-runs after host
-failures and fixable training bugs --- we report both, because the
-failure half is what the manifests and kill-rules in the repository
+Total rented-GPU spend for every result in this paper: ${\sim}\$40$,
+itemized in Appendix~\ref{app:compute}; testbed runs on an Apple M3
+(MPS) at no cost. Roughly half was spent on results and half on re-runs
+after host failures and fixable training bugs --- we report both, because
+the failure half is what the manifests and kill-rules in the repository
 are for.
 
 \bibliography{iclr2027_conference}
@@ -804,7 +805,7 @@ dial.}
 
 \begin{table}[h]
 \centering
-\caption{Rented-GPU ledger, Sep 12--18, 2026. Single numbers are exact
+\caption{Rented-GPU ledger, Sep 12--23, 2026. Single numbers are exact
 where receipts exist; ranges are estimates from instance hours at listed
 rates.}
 \label{tab:ledger}
@@ -818,17 +819,19 @@ Stage & Hardware & Spend (\$) \\
 Code + math pairs, 4 arms (Sep 17) & RTX 4090D, 5.3 h & 4.20 \\
 Wall-clock bench + web-text seed-1 chain + wave-2 (Sep 17--18) &
 A100/6000 Ada, $\sim$13 h & 12.2 \\
-Seed-2 attempts (3 host failures) & mixed & $\sim$2.5 \\
+Seed-2 attempts (host failures) & mixed & $\sim$2.5 \\
+Seed-2 web-text pair, successful re-run (Sep 23) & RTX 6000 Ada, $\sim$4.9 h & $\sim$3.4 \\
 Dud boots, queue stalls, orchestration failures & mixed & $\sim$2.2 \\
 \midrule
-\textbf{Total (\$36.45 of \$38.91 credit); final remaining \$2.46} & & \\
+\textbf{Total $\sim$\$40 (was \$36.45 before the seed-2 re-run)} & & \\
 \bottomrule
 \end{tabular}
 
 11M testbed runs (all failure-taxonomy, causal, and life-cycle results):
-Apple M3 via MPS, no cost. Two results were lost to the incidents above
-(one rotation arm to a training bug, later re-run; the seed-2 pair to
-host failures) and are reported as such.
+Apple M3 via MPS, no cost. Two results were initially lost to the
+incidents above (one rotation arm to a training bug, later re-run; the
+seed-2 pair to host failures, re-run successfully on Sep 23 for the
+3-seed headline) and are reported as such.
 \end{table}
 
 \end{document}
