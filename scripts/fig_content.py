@@ -102,12 +102,12 @@ def panel_a(ax, accs):
     ax.set_xticks(xs, labels)
     ax.tick_params(axis="x", labelsize=5.8)
     ax.set_ylabel("held-out accuracy (%)")
-    ax.set_ylim(69.2, 77.6)
+    ax.set_ylim(68.7, 77.6)
     ax.set_xlim(-0.45, 3.45)
     ax.set_title("(a) Same accuracy, whatever the targets", loc="left")
 
     # inset: 1.4B replication, lower-right (tag/shuffled dots live >= 73.4)
-    axi = ax.inset_axes([0.56, 0.06, 0.41, 0.44])
+    axi = ax.inset_axes([0.30, 0.045, 0.48, 0.40])
     dense, gg, sh = nl_losses()
     axi.axhline(dense, color=C_GREEN, ls="--", lw=0.9)
     axi.text(1.62, dense + 0.004, "dense", fontsize=5.4, color=C_GREEN,

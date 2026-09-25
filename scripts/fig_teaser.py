@@ -121,8 +121,8 @@ def panel_c(ax):
     ax.set_ylabel("held-out accuracy (%)")
     ax.set_ylim(0, 74)
     # free zone: above the left bars (top 51.6), below the dense line (64.2)
-    ax.legend(loc="upper left", frameon=False, borderaxespad=0.1,
-              labelspacing=0.25)
+    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 0.845), frameon=False,
+              borderaxespad=0.0, labelspacing=0.25)
     ax.set_title("(c) Chasing loses to random", loc="left", fontsize=6.6)
 
 
