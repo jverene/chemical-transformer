@@ -387,33 +387,33 @@ File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
 ) (main_iclr.aux)
 \openout1 = `main_iclr.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 32.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
 LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 3
-2.
+6.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 32.
-LaTeX Font Info:    ... okay on input line 32.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 33.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
+LaTeX Font Info:    ... okay on input line 36.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 37.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 33.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
@@ -430,7 +430,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 File: content.pdf Graphic file (type pdf)
 <use content.pdf>
 
-Underfull \hbox (badness 1194) in paragraph at lines 389--394
+Underfull \hbox (badness 1194) in paragraph at lines 393--398
  \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
 y shuffled number existed: the
  []
@@ -445,9 +445,5 @@ File: ladder.pdf Graphic file (type pdf)
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[13]
-
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[14] [15] (main_iclr.aux) )
-Output written on main_iclr.xdv (15 pages, 471448 bytes).
+[13] [14] (main_iclr.aux) )
+Output written on main_iclr.xdv (14 pages, 470020 bytes).
