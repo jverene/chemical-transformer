@@ -157,8 +157,8 @@ def main():
     # vertical legend in the empty upper-right region (right of the
     # dense line, above the 400M probe)
     from matplotlib.lines import Line2D
-    handles = [Line2D([], [], ls="", marker=m, color="0.25",
-                      markeredgecolor="black", markeredgewidth=0.6,
+    handles = [Line2D([], [], ls="", marker=m, color="white",
+                      markeredgecolor="black", markeredgewidth=0.7,
                       markersize=6, label=lab)
                for m, lab in MARKERS.values()]
     handles += [Line2D([], [], ls="", marker="o", color=c,
@@ -166,8 +166,11 @@ def main():
                        markersize=6, label=sc)
                 for c, sc in [(C_11, "11M"), (C_150, "150M"), (C_400, "400M")]]
     ax.legend(handles=handles, frameon=False, fontsize=6.2,
-              loc="upper right", labelspacing=0.35, handletextpad=0.4,
-              borderaxespad=0.4)
+              loc="upper right", labelspacing=0.28, handletextpad=0.4,
+              borderaxespad=0.4,
+              title="shape = arm\nbelow: color = scale",
+              title_fontsize=5.4, alignment="left")
+    ax.get_legend().get_title().set_color("0.3")
 
     fig.tight_layout()
     fig.savefig("paper/frontier.pdf")
