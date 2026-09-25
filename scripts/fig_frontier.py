@@ -43,10 +43,10 @@ plt.rcParams.update({
 
 MARKERS = {
     "dense": ("o", "dense"),
-    "dropout": ("^", "windows/dropout"),
+    "dropout": ("^", "windows"),
     "static": ("s", "static"),
     "online": ("D", "chasing"),
-    "ours": ("*", "ours (tag)"),
+    "ours": ("*", "ours"),
     "mod": ("p", "MoD"),
 }
 
@@ -108,15 +108,6 @@ def main():
     ax.scatter([x_stem, x_stem], [ys["dropout"], ys["shuffled"]], s=34,
                marker="^", color=C_11, edgecolor="black", linewidths=0.6,
                zorder=5)
-    ax.annotate("windows $\\approx$ dropout",
-                (x_stem, tie_y), textcoords="offset points", xytext=(6, 3),
-                fontsize=6.4, color=C_11, va="bottom")
-    ax.annotate("field-chasing", (x_stem, ys["online"]),
-                textcoords="offset points", xytext=(7, -1), fontsize=6.4,
-                color=C_11, va="center")
-    ax.annotate("static", (x_stem, ys["static"]),
-                textcoords="offset points", xytext=(7, -1), fontsize=6.4,
-                color=C_11, va="center")
 
     # ---- 150M: seed-range stems + mean markers. All gated arms share a
     # 0.57-0.59x budget, so on a log axis they would collapse into one
@@ -160,8 +151,8 @@ def main():
     ax.set_xlabel("billed FLOPs/token, rel. dense (150M cluster evenly spaced)")
     ax.set_ylabel("held-out accuracy (%)")
     ax.axvline(1.0, color="gray", lw=0.7, ls=":")
-    ax.set_title("Accuracy vs.\\ billed training compute, by scale",
-                 fontsize=8, loc="left")
+    ax.set_title("Accuracy vs. billed training compute, by scale",
+                 fontsize=8, loc="left", pad=26)
 
     # legend strip above the axes, outside the data
     from matplotlib.lines import Line2D
