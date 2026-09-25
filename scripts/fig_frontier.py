@@ -152,7 +152,7 @@ def main():
     ax.set_ylabel("held-out accuracy (%)")
     ax.axvline(1.0, color="gray", lw=0.7, ls=":")
     ax.set_title("Accuracy vs. billed training compute, by scale",
-                 fontsize=8, loc="left", pad=26)
+                 fontsize=8, loc="left", pad=36)
 
     # legend strip above the axes, outside the data
     from matplotlib.lines import Line2D
