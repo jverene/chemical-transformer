@@ -74,14 +74,17 @@ def panel_a(ax):
 
 def panel_b(ax):
     curves = []
-    for s, c in [(0, C_BLUE), (1, C_VERM)]:
+    for s in (0, 1):
         d = json.load(open(f"results-headroom/trajectory_seed{s}.json"))
         tr = d["trajectory"]
-        steps = [t["step"] for t in tr]
-        v = [t["random"] - t["waterfill"] for t in tr]
-        curves.append(v)
-        ax.plot(steps, v, "-", lw=0.7, color=c, alpha=0.30, zorder=2)
+        curves.append([t["random"] - t["waterfill"] for t in tr])
+    steps = [t["step"] for t in
+             json.load(open("results-headroom/trajectory_seed0.json"))["trajectory"]]
     mean = [(a + b) / 2 for a, b in zip(*curves)]
+    lo = [min(a, b) for a, b in zip(*curves)]
+    hi = [max(a, b) for a, b in zip(*curves)]
+    # one line only: bold seed mean, with the seed spread as a soft envelope
+    ax.fill_between(steps, lo, hi, color="0.6", alpha=0.22, lw=0, zorder=2)
     ax.plot(steps, mean, "o-", ms=3.2, lw=2.2, color="black", zorder=6,
             markerfacecolor="white", markeredgecolor="black")
     # shaded: the plastic window (mean ordering value > 0), decaying to
