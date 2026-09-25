@@ -104,7 +104,7 @@ def panel_b(ax):
 
 
 def panel_c(ax):
-    groups = ["Random\nwindows", "Online\nchasing", "Static\n$g{=}0.5$"]
+    groups = ["Random", "Chasing", "Static"]
     acc_11m = [51.6, 36.7, 31.8]
     acc_150 = [44.2, 41.7, 22.4]
     x = np.arange(3)
@@ -117,12 +117,8 @@ def panel_c(ax):
                 xytext=(0, 2.5), fontsize=5.6, color=C_GREEN, ha="right",
                 va="bottom")
     ax.set_xticks(x, groups)
-    ax.tick_params(axis="x", labelsize=5.8)
     ax.set_ylabel("held-out accuracy (%)")
     ax.set_ylim(0, 88)
-    # single-row legend in the clear zone above the dense line (64.2)
-    ax.legend(loc="upper left", ncol=2, frameon=False, borderaxespad=0.1,
-              columnspacing=0.8, handlelength=1.2, handletextpad=0.4)
     ax.set_title("(c) Chasing loses to random", loc="left", fontsize=6.6)
 
 
