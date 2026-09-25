@@ -119,10 +119,10 @@ def panel_c(ax):
     ax.set_xticks(x, groups)
     ax.tick_params(axis="x", labelsize=5.8)
     ax.set_ylabel("held-out accuracy (%)")
-    ax.set_ylim(0, 74)
-    # free zone: above the left bars (top 51.6), below the dense line (64.2)
-    ax.legend(loc="upper left", bbox_to_anchor=(0.0, 0.845), frameon=False,
-              borderaxespad=0.0, labelspacing=0.25)
+    ax.set_ylim(0, 88)
+    # single-row legend in the clear zone above the dense line (64.2)
+    ax.legend(loc="upper left", ncol=2, frameon=False, borderaxespad=0.1,
+              columnspacing=0.8, handlelength=1.2, handletextpad=0.4)
     ax.set_title("(c) Chasing loses to random", loc="left", fontsize=6.6)
 
 
