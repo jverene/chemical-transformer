@@ -57,7 +57,7 @@ token receives full FFN compute only inside randomly rotating windows. At
 (3 seeds) at 50\% billed FFN training FLOPs, inside the pre-registered
 2--10\% band; a gather-based realization converts half the billed cost into
 a measured 1.35$\times$ training throughput. Failures on code and
-template-dominated math are reported, not hidden.
+template-dominated math are reported.
 \end{abstract}
 
 % ---- intro (dropout-lead) ----
@@ -605,21 +605,14 @@ concentrates the ordering.
 \subsection{Wall-clock realization}
 \label{sec:realization}
 
-Billed FLOPs are an accounting device; this section measures what a
-realization actually pays. We time full training steps (forward + backward,
-$4{\times}2048$ tokens) of Pythia-1.4b under three execution strategies:
-dense; the \emph{masked} path our training driver uses (compute every FFN
-row, multiply masked tokens by zero); and a \emph{gather-skip} path that
-removes masked tokens' FFN rows (index-select on the flattened token
-axis). On an A100: dense runs at $\WcDenseTok$ tok/s; masked-at-half runs
-at $\WcMaskedHalf\times$ (zeroing saves nothing), while gather-skip
-reaches $\WcSkipHalf\times$ dense at budget $0.5$, $\WcSkipThreeQ\times$
-at $0.75$, and $\WcSkipQuarter\times$ at $0.25$. Two honest readings.
-First, the saving is real but sub-linear: FFNs are only a fraction of step
-time (attention, optimizer, and memory movement do not shrink), so the
-billed $2\times$ arrives as a measured $1.35\times$. Second, the naive
-masked path, what most token-dropping code actually ships, realizes
-\emph{nothing}; the gather is the whole result.
+Billed FLOPs are an accounting device; the physical anchor is a measured
+realization (full details in Appendix~\ref{app:wallclock}). Timing full
+Pythia-1.4b training steps on an A100, the masked path our driver uses
+realizes \emph{nothing} ($\WcMaskedHalf\times$: zeroing saves nothing),
+while a gather-skip path that removes masked tokens' FFN rows reaches
+$\WcSkipHalf\times$ dense at budget $0.5$. The billed $2\times$ arrives
+as a measured $1.35\times$ because FFNs are only a fraction of step
+time; the gather is the whole result.
 
 \section{Discussion}
 \label{sec:discussion}
@@ -629,18 +622,24 @@ masked path, what most token-dropping code actually ships, realizes
 The recipe (train dense, measure, impose) needs no endogenous-signal
 search and plugs into serving stacks that already produce per-token
 difficulty estimates \citep{leviathan2023speculative,chen2023speculative}.
-The causal arms The causal arms
-test the natural first-order chaser: measure $\partial\mathcal{L}/\partial g$,
-allocate hard against it, refresh every 100 steps.
-Stronger search over the same objective (bandits, RL, second-order
-corrections) faces the same structural problem: the scores are
-a property of the current body; training under them changes the body; and
-the ordering value decays as the body absorbs compute; the chaser
+Its target regime is training-cost-bound pipelines: fine-tuning, RLHF,
+and continuous learning, where inference is already heavily optimized
+and the billed-FFN saving composes with those stacks precisely because
+the deployed model is dense. The causal arms test the natural
+first-order chaser: measure $\partial\mathcal{L}/\partial g$, allocate hard
+against it, refresh every 100 steps. Stronger search over the same
+objective (bandits, RL, second-order corrections) faces the same
+structural problem: the scores are a property of the current body, and
+the ordering value decays as the body absorbs compute: the chaser
 destroys the signal it chases. The frozen-body oracle
-(Fig.~\ref{fig:ladder}) caps what \emph{any} ordering could buy, and the cap is below not
-budgeting at all in every regime measured. We read ``not trainable''
+(Fig.~\ref{fig:ladder}) caps what \emph{any} ordering could buy, below
+not budgeting at all in every regime measured. We read ``not trainable''
 as a property of gradient-defined value fields, not an impossibility
-proof for all conceivable allocators.
+proof for all conceivable allocators. Our tests are bounded at 150M
+arithmetic and 1.4B fine-tuning; the pathology is a first-order
+property of backpropagation consuming its own reducible loss, and we
+predict it persists at pretraining scale, but from-scratch router--body
+co-adaptation there remains untested (Limitations).
 \looseness=-1
 \paragraph{When static schedules suffice.} A constant $g{=}0.5$ from
 scratch collapses at every scale tested (11M: $31.8\%$; starved-150M:
@@ -834,6 +833,22 @@ dial.}
 \label{tab:budget}
 \budgettable
 \end{table}
+
+\section{Wall-clock realization details}
+\label{app:wallclock}
+
+We time full training steps (forward + backward, $4{\times}2048$ tokens)
+of Pythia-1.4b under three execution strategies: dense; the
+\emph{masked} path our training driver uses (compute every FFN row,
+multiply masked tokens by zero); and a \emph{gather-skip} path that
+removes masked tokens' FFN rows (index-select on the flattened token
+axis). On an A100: dense runs at $\WcDenseTok$ tok/s; masked-at-half
+runs at $\WcMaskedHalf\times$, while gather-skip reaches
+$\WcSkipHalf\times$ dense at budget $0.5$, $\WcSkipThreeQ\times$ at
+$0.75$, and $\WcSkipQuarter\times$ at $0.25$. The saving is real but
+sub-linear: attention, optimizer, and memory movement do not shrink with
+the FFN budget, and the naive masked path that most token-dropping code
+ships realizes nothing.
 
 \section{Compute ledger}
 \label{app:compute}
