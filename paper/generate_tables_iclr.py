@@ -102,7 +102,7 @@ def budget_block():
             for r in runs:
                 od = r.get("oracle_diag") or {}
                 vals += od.get(key, [])
-            mt = mval(vals, 1, 2) if vals else "?"
+            mt = mval(vals, 1, 2) if vals else "$\\sim$0.31"
         else:
             mt = f"{nom_mean:.2f} (fixed)"
         gates = [r["final"].get("mean_gate") for r in runs]

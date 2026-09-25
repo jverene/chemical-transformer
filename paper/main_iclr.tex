@@ -207,6 +207,18 @@ structure at inference; our converged-field result (loss-gradient
 saliency is coin-flip at convergence) explains why such signals must be
 architectural (attention mass), not gradient-based.
 
+\paragraph{Selection-based counterexamples.} Training-time token
+selection does work at scale: Rho-1 trains only on tokens with excess
+loss against a frozen reference model, with strong math results at
+1B/7B \citep{lin2024rho1}, and token dropping removes loss-identified
+unimportant tokens during BERT pretraining for $\sim$25\% savings
+\citep{hou2022tokendropping}. Both are consistent with our claims, and
+the boundary matters: they use a \emph{fixed external reference} to
+select \emph{data tokens}, never feeding scores back as gate targets
+into the same body's training loop, so the chaser-destroys-signal
+pathology we measure (\S\ref{sec:causal}) does not apply; our negative
+result covers self-referential gradient signals for FFN-compute gating
+inside one model.
 \paragraph{Controls and memorization.} The shuffled-targets control follows
 the logic of random-label controls \citep{zhang2017rethinking}: if permuted
 supervision matches real supervision, the specific content is not what
@@ -240,8 +252,9 @@ information that later positions may need.
 \label{sec:failures}
 
 End-to-end training offers the gate one channel of feedback: the task loss.
-\emph{Collapse}: a signal with no difficulty information (attention entropy
-\citep{clark2019bert}, $r \approx -0.06$ per token with difficulty) drives
+\emph{Collapse}: a signal with no difficulty information (attention
+entropy \citep{clark2019bert}, used here as a diagnostic rather than a
+proposed allocator, $r \approx -0.06$ per token with difficulty) drives
 the gate to a constant.
 \emph{Inversion}: a ground-truth initialization makes the gate vary, but easy
 problems are memorizable, so their cross-entropy gradient is largest and
@@ -382,8 +395,9 @@ seeds, all arms forking from the same Stage-1 body per seed. True-label,
 measured-value, and \emph{noise} targets land in one green tie band (max
 paired difference $0.3$ points); a constant gate in the same protocol
 sits $2.4$ points below. \emph{Inset}: the 1.4B replication, gate-grad
-vs.\ shuffled held loss ($|\Delta| = 0.0008$, against the $1.0$-point
-pre-registered threshold; the two dots sit at nearly the same height). \textbf{(b)} Realized hard-minus-easy gate
+vs.\ shuffled held loss ($|\Delta| = 0.0008$; the 1.0-point rule was
+pre-registered in accuracy at 11M and has no NL loss-domain twin; the
+two dots sit at nearly the same height). \textbf{(b)} Realized hard-minus-easy gate
 spread: only the tag arm builds difficulty-ordered gates ($r = 0.95$),
 structure without accuracy benefit. Numbers: Table~\ref{tab:p0}
 (Appendix~\ref{app:p0table}).}
@@ -403,9 +417,9 @@ At testbed scale, \emph{any} varying supervision under the budget
 constraint (even targets permuted into noise) recovers the same
 accuracy (the seed-paired lines of Figure~\ref{fig:content}a never
 separate) while all three dominate a
-constant gate trained from scratch by ${\sim}2$ points at the same inference
-budget (the budget redistribution this induces is quantified in
-Appendix~\ref{app:budget}). Two honest readings follow. First, at $11$M
+constant gate trained from scratch by ${\sim}2$ points at the same
+inference budget (Appendix~\ref{app:budget}). Two honest readings
+follow. First, at $11$M
 supervision supplies a dense-then-gate protocol whose accuracy is
 insensitive to target content; the tag arm's $+0.21$ ordering spread is
 real but not accuracy-load-bearing. Second, the
@@ -424,7 +438,8 @@ gate-grad varies within problems, so per-bin spread
 \begin{table}[t]
 \centering
 \caption{The causal test, both scales: the gate is live from step 0 at
-budget 0.5, all arms at matched billed training FLOPs. The starved-150M
+budget 0.5, all arms at matched billed training FLOPs (one seed per
+arm; dense/dropout not run at starved-150M). The starved-150M
 regime is where the field is structured mid-life (waterfill beats random
 by $+0.30$/$+0.38$ across seeds). Dropout and random windows are
 indistinguishable; chasing the measured field online loses to random at
@@ -517,17 +532,16 @@ share a $0.57$--$0.59\times$ budget, so their x positions are evenly
 spaced for readability rather than to scale). Gated 2-stage arms cluster at
 $\sim$0.58$\times$ dense compute and $\sim$5 points below it at 150M; MoD
 reaches dense compute savings with an inverted router. The 400M probe
-collapses (post-LN + Xavier init, untrainable at any LR swept), the
+collapses (post-LN + Xavier init, untrainable at the preset per-size LRs tried), the
 honest edge of the scaling evidence; 1B was never run.}
 \label{fig:frontier-scale}
 \end{figure}
 
 The same ordering holds at both trainable scales
-(Figure~\ref{fig:frontier-scale}): dense first, the gated 2-stage arms
-clustered together, field-chasing and static further behind. The
-architecture does not train at 400M, so no frontier claim is made beyond
-150M arithmetic (the 1.4B NL results of \S\ref{sec:nl} are the scale
-evidence).
+(Figure~\ref{fig:frontier-scale}): dense first, gated 2-stage arms
+clustered, chasing and static behind; the architecture does not train
+at 400M, so no frontier claim is made beyond 150M (the 1.4B NL results
+are the scale evidence).
 
 \subsection{Natural language: the recipe transfers, with a boundary}
 \label{sec:nl}
@@ -552,8 +566,10 @@ hidden: the half-cost recipe targets capability-limited regimes on
 distributed-structure data, not redundancy-dominated corpora.
 \emph{The taxonomy row transfers.} Forking the web-text Stage-1 body into
 supervised stage-2 arms (\S\ref{sec:supervised}): gate-grad $2.7077$ vs.\
-shuffled $2.7085$ ($\Delta = 0.0008$, against the $1.0$-point
-pre-registered threshold), flat gate profiles in both. On language,
+shuffled $2.7085$, a paired $\Delta = 0.0008$ in loss (the
+$1.0$-point rule was pre-registered in \emph{accuracy} at 11M and has
+no loss-domain twin here; the delta is $0.4\%$ of the dense-vs-rotation
+gap), with flat gate profiles in both arms. On language,
 measured value orders nothing and buys nothing over permuted targets: the
 content-irrelevance result is not a testbed artifact. Ablations
 (App.~\ref{app:ablations}): full-unfreeze stage-2 recovers $2.6054$ of
@@ -581,10 +597,9 @@ Figure~\ref{fig:ladder} prices allocation itself: ordering is real
 zero-shot, but allocating at all is strictly worse than not budgeting
 ($2.75$--$2.77$ uniform vs.\ $3.92$--$5.03$ for every explicit
 allocation), and chasing converts none of it (\S\ref{sec:causal}).
-Per-layer gate profiles are heterogeneous
-rather than ordered: at 150M the hard-minus-easy spread is $\le 0.15$ in
-eight of twelve layers, while one layer ($0.60$) concentrates the
-ordering: layer-localized, not uniform.
+Per-layer profiles are heterogeneous: at 150M the hard-minus-easy
+spread is $\le 0.15$ in eight of twelve layers; one layer ($0.60$)
+concentrates the ordering.
 
 \subsection{Wall-clock realization}
 \label{sec:realization}
@@ -613,8 +628,8 @@ no endogenous-signal search and plugs into serving stacks that already
 produce per-token difficulty estimates
 \citep{leviathan2023speculative,chen2023speculative}.
 \paragraph{Which chasers does ``not trainable'' rule out?} The causal arms
-test the natural first-order chaser: measure $\partial\mathcal{L}/\partial
-g$ on the current body, allocate hard against it, refresh every 100 steps.
+test the natural first-order chaser: measure $\partial\mathcal{L}/\partial g$,
+allocate hard against it, refresh every 100 steps.
 Stronger search over the same objective (bandits, RL, second-order
 corrections) faces the same structural problem: the scores are
 a property of the current body; training under them changes the body; and
@@ -633,10 +648,9 @@ not benefit from intermittent compute (MetaMathQA, \S\ref{sec:nl}, is
 the counter-case).
 \paragraph{Limitations.} The 1.4B headline rests on three seeds
 (per-seed gaps \NlRotGapMin--\NlRotGapMax\%); code and math are
-single-seed. Difficulty is operand-size-defined (NL bins inherit the
-reference model's notion). The two-stage body is near-frozen (App.~\ref{app:ablations});
+single-seed. The two-stage body is near-frozen (App.~\ref{app:ablations});
 billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile
-form is hand-set, content measured.
+form is hand-set.
 
 \section*{AI use statement}
 An LLM assistant was used under the authors' direction for four purposes:
@@ -759,6 +773,8 @@ Figure~\ref{fig:ladder}(b).}
 \section{Experimental details}
 \label{app:details}
 
+Difficulty is a proxy throughout: operand-size-defined at testbed
+scale, reference-model-inherited for the NL bins.
 \paragraph{Arithmetic.} Vocabulary of 22 digit/operator tokens; frozen
 held-out sets of 256 sequences per split, identical across arms and
 seeds; accuracy on answer tokens only. 11M: $d{=}384$, 6 layers, 6 heads,
@@ -780,6 +796,11 @@ held-out evaluation at the final step. Code domain: CodeSearchNet python
 response). The per-layer oracle stores per-(token, layer) scores in fp32
 (negative partial losses) and quartile-bins each layer's positive scores.
 
+At the 1.4B config the counter bills attention in full at $25$
+MFLOPs/token (per-token projections) and FFN at $134$ MFLOPs/token
+$\times$ 24 layers $= 3221$ MFLOPs/token; dense totals $3246$ and a
+mean gate of $0.51$ bills $1636$ ($0.50\times$), matching the measured
+accounting.
 \paragraph{Wall-clock.} Measured on an A100: full forward+backward steps
 at batch $4{\times}2048$, 3 warmup + 10 timed iterations, synchronized;
 the gather-skip path index-selects active token rows before each FFN and

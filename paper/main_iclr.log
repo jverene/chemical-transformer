@@ -426,49 +426,57 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [1
 
 ]
-[2] [3] [4]
+[2]
+Underfull \vbox (badness 5316) has occurred while \output is active []
+
+ [3]
+[4]
 File: content.pdf Graphic file (type pdf)
 <use content.pdf>
-
-Underfull \hbox (badness 1194) in paragraph at lines 393--398
+ [5]
+Underfull \hbox (badness 1194) in paragraph at lines 407--412
  \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
 y shuffled number existed: the
  []
 
-[5] [6]
+
+Underfull \vbox (badness 4454) has occurred while \output is active []
+
+ [6]
 File: frontier.pdf Graphic file (type pdf)
 <use frontier.pdf>
+
+Underfull \vbox (badness 1048) has occurred while \output is active []
+
  [7]
 File: ladder.pdf Graphic file (type pdf)
 <use ladder.pdf>
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [8]
-Underfull \hbox (badness 7888) in paragraph at lines 648--654
+[8] [9]
+Underfull \hbox (badness 7888) in paragraph at lines 662--668
 \TU/lmr/m/n/10 All code, manifests, and per-run JSONs are in the anonymized rep
 ository
  []
 
 
-Underfull \hbox (badness 3735) in paragraph at lines 648--654
+Underfull \hbox (badness 3735) in paragraph at lines 662--668
 \TU/lmr/m/n/10 (\TU/lmtt/m/n/10 https://anonymous.4open.science/r/chemical-tran
 sformer-BB35\TU/lmr/m/n/10 ). Every table
  []
 
 
-Underfull \hbox (badness 7869) in paragraph at lines 648--654
+Underfull \hbox (badness 7869) in paragraph at lines 662--668
 \TU/lmr/m/n/10 and figure generated in this repository regenerates from committ
 ed artifacts
  []
 
-
-Underfull \vbox (badness 1005) has occurred while \output is active []
-
- [9]
 (main_iclr.bbl [10] [11]) [12]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 462912 bytes).
+[13]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[14] [15] (main_iclr.aux) )
+Output written on main_iclr.xdv (15 pages, 478144 bytes).
