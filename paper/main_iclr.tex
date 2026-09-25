@@ -482,8 +482,8 @@ ties regardless of target content; MoD ties dense with an
 Table~\ref{tab:p150}: content-irrelevance replicates at 150M: tag,
 shuffled, and fixed 2-stage arms are accuracy-identical ($62.9$ each) and
 dense wins the healthy recipe ($68.0$). MoD is the strongest apparent
-counterexample to our framing and deserves a direct reading: single-stage
-MoD at $0.58\times$ billed compute ties dense ($67.5$), beating every
+counterexample to our framing and deserves a direct reading: at
+$0.58\times$ billed compute it ties dense ($67.5$), beating every
 two-stage arm at matched budget. The bound: this is the 5000-step
 probe grid (our parity claim is the 10000-step convergence pair, where
 MoD was not run); $n{=}2$ with seed-paired diffs $+8.9/{-}9.7$ leaves it
@@ -594,15 +594,16 @@ rule was registered in accuracy at 11M; the delta is $0.4\%$ of the
 dense-vs-rotation gap), with flat gate profiles in both arms. On language,
 measured value orders nothing and buys nothing over permuted targets: the
 content-irrelevance result is not a testbed artifact. Ablations (App.~\ref{app:ablations}): full-unfreeze stage-2 recovers
-$2.6054$ of the gap (bodies adapt to their gates); the per-layer-target
-variant did not complete and is reported as not run.
+$58\%$ of the remaining gap (bodies adapt to their gates); the
+per-layer-target variant did not complete and is reported as not
+run.
 
 \subsection{Where does the compute go? Oracle gap and layer profile}
 \label{sec:oracle-gap}
 
 Figure~\ref{fig:ladder} prices allocation itself: ordering is real
-zero-shot, but allocating at all is strictly worse than not budgeting
-($2.75$--$2.77$ vs.\ $3.92$--$5.03$), and chasing converts none of it
+zero-shot, but not budgeting wins outright (uniform: $2.75$--$2.77$;
+every allocation rung: $3.92$--$5.03$), and chasing converts none of it
 (\S\ref{sec:causal}).
 Per-layer profiles are heterogeneous: one of twelve layers ($0.60$)
 concentrates the ordering.
@@ -619,6 +620,7 @@ $\WcSkipHalf\times$ dense at budget $0.5$. The billed $2\times$ arrives
 as a measured $1.35\times$ because FFNs are only a fraction of step
 time; the gather is the whole result.
 
+\enlargethispage{\baselineskip}
 \section{Discussion}
 \label{sec:discussion}
 
@@ -627,10 +629,9 @@ time; the gather is the whole result.
 The recipe (train dense, measure, impose) needs no endogenous-signal
 search and plugs into serving stacks that already produce per-token
 difficulty estimates \citep{leviathan2023speculative,chen2023speculative}.
-Its target regime is training-cost-bound pipelines: fine-tuning, RLHF,
-and continuous learning, where inference is already heavily optimized
-and the billed-FFN saving composes with those stacks precisely because
-the deployed model is dense. The causal arms test the natural
+Its target regime is training-cost-bound pipelines (fine-tuning, RLHF,
+continuous learning), where inference is already heavily optimized and
+the saving composes with those stacks because deployment is dense. The causal arms test the natural
 first-order chaser: measure $\partial\mathcal{L}/\partial g$, allocate hard
 against it, refresh every 100 steps. Stronger search over the same
 objective (bandits, RL, second-order corrections) faces the same
@@ -653,13 +654,13 @@ intermittent compute (MetaMathQA is the counter-case).
 \looseness=-1
 \paragraph{Limitations.} (i) The starved-150M causal replication is one
 seed per arm (Table~\ref{tab:causal}; the 11M gap survives plausible
-noise, the starved gap does not), and the 150M grid is $n{=}2$
-(equivalence within ${\sim}{\pm}9$ points). (ii) The
+noise, the starved gap does not; resolving runs queued in
+\texttt{DECISIONS.md}), and the 150M grid is $n{=}2$ (equivalence
+within ${\sim}{\pm}9$ pts). (ii) The
 \S\ref{sec:failures-results} taxonomy is ported from pre-repo
 artifacts, and the near-frozen protocol is the regime boundary
-(from-scratch router--body co-adaptation untested). (iii) The 1.4B
-headline is three seeds; code and math single-seed. The runs resolving
-(i) are specified in \texttt{DECISIONS.md}.
+(from-scratch co-adaptation untested). (iii) the 1.4B
+headline is three seeds; code and math single-seed.
 
 \section*{AI use statement}
 An LLM assistant was used under the authors' direction for four purposes:

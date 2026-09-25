@@ -449,19 +449,19 @@ File: frontier.pdf Graphic file (type pdf)
 File: ladder.pdf Graphic file (type pdf)
 <use ladder.pdf>
  [8] [9]
-Underfull \hbox (badness 7888) in paragraph at lines 671--681
+Underfull \hbox (badness 7888) in paragraph at lines 672--682
 \TU/lmr/m/n/10 All code, manifests, and per-run JSONs are in the anonymized rep
 ository
  []
 
 
-Underfull \hbox (badness 3735) in paragraph at lines 671--681
+Underfull \hbox (badness 3735) in paragraph at lines 672--682
 \TU/lmr/m/n/10 (\TU/lmtt/m/n/10 https://anonymous.4open.science/r/chemical-tran
 sformer-BB35\TU/lmr/m/n/10 ). Every table
  []
 
 
-Underfull \hbox (badness 7869) in paragraph at lines 671--681
+Underfull \hbox (badness 7869) in paragraph at lines 672--682
 \TU/lmr/m/n/10 and figure generated in this repository regenerates from committ
 ed artifacts
  []
@@ -471,10 +471,10 @@ ed artifacts
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13]
-Underfull \hbox (badness 1895) in paragraph at lines 806--818
+Underfull \hbox (badness 1895) in paragraph at lines 807--819
 []\TU/lmr/m/n/10 Billing conventions, stated precisely. At 1.4B the counter bil
 ls FFN at $\OT1/cmr/m/n/10 134\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 22$
  []
 
 [14] [15] (main_iclr.aux) )
-Output written on main_iclr.xdv (15 pages, 493636 bytes).
+Output written on main_iclr.xdv (15 pages, 492964 bytes).
