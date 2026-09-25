@@ -94,13 +94,9 @@ def panel_a(ax, accs):
     band_hi = max(means[a] for a in order[1:]) + 0.45
     ax.axhspan(band_lo, band_hi, xmin=0.14, xmax=0.99, color=C_GREEN,
                alpha=0.13, lw=0)
-    ax.annotate("content-irrelevant:\nmax paired $|\\Delta| = 0.3$ pts",
-                (2.0, band_hi + 0.25), fontsize=5.6, color=C_GREEN,
-                ha="center")
+
     # constant-arm verdict
-    ax.annotate(f"$-{means['shuffled'] - means['const']:.1f}$ pts (paired)",
-                (0.0, means["const"] - 0.75), fontsize=5.6, color=C_VERM,
-                ha="center")
+
     # seed dots + mean markers
     for i, a in enumerate(order):
         col = C_VERM if a == "const" else C_BLUE
@@ -146,12 +142,7 @@ def panel_b(ax, spreads):
     for i, a in enumerate(order):
         ax.scatter([i] * len(spreads[a]), spreads[a], s=8, color="black",
                    zorder=3, alpha=0.7)
-    ax.annotate("only tag orders gates\n(bin--difficulty $r=0.95$)",
-                (0.05, 0.232), fontsize=5.6, color=C_BLUE, ha="left",
-                va="center",
-                arrowprops=dict(arrowstyle="->", lw=0.7, color=C_BLUE))
-    ax.annotate("no structure, same accuracy (a)", (1.0, 0.092), fontsize=5.6,
-                color=C_GRAY, ha="center")
+
     ax.set_xticks(xs, ["Constant", "Shuffled", "Gate-\ngrad", "Tag"])
     ax.set_ylabel("realized gate spread (H $-$ E)")
     ax.set_ylim(0, 0.30)
