@@ -104,7 +104,7 @@ def panel_b(ax):
 
 
 def panel_c(ax):
-    groups = ["Random\nwindows", "Online\nfield-chasing", "Static $g{=}0.5$"]
+    groups = ["Random\nwindows", "Online\nchasing", "Static\n$g{=}0.5$"]
     acc_11m = [51.6, 36.7, 31.8]
     acc_150 = [44.2, 41.7, 22.4]
     x = np.arange(3)
@@ -112,11 +112,14 @@ def panel_c(ax):
     b1 = ax.bar(x - w / 2, acc_11m, w, color=C_BLUE, label="11M")
     b2 = ax.bar(x + w / 2, acc_150, w, color=C_VERM, label="starved-150M")
     ax.axhline(64.2, color=C_GREEN, lw=1.1, ls="--")
-    ax.annotate("dense (11M)", (2.42, 64.2), fontsize=5.6,
-                color=C_GREEN, va="center", ha="right")
+    # above the line, not on it
+    ax.annotate("dense (11M)", (2.42, 64.2), textcoords="offset points",
+                xytext=(0, 2.5), fontsize=5.6, color=C_GREEN, ha="right",
+                va="bottom")
     ax.set_xticks(x, groups)
+    ax.tick_params(axis="x", labelsize=5.8)
     ax.set_ylabel("held-out accuracy (%)")
-    ax.set_ylim(0, 72)
+    ax.set_ylim(0, 74)
     # free zone: above the left bars (top 51.6), below the dense line (64.2)
     ax.legend(loc="upper left", frameon=False, borderaxespad=0.1,
               labelspacing=0.25)
