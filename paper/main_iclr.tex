@@ -484,12 +484,12 @@ shuffled, and fixed 2-stage arms are accuracy-identical ($62.9$ each) and
 dense wins the healthy recipe ($68.0$). MoD is the strongest apparent
 counterexample to our framing and deserves a direct reading: single-stage
 MoD at $0.58\times$ billed compute ties dense ($67.5$), beating every
-two-stage arm at matched budget. The bound: this is the
-5000-step probe grid (our parity claim is the 10000-step convergence
-pair, where MoD was not run); $n{=}2$ with seed-paired diffs
-$+8.9/{-}9.7$ leaves it indistinguishable from dense; and its router is
-anti-ordered (per-bin gates $0.25/0.24/0.21$), so the efficiency is not
-difficulty-correct allocation. We read it as extending
+two-stage arm at matched budget. The bound: this is the 5000-step
+probe grid (our parity claim is the 10000-step convergence pair, where
+MoD was not run); $n{=}2$ with seed-paired diffs $+8.9/{-}9.7$ leaves it
+indistinguishable from dense; and its anti-ordered router (per-bin
+gates $0.25/0.24/0.21$) means the efficiency is not difficulty-correct
+allocation. We read it as extending
 content-irrelevance to a production allocator; it deploys gated where we
 deploy dense, and its edge at the convergence horizon is the open
 question.
@@ -571,10 +571,13 @@ both arms share tokenizer, data, and the accounting of
 dense \NlDenseLoss{} vs.\ rotation-at-dense-deployment \NlRotLoss{}
 (${+}\NlRotGapPct\%$; per-seed gaps \NlRotGapList\%) at exactly
 half billed training FLOPs, inside the same pre-registered $2$--$10\%$
-band as the 150M testbed ($+5.3\%$). At iso-billed budget (dense gets
-1500 steps) dense reaches $2.623$ on its evaluation subsample, $2.611$
-at iso-wall-clock (2222 steps at the measured $1.35\times$): the extra
-optimizer steps do not close the gap. \emph{Code}: $+\NlCodeGap\%$, just
+band as the 150M testbed ($+5.3\%$). At iso-billed budget (dense at
+1500 steps) dense reaches $2.623$ on its evaluation subsample, and
+$2.611$ at iso-wall-clock (2222 steps at the measured $1.35\times$),
+both below rotation's $2.729$ (the subsample reads ${\sim}0.07$ above
+the full set; the ordering holds under either basis): at this scale and
+horizon, training dense for fewer steps dominates; rotation should win
+only in steep loss-curve regimes, which this fine-tune is not. \emph{Code}: $+\NlCodeGap\%$, just
 outside the band; marginal, one seed. \emph{Math}: $+\NlMathGap\%$, the
 recipe fails. The mechanism is legible: MetaMathQA held-out loss is
 dominated by memorizable template structure, and intermittent full compute
@@ -599,8 +602,8 @@ variant did not complete and is reported as not run.
 
 Figure~\ref{fig:ladder} prices allocation itself: ordering is real
 zero-shot, but allocating at all is strictly worse than not budgeting
-($2.75$--$2.77$ uniform vs.\ $3.92$--$5.03$ for every explicit
-allocation), and chasing converts none of it (\S\ref{sec:causal}).
+($2.75$--$2.77$ vs.\ $3.92$--$5.03$), and chasing converts none of it
+(\S\ref{sec:causal}).
 Per-layer profiles are heterogeneous: one of twelve layers ($0.60$)
 concentrates the ordering.
 
@@ -634,12 +637,11 @@ objective (bandits, RL, second-order corrections) faces the same
 structural problem: the scores are a property of the current body, and
 the ordering value decays as the body absorbs compute: the chaser
 destroys the signal it chases. The frozen-body oracle
-(Fig.~\ref{fig:ladder}) caps what \emph{any} ordering could buy, below
-not budgeting at all in every regime measured. We read ``not trainable''
+(Fig.~\ref{fig:ladder}) caps what \emph{any} ordering could buy, and the cap is below not
+budgeting at all in every regime measured. We read ``not trainable''
 as a property of gradient-defined value fields, not an impossibility
-proof for all conceivable allocators. Our tests are bounded at 150M
-arithmetic and 1.4B fine-tuning; the pathology is a first-order
-property of backpropagation consuming its own reducible loss, and we
+proof for all conceivable allocators. The pathology is a first-order
+property of backpropagation consuming its own reducible loss; we
 predict it persists at pretraining scale.
 \looseness=-1
 \paragraph{When static schedules suffice.} A constant $g{=}0.5$ from
@@ -657,7 +659,7 @@ noise, the starved gap does not), and the 150M grid is $n{=}2$
 artifacts, and the near-frozen protocol is the regime boundary
 (from-scratch router--body co-adaptation untested). (iii) The 1.4B
 headline is three seeds; code and math single-seed. The runs resolving
-(i) are specified in \texttt{DECISIONS.md} (rebuttal queue).
+(i) are specified in \texttt{DECISIONS.md}.
 
 \section*{AI use statement}
 An LLM assistant was used under the authors' direction for four purposes:
@@ -671,13 +673,11 @@ repository regenerates from committed artifacts
 (\texttt{paper/generate\_tables\_iclr.py}, \texttt{scripts/*figure*});
 pre-registered decision rules are committed with dates in
 \texttt{DECISIONS.md}; the workshop-era failure-taxonomy numbers of
-\S\ref{sec:failures-results} are ported and labeled as such.
-
-\section*{Compute statement}
-Total rented-GPU spend: ${\sim}\$40$, itemized in
-Appendix~\ref{app:compute}; testbed runs on an Apple M3 at no cost.
-Roughly half went to re-runs after host failures and fixable bugs: the
-failure half is what the manifests and kill-rules are for.
+\S\ref{sec:failures-results} are ported and labeled as such. Total
+rented-GPU spend is ${\sim}\$40$, itemized in
+Appendix~\ref{app:compute} (testbed runs on an Apple M3 at no cost;
+roughly half the ledger is re-runs after host failures and fixable
+bugs, which is what the manifests and kill-rules are for).
 
 \bibliography{iclr2027_conference}
 \bibliographystyle{iclr2027_conference}
