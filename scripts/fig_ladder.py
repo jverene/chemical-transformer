@@ -81,28 +81,15 @@ def panel_a(ax, d):
         ax.scatter([i] * 2, d[k], s=9, color="black", zorder=4, alpha=0.8)
         ax.plot([i - 0.14, i + 0.14], [means[i]] * 2, color="black", lw=1.2,
                 zorder=5)
-        ax.annotate(f"{means[i]:.2f}", (i, means[i] + 0.10), fontsize=5.6,
-                    ha="center")
     # no-budgeting line, labeled in the clear strip right of the anti bar
     um = float(np.mean(d["uniform"]))
     ax.axhline(um, color=C_GREEN, ls="--", lw=1.2, zorder=3)
     ax.annotate("no budgeting\n(uniform)", (2.36, um), fontsize=5.8,
                 color=C_GREEN, va="center", ha="left")
-    # short connector labels; identities live in the caption
-    ax.plot([0.28, 0.28, 0.72, 0.72],
-            [means[0] + 0.34, means[0] + 0.44, means[0] + 0.44, means[0] + 0.34],
-            color="0.4", lw=0.6)
-    ax.annotate("+0.30/+0.38", (0.5, means[0] + 0.48), fontsize=5.6,
-                ha="center", color="0.25")
-    ax.plot([0.28, 0.28, 1.72, 1.72],
-            [means[0] + 0.66, means[0] + 0.76, means[0] + 0.76, means[0] + 0.66],
-            color="0.4", lw=0.6)
-    ax.annotate("+0.70/+0.78  (2.1--2.3$\\times$)", (1.0, means[0] + 0.80),
-                fontsize=5.6, ha="center", color="0.25")
     ax.set_xticks(xs, names)
     ax.set_xlim(-0.6, 3.2)
     ax.set_ylabel("zero-shot held-out loss")
-    ax.set_ylim(0, 6.6)
+    ax.set_ylim(0, 5.6)
     ax.set_title("(a) Everything loses to doing nothing "
                  f"(best rung pays +{np.mean(np.array(d['waterfill']) - d['uniform']):.1f})",
                  loc="left")

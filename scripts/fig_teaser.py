@@ -80,16 +80,17 @@ def panel_b(ax):
         steps = [t["step"] for t in tr]
         v = [t["random"] - t["waterfill"] for t in tr]
         curves.append(v)
-        ax.plot(steps, v, "-", lw=0.8, color=c, alpha=0.45)
+        ax.plot(steps, v, "-", lw=0.7, color=c, alpha=0.30, zorder=2)
     mean = [(a + b) / 2 for a, b in zip(*curves)]
-    ax.plot(steps, mean, "o-", ms=3.0, lw=1.8, color="black", zorder=5)
+    ax.plot(steps, mean, "o-", ms=3.2, lw=2.2, color="black", zorder=6,
+            markerfacecolor="white", markeredgecolor="black")
     # shaded: the plastic window (mean ordering value > 0), decaying to
     # zero as the body converges; dashed: the entire dense-vs-dropout gap
     ax.axvspan(100, 1600, color=C_GREEN, alpha=0.10, lw=0)
     ax.axhline(0.107, color="0.45", ls="--", lw=0.9, zorder=1)
     ax.axhline(0, color="gray", lw=0.7, ls=":")
     ax.set_xscale("log")
-    ax.set_ylim(-0.185, 0.315)
+    ax.set_ylim(-0.21, 0.34)
     ax.set_xticks(steps)
     show = {"50", "200", "800", "3200"}
     ax.set_xticklabels([s if s in show else "" for s in map(str, steps)],

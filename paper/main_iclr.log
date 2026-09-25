@@ -441,13 +441,9 @@ File: frontier.pdf Graphic file (type pdf)
  [7]
 File: ladder.pdf Graphic file (type pdf)
 <use ladder.pdf>
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [8]
-[9] (main_iclr.bbl [10] [11]) [12]
+ [8] [9] (main_iclr.bbl [10] [11]) [12]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 467592 bytes).
+Output written on main_iclr.xdv (14 pages, 468268 bytes).

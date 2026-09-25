@@ -84,10 +84,6 @@ def panel_a(ax, accs):
     labels = ["Constant\n$g{=}0.5$", "Shuffled\n(noise)", "Gate-grad\n(measured)",
               "Tag\n(labels)"]
     xs = np.arange(4)
-    # paired seed lines first (under the dots)
-    for s in range(3):
-        ax.plot(xs, [accs[a][s] for a in order], "-", color="0.78",
-                lw=0.7, zorder=1)
     # green tie band across the three varying-target arms
     means = {a: float(np.mean(accs[a])) for a in order}
     band_lo = min(means[a] for a in order[1:]) - 0.45

@@ -43,9 +43,9 @@ plt.rcParams.update({
 
 MARKERS = {
     "dense": ("o", "dense"),
-    "dropout": ("^", "dropout / windows"),
-    "static": ("s", "static $g{=}0.5$"),
-    "online": ("D", "field-chasing"),
+    "dropout": ("^", "windows/dropout"),
+    "static": ("s", "static"),
+    "online": ("D", "chasing"),
     "ours": ("*", "ours (tag)"),
     "mod": ("p", "MoD"),
 }
@@ -108,29 +108,24 @@ def main():
     ax.scatter([x_stem, x_stem], [ys["dropout"], ys["shuffled"]], s=34,
                marker="^", color=C_11, edgecolor="black", linewidths=0.6,
                zorder=5)
-    ax.annotate(f"windows $\\approx$ dropout\n"
-                f"{max(ys['shuffled'], ys['dropout']):.1f}"
-                f"/{min(ys['shuffled'], ys['dropout']):.1f}",
+    ax.annotate("windows $\\approx$ dropout",
                 (x_stem, tie_y), textcoords="offset points", xytext=(6, 3),
                 fontsize=6.4, color=C_11, va="bottom")
-    ax.annotate(f"field-chasing {ys['online']:.1f}", (x_stem, ys["online"]),
+    ax.annotate("field-chasing", (x_stem, ys["online"]),
                 textcoords="offset points", xytext=(7, -1), fontsize=6.4,
                 color=C_11, va="center")
-    ax.annotate(f"static {ys['static']:.1f}", (x_stem, ys["static"]),
+    ax.annotate("static", (x_stem, ys["static"]),
                 textcoords="offset points", xytext=(7, -1), fontsize=6.4,
                 color=C_11, va="center")
 
     # ---- 150M: seed-range stems + mean markers + right-side labels
     p150 = fig150m()
-    label_of = {"dense": "dense", "static": "static (scratch)",
-                "static2stage": "static 2-stage", "ours": "ours (tag)",
-                "dropout": "shuffled", "mod": "MoD"}
     for name, (ratios, accs) in p150.items():
         x = ratios[0]
         if name == "dense":
             ax.scatter([x], [np.mean(accs)], s=44, marker="o", color=C_150,
                        edgecolor="black", linewidths=0.6, zorder=5)
-            ax.annotate(f"dense {np.mean(accs):.1f}", (x, np.mean(accs)),
+            ax.annotate("dense", (x, np.mean(accs)),
                         textcoords="offset points", xytext=(-2, 6),
                         fontsize=6.6, color=C_150, ha="right")
             continue
@@ -142,16 +137,6 @@ def main():
                    marker=mk, color=C_150, edgecolor="black", linewidths=0.6,
                    zorder=5)
 
-    # one shared label block for the 150M cluster (right of it, stacked)
-    cluster_x = np.mean([v[0][0] for k, v in p150.items() if k != "dense"])
-    lines_150 = sorted(((k, np.mean(v[1])) for k, v in p150.items()
-                        if k not in ("dense",)), key=lambda t: -t[1])
-    ax.annotate("150M cluster:", (cluster_x, 71.6), textcoords="offset points",
-                xytext=(15, 0), fontsize=6.4, color=C_150)
-    for i, (k, acc) in enumerate(lines_150):
-        ax.annotate(f"{label_of[k]} {acc:.1f}", (cluster_x, 71.6),
-                    textcoords="offset points", xytext=(15, -8 - 7.5 * i),
-                    fontsize=6.4, color=C_150)
 
     # ---- 400M collapsed probe
     w = json.load(open("results-p1/tagged-v2/baseline_seed0.json"))
