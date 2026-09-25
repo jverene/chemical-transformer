@@ -220,7 +220,7 @@ def causal_combined_block():
         macros[f"Starved{arm.capitalize()}Loss"] = f"{rows_150[arm][1]:.3f}"
     body = ("\\begin{tabular}{lcccc}\n\\toprule\n"
             "& \\multicolumn{2}{c}{11M (3000 steps, 1 seed)} & "
-            "\\multicolumn{2}{c}{starved-150M (2500, 1 seed)} \\\\\n"
+            "\\multicolumn{2}{c}{starved-150M (2500 steps, 1 seed)} \\\\\n"
             "\\cmidrule(lr){2-3}\\cmidrule(lr){4-5}\n"
             "Arm & acc (\\%) & loss & acc (\\%) & loss \\\\\n"
             "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
