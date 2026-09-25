@@ -441,9 +441,31 @@ File: frontier.pdf Graphic file (type pdf)
  [7]
 File: ladder.pdf Graphic file (type pdf)
 <use ladder.pdf>
- [8] [9] (main_iclr.bbl [10] [11]) [12]
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [8]
+(main_iclr.bbl [9] [10])
+Underfull \hbox (badness 7888) in paragraph at lines 651--657
+\TU/lmr/m/n/10 All code, manifests, and per-run JSONs are in the anonymized rep
+ository
+ []
+
+
+Underfull \hbox (badness 3735) in paragraph at lines 651--657
+\TU/lmr/m/n/10 (\TU/lmtt/m/n/10 https://anonymous.4open.science/r/chemical-tran
+sformer-BB35\TU/lmr/m/n/10 ). Every table
+ []
+
+
+Underfull \hbox (badness 7869) in paragraph at lines 651--657
+\TU/lmr/m/n/10 and figure generated in this repository regenerates from committ
+ed artifacts
+ []
+
+[11] [12]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 470020 bytes).
+Output written on main_iclr.xdv (14 pages, 462900 bytes).

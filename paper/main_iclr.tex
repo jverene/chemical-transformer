@@ -569,12 +569,11 @@ oracle machinery's difficulty diagnostics are testbed-scale results
 \centering
 \includegraphics[width=0.68\linewidth]{ladder.pdf}
 \caption{The allocation ladder, starved-150M (zero-shot held-out loss on
-frozen bodies; dots are seeds). \textbf{(a)} Ordering is real: waterfill
-beats random ($+0.30$/$+0.38$) and anti-allocation ($+0.70$/$+0.78$;
-$2.1$--$2.3\times$), yet every rung, including oracle-best, sits above
-the no-budgeting line: perfect allocation of a $0.5$ budget pays
-$+1.2$--$1.5$ vs.\ full compute. \textbf{(b)} At convergence: a 51/49
-coin flip (Table~\ref{tab:migration}, App.~\ref{app:p0table}).}
+frozen bodies; dots are seeds). \textbf{(a)} Every rung, including
+oracle-best waterfill, sits above the no-budgeting line: perfect
+allocation of a $0.5$ budget pays $+1.2$--$1.5$ vs.\ full compute.
+\textbf{(b)} At convergence: a 51/49 coin flip
+(Table~\ref{tab:migration}, App.~\ref{app:p0table}).}
 \label{fig:ladder}
 \end{figure}
 
@@ -611,8 +610,8 @@ masked path, what most token-dropping code actually ships, realizes
 
 \paragraph{Implications.} The recipe (train dense, measure, impose) needs
 no endogenous-signal search and plugs into serving stacks that already
-produce per-token difficulty estimates (speculative-decoding acceptance
-\citep{leviathan2023speculative,chen2023speculative}).
+produce per-token difficulty estimates
+\citep{leviathan2023speculative,chen2023speculative}.
 \paragraph{Which chasers does ``not trainable'' rule out?} The causal arms
 test the natural first-order chaser: measure $\partial\mathcal{L}/\partial
 g$ on the current body, allocate hard against it, refresh every 100 steps.
@@ -629,48 +628,38 @@ proof for all conceivable allocators.
 scratch collapses at every scale tested (11M: $31.8\%$; starved-150M:
 $22.4\%$, diverging), but at deployment the static choice is trivially
 optimal: the converged field is flat, so full compute everywhere is the
-right static schedule. Between those endpoints, static schedules suffice
-exactly when the loss does not benefit from intermittent compute;
-MetaMathQA (\S\ref{sec:nl}) is the counter-case.
+right static schedule. Static schedules suffice only when the loss does
+not benefit from intermittent compute (MetaMathQA, \S\ref{sec:nl}, is
+the counter-case).
 \paragraph{Limitations.} The 1.4B headline rests on three seeds
 (per-seed gaps \NlRotGapMin--\NlRotGapMax\%); code and math are
-single-seed. Arithmetic difficulty is
-operand-size-defined; NL bins inherit the reference model's notion of
-difficulty. The two-stage body is near-frozen (App.~\ref{app:ablations});
+single-seed. Difficulty is operand-size-defined (NL bins inherit the
+reference model's notion). The two-stage body is near-frozen (App.~\ref{app:ablations});
 billed FLOPs bridge to wall-clock in \S\ref{sec:realization}; quartile
 form is hand-set, content measured.
+
+\bibliography{iclr2027_conference}
+\bibliographystyle{iclr2027_conference}
 
 \section*{AI use statement}
 An LLM assistant was used under the authors' direction for four purposes:
 finding prior art, running terminal commands and automation, copyediting,
-and code generation. Experimental design, all decisions and kill-rules,
-and every claim are the authors'; each number generated in this
-repository regenerates from committed artifacts via scripts in the
-repository (the sole exceptions, the workshop-era failure-taxonomy
-numbers, are labeled in \S\ref{sec:failures-results}).
+and code generation. All experimental design, decisions, kill-rules, and
+claims are the authors'.
 
 \section*{Reproducibility statement}
-All code, manifests, and per-run JSONs (config, history, billed-FLOPs
-curves) are in the anonymized repository.\footnote{\repoURL} Every table
-and figure generated in this repository regenerates from committed
-artifacts via \texttt{paper/generate\_tables\_iclr.py} and the
-\texttt{scripts/*figure*} scripts; pre-registered decision rules are
-committed with dates in \texttt{DECISIONS.md}. The failure-taxonomy
-numbers of \S\ref{sec:failures-results} are ported from an earlier
-workshop version of this work whose artifacts predate this repository, and
-are labeled as such. Seeds, held-out sets, and the FLOPs accounting are
-specified in \S\ref{sec:setup} and Appendix~\ref{app:details}.
+All code, manifests, and per-run JSONs are in the anonymized repository (\repoURL). Every table and figure generated in this
+repository regenerates from committed artifacts
+(\texttt{paper/generate\_tables\_iclr.py}, \texttt{scripts/*figure*});
+pre-registered decision rules are committed with dates in
+\texttt{DECISIONS.md}; the workshop-era failure-taxonomy numbers of
+\S\ref{sec:failures-results} are ported and labeled as such.
 
 \section*{Compute statement}
-Total rented-GPU spend for every result in this paper: ${\sim}\$40$,
-itemized in Appendix~\ref{app:compute}; testbed runs on an Apple M3
-(MPS) at no cost. Roughly half was spent on results and half on re-runs
-after host failures and fixable training bugs. We report both, because
-the failure half is what the manifests and kill-rules in the repository
-are for.
-
-\bibliography{iclr2027_conference}
-\bibliographystyle{iclr2027_conference}
+Total rented-GPU spend: ${\sim}\$40$, itemized in
+Appendix~\ref{app:compute}; testbed runs on an Apple M3 at no cost.
+Roughly half went to re-runs after host failures and fixable bugs: the
+failure half is what the manifests and kill-rules are for.
 
 \appendix
 
