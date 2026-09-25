@@ -1,9 +1,0 @@
-[step    50] uniform 2.1986  waterfill 2.4529  random 2.5533  anti 2.6926  | ordering gap (wf-rand) -0.1005  (anti-wf) +0.2397
-[step   100] uniform 2.0635  waterfill 2.3226  random 2.5429  anti 2.8083  | ordering gap (wf-rand) -0.2204  (anti-wf) +0.4857
-[step   200] uniform 1.8339  waterfill 2.6724  random 2.6903  anti 2.8265  | ordering gap (wf-rand) -0.0179  (anti-wf) +0.1541
-[step   400] uniform 2.3851  waterfill 3.2398  random 3.3431  anti 3.5133  | ordering gap (wf-rand) -0.1034  (anti-wf) +0.2735
-[step   800] uniform 3.0204  waterfill 3.6147  random 3.7608  anti 3.9156  | ordering gap (wf-rand) -0.1461  (anti-wf) +0.3009
-[step  1600] uniform 3.1963  waterfill 3.5964  random 3.6257  anti 3.6906  | ordering gap (wf-rand) -0.0293  (anti-wf) +0.0942
-[step  3200] uniform 3.0714  waterfill 3.4476  random 3.4411  anti 3.4622  | ordering gap (wf-rand) +0.0065  (anti-wf) +0.0146
-[step  5000] uniform 2.7534  waterfill 3.4195  random 3.3141  anti 3.2804  | ordering gap (wf-rand) +0.1054  (anti-wf) -0.1391
-saved results-headroom/trajectory_seed0.json

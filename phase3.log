@@ -1,16 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  13%|█▎        | 38/292 [00:00<00:00, 357.58it/s]Loading weights:  25%|██▌       | 74/292 [00:00<00:00, 235.71it/s]Loading weights:  34%|███▍      | 100/292 [00:00<00:00, 237.34it/s]Loading weights:  43%|████▎     | 125/292 [00:00<00:00, 238.17it/s]Loading weights:  51%|█████▏    | 150/292 [00:00<00:00, 240.58it/s]Loading weights:  62%|██████▏   | 180/292 [00:00<00:00, 205.21it/s]Loading weights:  74%|███████▍  | 216/292 [00:00<00:00, 243.24it/s]Loading weights:  85%|████████▍ | 248/292 [00:01<00:00, 260.95it/s]Loading weights:  95%|█████████▍| 276/292 [00:01<00:00, 265.09it/s]Loading weights: 100%|██████████| 292/292 [00:01<00:00, 245.65it/s]
-[webtext/rotation/s0] step 0 | loss 9.5230 | held 9.5585 | MFLOPs/tok 1635.1 | gate bins [0.5] | 12s
-[webtext/rotation/s0] step 250 | loss 4.1968 | held 4.4113 | MFLOPs/tok 1635.0 | gate bins [0.5] | 452s
-[webtext/rotation/s0] step 500 | loss 3.9505 | held 3.9742 | MFLOPs/tok 1636.9 | gate bins [0.5] | 894s
-[webtext/rotation/s0] step 750 | loss 3.8499 | held 3.7792 | MFLOPs/tok 1635.8 | gate bins [0.5] | 1337s
-[webtext/rotation/s0] step 1000 | loss 3.5780 | held 3.6811 | MFLOPs/tok 1636.0 | gate bins [0.5] | 1780s
-[webtext/rotation/s0] step 1250 | loss 3.5723 | held 3.6304 | MFLOPs/tok 1633.0 | gate bins [0.5] | 2222s
-[webtext/rotation/s0] step 1500 | loss 3.4754 | held 3.5802 | MFLOPs/tok 1635.1 | gate bins [0.5] | 2666s
-[webtext/rotation/s0] step 1750 | loss 3.4980 | held 3.5412 | MFLOPs/tok 1636.2 | gate bins [0.5] | 3108s
-[webtext/rotation/s0] step 2000 | loss 3.4791 | held 3.5179 | MFLOPs/tok 1633.3 | gate bins [0.5] | 3550s
-[webtext/rotation/s0] step 2250 | loss 3.5599 | held 3.5028 | MFLOPs/tok 1635.4 | gate bins [0.5] | 3991s
-[webtext/rotation/s0] step 2500 | loss 3.3570 | held 3.4928 | MFLOPs/tok 1636.1 | gate bins [0.5] | 4433s
-[webtext/rotation/s0] step 2750 | loss 3.4448 | held 3.4778 | MFLOPs/tok 1637.1 | gate bins [0.5] | 4875s
-[webtext/rotation/s0] step 2999 | loss 3.3671 | held 3.4760 | MFLOPs/tok 1634.9 | gate bins [0.5] | 5316s
-saved results-nl/webtext/rotation_seed0.json

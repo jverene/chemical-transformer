@@ -1,5 +1,0 @@
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-{"domain": "webtext", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 167398, "heldout_seqs": 3416, "tokens": 350000486}
-    q_embed = torch.cat([q_embed, q_pass], dim=-1)
-              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 64.00 MiB. GPU 0 has a total capacity of 39.49 GiB of which 63.56 MiB is free. Process 1197090 has 39.42 GiB memory in use. Of the allocated memory 38.76 GiB is allocated by PyTorch, and 161.01 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)
