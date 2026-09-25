@@ -118,17 +118,23 @@ def main():
                 textcoords="offset points", xytext=(7, -1), fontsize=6.4,
                 color=C_11, va="center")
 
-    # ---- 150M: seed-range stems + mean markers + right-side labels
+    # ---- 150M: seed-range stems + mean markers. All gated arms share a
+    # 0.57-0.59x budget, so on a log axis they would collapse into one
+    # knot; x positions inside the cluster are evenly spaced for
+    # readability (noted in the caption), spanning ~0.55-0.72x.
     p150 = fig150m()
+    gated = [k for k in p150 if k != "dense"]
+    dodge = dict(zip(gated, np.geomspace(0.55, 0.72, len(gated))))
     for name, (ratios, accs) in p150.items():
-        x = ratios[0]
         if name == "dense":
+            x = ratios[0]
             ax.scatter([x], [np.mean(accs)], s=44, marker="o", color=C_150,
                        edgecolor="black", linewidths=0.6, zorder=5)
             ax.annotate("dense", (x, np.mean(accs)),
                         textcoords="offset points", xytext=(-2, 6),
                         fontsize=6.6, color=C_150, ha="right")
             continue
+        x = dodge[name]
         if len(accs) > 1:
             ax.plot([x, x], [min(accs), max(accs)], color=C_150, lw=1.0,
                     alpha=0.55, zorder=3)

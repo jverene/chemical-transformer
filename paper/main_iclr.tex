@@ -377,9 +377,9 @@ the oracle pass is billed to both measured arms); dots are individual
 seeds, all arms forking from the same Stage-1 body per seed. True-label,
 measured-value, and \emph{noise} targets land in one green tie band (max
 paired difference $0.3$ points); a constant gate in the same protocol
-sits $2.4$ points below. \emph{Inset}: the 1.4B replication, where gate-grad
-vs.\ shuffled held loss differ by $0.0008$ against the $1.0$-point
-pre-registered threshold. \textbf{(b)} Realized hard-minus-easy gate
+sits $2.4$ points below. \emph{Inset}: the 1.4B replication, gate-grad
+vs.\ shuffled held loss ($|\Delta| = 0.0008$, against the $1.0$-point
+pre-registered threshold; the two dots sit at nearly the same height). \textbf{(b)} Realized hard-minus-easy gate
 spread: only the tag arm builds difficulty-ordered gates ($r = 0.95$),
 structure without accuracy benefit. Numbers: Table~\ref{tab:p0}
 (Appendix~\ref{app:p0table}).}
@@ -508,7 +508,9 @@ accuracy (Figure~\ref{fig:ladder}b).
 \includegraphics[width=0.62\linewidth]{frontier.pdf}
 \caption{Accuracy vs.\ billed training compute (relative to the dense arm
 at the same scale, log axis; marker = arm, color = scale, values in
-Tables~\ref{tab:causal} and~\ref{tab:p150}). Gated 2-stage arms cluster at
+Tables~\ref{tab:causal} and~\ref{tab:p150}. The five gated 150M arms
+share a $0.57$--$0.59\times$ budget, so their x positions are evenly
+spaced for readability rather than to scale). Gated 2-stage arms cluster at
 $\sim$0.58$\times$ dense compute and $\sim$5 points below it at 150M; MoD
 reaches dense compute savings with an inverted router. The 400M probe
 collapses (post-LN + Xavier init, untrainable at any LR swept), the

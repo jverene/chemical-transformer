@@ -445,5 +445,9 @@ File: ladder.pdf Graphic file (type pdf)
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[13] [14] (main_iclr.aux) )
-Output written on main_iclr.xdv (14 pages, 468492 bytes).
+[13]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[14] [15] (main_iclr.aux) )
+Output written on main_iclr.xdv (15 pages, 471448 bytes).
