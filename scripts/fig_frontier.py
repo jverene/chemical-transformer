@@ -157,7 +157,7 @@ def main():
     ax.set_xscale("log")
     ax.set_xlim(0.40, 1.62)
     ax.set_ylim(0, 84)
-    ax.set_xlabel("billed training FLOPs/token, relative to dense (=1.0)")
+    ax.set_xlabel("billed FLOPs/token, rel. dense (150M cluster evenly spaced)")
     ax.set_ylabel("held-out accuracy (%)")
     ax.axvline(1.0, color="gray", lw=0.7, ls=":")
     ax.set_title("Accuracy vs.\\ billed training compute, by scale",
