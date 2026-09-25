@@ -152,9 +152,10 @@ def main():
     ax.set_ylabel("held-out accuracy (%)")
     ax.axvline(1.0, color="gray", lw=0.7, ls=":")
     ax.set_title("Accuracy vs. billed training compute, by scale",
-                 fontsize=8, loc="left", pad=36)
+                 fontsize=8, loc="left")
 
-    # legend strip above the axes, outside the data
+    # vertical legend in the empty upper-right region (right of the
+    # dense line, above the 400M probe)
     from matplotlib.lines import Line2D
     handles = [Line2D([], [], ls="", marker=m, color="0.25",
                       markeredgecolor="black", markeredgewidth=0.6,
@@ -164,9 +165,9 @@ def main():
                        markeredgecolor="black", markeredgewidth=0.6,
                        markersize=6, label=sc)
                 for c, sc in [(C_11, "11M"), (C_150, "150M"), (C_400, "400M")]]
-    ax.legend(handles=handles, frameon=False, fontsize=6.2, ncol=4,
-              loc="lower left", bbox_to_anchor=(0.0, 1.01), columnspacing=0.9,
-              handletextpad=0.25, borderaxespad=0.0)
+    ax.legend(handles=handles, frameon=False, fontsize=6.2,
+              loc="upper right", labelspacing=0.35, handletextpad=0.4,
+              borderaxespad=0.4)
 
     fig.tight_layout()
     fig.savefig("paper/frontier.pdf")
