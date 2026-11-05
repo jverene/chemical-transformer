@@ -1,0 +1,2 @@
+18:56:48 autopilot armed: instance manifests/nl_redo_d2.sh manifest=/tmp/autopilot_d3.log marker=webtext/rotation_seed2.json
+18:56:49 no ssh-url for manifests/nl_redo_d2.sh

@@ -1,0 +1,15 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:   3%|▎         | 8/292 [00:00<00:13, 20.86it/s]Loading weights:  21%|██        | 62/292 [00:00<00:01, 158.26it/s]Loading weights:  32%|███▏      | 93/292 [00:00<00:01, 158.72it/s]Loading weights:  40%|████      | 117/292 [00:00<00:01, 143.87it/s]Loading weights:  47%|████▋     | 137/292 [00:00<00:00, 155.52it/s]Loading weights:  54%|█████▍    | 157/292 [00:01<00:00, 135.48it/s]Loading weights:  61%|██████    | 178/292 [00:01<00:00, 151.47it/s]Loading weights:  67%|██████▋   | 196/292 [00:01<00:00, 153.07it/s]Loading weights:  74%|███████▍  | 216/292 [00:01<00:00, 130.55it/s]Loading weights:  82%|████████▏ | 238/292 [00:01<00:00, 128.56it/s]Loading weights:  87%|████████▋ | 253/292 [00:01<00:00, 131.72it/s]Loading weights:  93%|█████████▎| 271/292 [00:01<00:00, 141.56it/s]Loading weights:  98%|█████████▊| 287/292 [00:02<00:00, 141.53it/s]Loading weights: 100%|██████████| 292/292 [00:02<00:00, 138.84it/s]
+[math/rotation/s0] step 0 | loss 9.3082 | held 9.1572 | MFLOPs/tok 1635.1 | gate bins [0.5] | 7s
+[math/rotation/s0] step 250 | loss 1.6644 | held 1.7014 | MFLOPs/tok 1635.0 | gate bins [0.5] | 369s
+[math/rotation/s0] step 500 | loss 1.2588 | held 1.2851 | MFLOPs/tok 1636.9 | gate bins [0.5] | 731s
+[math/rotation/s0] step 750 | loss 1.1064 | held 1.1453 | MFLOPs/tok 1635.8 | gate bins [0.5] | 1093s
+[math/rotation/s0] step 1000 | loss 1.0735 | held 1.0650 | MFLOPs/tok 1636.0 | gate bins [0.5] | 1455s
+[math/rotation/s0] step 1250 | loss 1.0228 | held 1.0148 | MFLOPs/tok 1633.0 | gate bins [0.5] | 1817s
+[math/rotation/s0] step 1500 | loss 0.9497 | held 0.9735 | MFLOPs/tok 1635.1 | gate bins [0.5] | 2179s
+[math/rotation/s0] step 1750 | loss 0.9563 | held 0.9465 | MFLOPs/tok 1636.2 | gate bins [0.5] | 2541s
+[math/rotation/s0] step 2000 | loss 0.8433 | held 0.9300 | MFLOPs/tok 1633.3 | gate bins [0.5] | 2904s
+[math/rotation/s0] step 2250 | loss 0.9046 | held 0.9120 | MFLOPs/tok 1635.4 | gate bins [0.5] | 3266s
+[math/rotation/s0] step 2500 | loss 0.9217 | held 0.9000 | MFLOPs/tok 1636.1 | gate bins [0.5] | 3628s
+[math/rotation/s0] step 2750 | loss 0.8785 | held 0.8919 | MFLOPs/tok 1637.1 | gate bins [0.5] | 3991s
+[math/rotation/s0] step 2999 | loss 0.8978 | held 0.8908 | MFLOPs/tok 1634.9 | gate bins [0.5] | 4352s

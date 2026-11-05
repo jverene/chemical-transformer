@@ -1,0 +1,12 @@
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  45%|████▍     | 130/292 [00:00<00:00, 1275.98it/s]Loading weights:  88%|████████▊ | 258/292 [00:00<00:00, 866.68it/s] Loading weights: 100%|██████████| 292/292 [00:00<00:00, 967.73it/s]
+{'mode': 'none', 'budget': 1.0, 'tok_s': 2028.6, 'ratio': 1.0}
+{'mode': 'rotation', 'budget': 0.5, 'tok_s': 2024.3, 'ratio': 0.998}
+{'mode': 'rotation_skip', 'budget': 0.75, 'tok_s': 2298.7, 'ratio': 1.133}
+{'mode': 'rotation_skip', 'budget': 0.5, 'tok_s': 2740.8, 'ratio': 1.351}
+{'mode': 'rotation_skip', 'budget': 0.25, 'tok_s': 3396.1, 'ratio': 1.674}
+saved results-nl/wallclock.json
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"domain": "webtext", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 167398, "heldout_seqs": 3416, "tokens": 350000486}
+    x, y, target=target, target_lay=target_lay,
+                                    ^^^^^^^^^^
+UnboundLocalError: cannot access local variable 'target_lay' where it is not associated with a value

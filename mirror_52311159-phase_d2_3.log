@@ -1,0 +1,13 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  32%|███▏      | 92/292 [00:00<00:00, 913.33it/s]Loading weights:  74%|███████▍  | 216/292 [00:00<00:00, 1077.99it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 1110.01it/s]
+[webtext/rotation/s2] step 0 | loss 9.6036 | held 9.5594 | MFLOPs/tok 1635.3 | gate bins [0.5] | 11s
+[webtext/rotation/s2] step 250 | loss 4.1911 | held 4.3794 | MFLOPs/tok 1635.9 | gate bins [0.5] | 450s
+[webtext/rotation/s2] step 500 | loss 3.9305 | held 3.9620 | MFLOPs/tok 1635.9 | gate bins [0.5] | 890s
+[webtext/rotation/s2] step 750 | loss 3.6943 | held 3.7698 | MFLOPs/tok 1635.7 | gate bins [0.5] | 1330s
+[webtext/rotation/s2] step 1000 | loss 3.7283 | held 3.6791 | MFLOPs/tok 1637.6 | gate bins [0.5] | 1771s
+[webtext/rotation/s2] step 1250 | loss 3.6048 | held 3.6162 | MFLOPs/tok 1635.6 | gate bins [0.5] | 2210s
+[webtext/rotation/s2] step 1500 | loss 3.4312 | held 3.5731 | MFLOPs/tok 1634.0 | gate bins [0.5] | 2648s
+[webtext/rotation/s2] step 1750 | loss 3.3488 | held 3.5409 | MFLOPs/tok 1635.6 | gate bins [0.5] | 3087s
+[webtext/rotation/s2] step 2000 | loss 3.3981 | held 3.5276 | MFLOPs/tok 1633.2 | gate bins [0.5] | 3526s
+[webtext/rotation/s2] step 2250 | loss 3.2715 | held 3.5013 | MFLOPs/tok 1636.7 | gate bins [0.5] | 3965s
+[webtext/rotation/s2] step 2500 | loss 3.2073 | held 3.4942 | MFLOPs/tok 1637.2 | gate bins [0.5] | 4403s

@@ -1,0 +1,5 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"domain": "webtext", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 167398, "heldout_seqs": 3416, "tokens": 350000486}
+  File "/opt/conda/lib/python3.11/site-packages/transformers/modeling_utils.py", line 757, in _get_resolved_checkpoint_files
+    raise OSError(
+OSError: Can't load the model for 'EleutherAI/pythia-1.4b'. If you were trying to load it from 'https://huggingface.co/models', make sure you don't have a local directory with the same name. Otherwise, make sure 'EleutherAI/pythia-1.4b' is the correct path to a directory containing a file named pytorch_model.bin.

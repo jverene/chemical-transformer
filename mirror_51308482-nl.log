@@ -1,0 +1,29 @@
+
+Extension modules: numpy._core._multiarray_umath, numpy.linalg._umath_linalg, regex._regex, markupsafe._speedups, PIL._imaging, _brotli, zstandard.backend_c, yaml._yaml, torch._C, torch._C._dynamo.autograd_compiler, torch._C._dynamo.eval_frame, torch._C._dynamo.guards, torch._C._dynamo.utils, torch._C._fft, torch._C._linalg, torch._C._nested, torch._C._nn, torch._C._sparse, torch._C._special, numpy.random._common, numpy.random.bit_generator, numpy.random._bounded_integers, numpy.random._mt19937, numpy.random.mtrand, numpy.random._philox, numpy.random._pcg64, numpy.random._sfc64, numpy.random._generator, psutil._psutil_linux, pyarrow.lib, _cyutility, pandas._libs._cyutility, pandas._libs.tslibs.ccalendar, pandas._libs.tslibs.np_datetime, pandas._libs.tslibs.dtypes, pandas._libs.tslibs.base, pandas._libs.tslibs.nattype, pandas._libs.tslibs.timezones, pandas._libs.properties, pandas._libs.tslibs.fields, pandas._libs.tslibs.timedeltas, pandas._libs.tslibs.tzconversion, pandas._libs.tslibs.timestamps, pandas._libs.tslibs.offsets, pandas._libs.tslibs.strptime, pandas._libs.tslibs.parsing, pandas._libs.tslibs.conversion, pandas._libs.tslibs.period, pandas._libs.tslibs.vectorized, pandas._libs.ops_dispatch, pandas._libs.missing, pandas._libs.hashtable, pandas._libs.algos, pandas._libs.interval, pandas._libs.lib, pyarrow._compute, pandas._libs.ops, pandas._libs.hashing, pandas._libs.arrays, pandas._libs.tslib, pandas._libs.sparse, pandas._libs.internals, pandas._libs.indexing, pandas._libs.index, pandas._libs.writers, pandas._libs.join, pandas._libs.window.aggregations, pandas._libs.window.indexers, pandas._libs.reshape, pandas._libs.groupby, pandas._libs.json, pandas._libs.parsers, pandas._libs.testing, pyarrow._acero, pyarrow._fs, pyarrow._csv, pyarrow._json, pyarrow._substrait, pyarrow._dataset, pyarrow._dataset_orc, pyarrow._parquet, pyarrow._azurefs, pyarrow._hdfs, pyarrow._gcsfs, pyarrow._s3fs, pyarrow._parquet_encryption, pyarrow._dataset_parquet_encryption, pyarrow._dataset_parquet, multidict._multidict, yarl._quoting_c, propcache._helpers_c, aiohttp._http_writer, aiohttp._http_parser, aiohttp._websocket.mask, aiohttp._websocket.reader_c, _cffi_backend, frozenlist._frozenlist, xxhash._xxhash, scipy._cyutility, scipy._lib._ccallback_c, scipy.sparse._sparsetools, _csparsetools, scipy.sparse._csparsetools, scipy.io.matlab._mio_utils, scipy.io.matlab._streams, scipy.io.matlab._mio5_utils (total: 106)
+/workspace/manifest.sh: line 16:   514 Aborted                 $PY -m ct.nl.data --domain webtext --tokenizer EleutherAI/pythia-1.4b --out-root data/nl --max-tokens 350000000 2>&1
+       515 Done                    | tee /workspace/phase_d1_1.log
+       516 Done                    | tail -2
+[webtext/rotation/s1] step 2750 | loss 3.3183 | held 3.4818 | MFLOPs/tok 1633.6 | gate bins [0.5] | 3039s
+[webtext/rotation/s1] step 2999 | loss 3.1564 | held 3.4829 | MFLOPs/tok 1638.4 | gate bins [0.5] | 3314s
+saved results-nl/webtext/rotation_seed1.json
+[webtext/baseline/s1] step 2750 | loss 2.4647 | held 2.6065 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3027s
+[webtext/baseline/s1] step 2999 | loss 2.2968 | held 2.6057 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3300s
+saved results-nl/webtext/baseline_seed1.json
+      }
+    }
+  }
+}
+[webtext/ours-gategrad/s1] step 1750 | loss 3.1752 | held 2.7860 | MFLOPs/tok 1443.7 | gate bins [0.43, 0.44, 0.44, 0.45] | 2483s
+[webtext/ours-gategrad/s1] step 1999 | loss 2.9522 | held 2.7848 | MFLOPs/tok 1440.5 | gate bins [0.43, 0.44, 0.44, 0.45] | 2835s
+saved results-nl/webtext/ours-gategrad_seed1.json
+[webtext/shuffled/s1] step 1750 | loss 3.1816 | held 2.7874 | MFLOPs/tok 1440.2 | gate bins [0.44, 0.44, 0.44, 0.44] | 2484s
+[webtext/shuffled/s1] step 1999 | loss 2.9620 | held 2.7860 | MFLOPs/tok 1437.3 | gate bins [0.44, 0.44, 0.44, 0.44] | 2836s
+saved results-nl/webtext/shuffled_seed1.json
+MANIFEST D1PRIME COMPLETE
+[webtext/ours-gategrad/s1] step 1750 | loss 2.8984 | held 2.6665 | MFLOPs/tok 1130.4 | gate bins [0.33, 0.34, 0.35, 0.35] | 2478s
+[webtext/ours-gategrad/s1] step 1999 | loss 2.6791 | held 2.6660 | MFLOPs/tok 1126.6 | gate bins [0.33, 0.34, 0.35, 0.35] | 2829s
+saved results-nl/webtext/ours-gategrad_fullunf_seed1.json
+      }
+    }
+  }
+}

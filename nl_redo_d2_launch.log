@@ -1,0 +1,28 @@
+[1/5] connected 192.234.50.251:1766
+[2/5] code staged
+torch 2.6.0+cu124 cuda True
+NVIDIA RTX 6000 Ada Generation, 49140 MiB
+watchdog: stops at 1790276454 or on MANIFEST_DONE
+[3/5] launched (max 20h, cap $10 — check dashboard spend alert)
+19:11 pulled results_vast/ (waiting)
+19:21 pulled results_vast/ (waiting)
+19:31 pulled results_vast/ (waiting)
+19:41 pulled results_vast/ (waiting)
+19:51 pulled results_vast/ (waiting)
+20:01 pulled results_vast/ (waiting)
+20:11 pulled results_vast/ (waiting)
+20:21 pulled results_vast/ (waiting)
+20:31 pulled results_vast/ (waiting)
+20:41 pulled results_vast/ (waiting)
+20:52 pulled results_vast/ (waiting)
+21:02 pulled results_vast/ (waiting)
+21:12 pulled results_vast/ (waiting)
+21:22 pulled results_vast/ (waiting)
+21:32 pulled results_vast/ (waiting)
+21:42 pulled results_vast/ (waiting)
+21:52 pulled results_vast/ (waiting)
+22:02 pulled results_vast/ (waiting)
+22:12 pulled results_vast/ (waiting)
+22:34 pulled results_vast/ (waiting)
+[5/5] MANIFEST complete Wed Sep 23 23:55:31 EDT 2026 — results in ./results_vast/
+Instance left RUNNING-check: verify pull, then 'vastai stop instance 52311159'

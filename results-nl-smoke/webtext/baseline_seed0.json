@@ -1,0 +1,94 @@
+{
+  "method": "baseline",
+  "domain": "webtext",
+  "seed": 0,
+  "stage": 1,
+  "model": "EleutherAI/pythia-160m",
+  "config": {
+    "domain": "webtext",
+    "model": "EleutherAI/pythia-160m",
+    "method": "baseline",
+    "stage": 1,
+    "seed": 0,
+    "steps": 15,
+    "batch_seqs": 2,
+    "seq_len": 2048,
+    "lr": 1e-05,
+    "body_lr_frac": 0.01,
+    "full_unfreeze": false,
+    "mse_weight": 5.0,
+    "budget_weight": 0.5,
+    "budget_target": 0.5,
+    "eval_every": 10,
+    "eval_batches": 8,
+    "grad_accum": 1,
+    "max_skip": 8,
+    "data_root": "data/nl-smoke",
+    "out_root": "results-nl-smoke",
+    "device": "mps",
+    "amp": false
+  },
+  "history": {
+    "step": [
+      0,
+      10,
+      14
+    ],
+    "train_loss": [
+      3.331785202026367,
+      2.9325881004333496,
+      3.262467861175537
+    ],
+    "held_loss": [
+      3.2604135714079203,
+      3.271317632574784,
+      3.2687050668816817
+    ],
+    "bin_loss": [
+      [
+        3.2604135714079203
+      ],
+      [
+        3.271317632574784
+      ],
+      [
+        3.2687050668816817
+      ]
+    ],
+    "flops_per_token": [
+      231997440.0,
+      231997440.0,
+      231997440.0
+    ],
+    "gate_by_bin": [
+      [
+        1.0
+      ],
+      [
+        1.0
+      ],
+      [
+        1.0
+      ]
+    ],
+    "cum_train_flops": [
+      33465311428608.0,
+      368118425714688.0,
+      501979671429120.0
+    ]
+  },
+  "final": {
+    "held_loss": 3.2687050668816817,
+    "bin_loss": [
+      3.2687050668816817
+    ],
+    "flops_per_token": 231997440.0,
+    "gate_by_bin": [
+      1.0
+    ],
+    "cum_train_flops": 501979671429120.0,
+    "train_wallclock_s": 239.20586013793945,
+    "skipped_nonfinite_steps": 0
+  },
+  "oracle_flops_shared": "see oracle_diag.json (prepass, one-off)"
+}

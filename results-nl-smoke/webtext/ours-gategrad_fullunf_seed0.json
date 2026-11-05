@@ -1,0 +1,103 @@
+{
+  "method": "ours-gategrad",
+  "domain": "webtext",
+  "seed": 0,
+  "stage": 2,
+  "model": "EleutherAI/pythia-160m",
+  "config": {
+    "domain": "webtext",
+    "model": "EleutherAI/pythia-160m",
+    "method": "ours-gategrad",
+    "stage": 2,
+    "seed": 0,
+    "steps": 6,
+    "batch_seqs": 2,
+    "seq_len": 2048,
+    "lr": 1e-05,
+    "body_lr_frac": 0.01,
+    "full_unfreeze": true,
+    "mse_weight": 5.0,
+    "budget_weight": 0.5,
+    "budget_target": 0.5,
+    "eval_every": 5,
+    "eval_batches": 8,
+    "grad_accum": 1,
+    "max_skip": 8,
+    "per_layer_targets": false,
+    "suffix": "_fullunf",
+    "data_root": "data/nl-smoke",
+    "out_root": "results-nl-smoke",
+    "device": "mps",
+    "amp": false
+  },
+  "history": {
+    "step": [
+      0,
+      5
+    ],
+    "train_loss": [
+      5.62106466293335,
+      4.339771747589111
+    ],
+    "held_loss": [
+      4.496918577896921,
+      4.159828487195466
+    ],
+    "bin_loss": [
+      [
+        1.9236463245592619,
+        2.941199352866725,
+        4.985223368594521,
+        8.137605466340718
+      ],
+      [
+        1.3389876641725238,
+        2.577044938739977,
+        4.651914998104698,
+        8.071366561086554
+      ]
+    ],
+    "flops_per_token": [
+      120193955.36842105,
+      121882809.26315789
+    ],
+    "gate_by_bin": [
+      [
+        0.5074226291556108,
+        0.5059989314330252,
+        0.5058370138469496,
+        0.5062207924692255
+      ],
+      [
+        0.5150492755990279,
+        0.5133270464445415,
+        0.5132876320889121,
+        0.5136416334854929
+      ]
+    ],
+    "cum_train_flops": [
+      16893352083456.0,
+      103144452784128.0
+    ]
+  },
+  "final": {
+    "held_loss": 4.159828487195466,
+    "bin_loss": [
+      1.3389876641725238,
+      2.577044938739977,
+      4.651914998104698,
+      8.071366561086554
+    ],
+    "flops_per_token": 121882809.26315789,
+    "gate_by_bin": [
+      0.5150492755990279,
+      0.5133270464445415,
+      0.5132876320889121,
+      0.5136416334854929
+    ],
+    "cum_train_flops": 103144452784128.0,
+    "train_wallclock_s": 328.02030396461487,
+    "skipped_nonfinite_steps": 0
+  },
+  "oracle_flops_shared": "see oracle_diag.json (prepass, one-off)"
+}

@@ -1,0 +1,5 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"domain": "webtext", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 167398, "heldout_seqs": 3416, "tokens": 350000486}
+[webtext/baseline/s2] step 2750 | loss 2.3988 | held 2.6039 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4901s
+[webtext/baseline/s2] step 2999 | loss 2.5666 | held 2.6025 | MFLOPs/tok 3246.4 | gate bins [1.0] | 5344s
+saved results-nl/webtext/baseline_seed2.json

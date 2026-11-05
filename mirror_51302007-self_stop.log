@@ -1,0 +1,7 @@
+Thu Sep 17 11:29:52 UTC 2026 watchdog armed: id=51302007 deadline=1789702190 done=/workspace/NLX_DONE
+Thu Sep 17 11:39:52 UTC 2026 done marker found
+stopping instance 51302007.
+Thu Sep 17 11:42:53 UTC 2026 stop attempted
+Thu Sep 17 11:50:50 UTC 2026 watchdog armed: id=51302007 deadline=1789703449 done=/workspace/NLX_DONE
+Thu Sep 17 11:50:50 UTC 2026 done marker found
+Thu Sep 17 12:30:59 UTC 2026 watchdog armed: id=51302007 deadline=1789705858 done=/workspace/NLX_DONE

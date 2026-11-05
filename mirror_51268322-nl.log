@@ -1,0 +1,13 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"domain": "code", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 72806, "heldout_seqs": 1485, "tokens": 152224112}
+[code/baseline/s0] step 2750 | loss 1.0535 | held 1.1873 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3951s
+[code/baseline/s0] step 2999 | loss 1.0782 | held 1.1867 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4308s
+saved results-nl/code/baseline_seed0.json
+[code/rotation/s0] step 2750 | loss 1.3793 | held 1.5216 | MFLOPs/tok 1637.1 | gate bins [0.5] | 3997s
+[code/rotation/s0] step 2999 | loss 1.4298 | held 1.5193 | MFLOPs/tok 1634.9 | gate bins [0.5] | 4358s
+saved results-nl/code/rotation_seed0.json
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+{"domain": "math", "tokenizer": "EleutherAI/pythia-1.4b", "seq_len": 2048, "train_seqs": 40190, "heldout_seqs": 820, "tokens": 84030284}
+[math/baseline/s0] step 2750 | loss 0.3634 | held 0.3844 | MFLOPs/tok 3246.4 | gate bins [1.0] | 3949s
+[math/baseline/s0] step 2999 | loss 0.3420 | held 0.3796 | MFLOPs/tok 3246.4 | gate bins [1.0] | 4306s
+saved results-nl/math/baseline_seed0.json
