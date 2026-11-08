@@ -1,0 +1,156 @@
+{
+  "train_tags": [
+    "seed0",
+    "seed1",
+    "seed2"
+  ],
+  "config": {
+    "mode": "train",
+    "teacher_dir": "results-router/teachers-v1",
+    "router_dir": "results-router/dev-z1",
+    "train_tags": "0,1,2",
+    "sizes": "6,12,24,48",
+    "device": "mps",
+    "hidden": 128,
+    "embedding_dim": 16,
+    "epochs": 5,
+    "router_lr": 0.001,
+    "router_batch_size": 2,
+    "loss": "mse-z",
+    "router_seed": 7000
+  },
+  "learning_curve": [
+    {
+      "states": 6,
+      "path": "results-router/dev-z1/router_n006.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9883759419123331,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9030495087305704,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8809075951576233,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8458482027053833,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8230126698811849,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 82.83343648910522,
+      "router_train_wallclock_s": 1.3213891983032227
+    },
+    {
+      "states": 12,
+      "path": "results-router/dev-z1/router_n012.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9872501591841379,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9099393288294474,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8754748205343882,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8447745541731516,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8171706398328146,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 156.42325806617737,
+      "router_train_wallclock_s": 1.7654409408569336
+    },
+    {
+      "states": 24,
+      "path": "results-router/dev-z1/router_n024.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9591584503650665,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9028376092513403,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8656346847613653,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8295972347259521,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8043925215800604,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 310.750235080719,
+      "router_train_wallclock_s": 3.0691487789154053
+    },
+    {
+      "states": 48,
+      "path": "results-router/dev-z1/router_n048.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9403822223345438,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.8623437061905861,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8269945904612541,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.788067656258742,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.7686907375852267,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 612.6356556415558,
+      "router_train_wallclock_s": 3.8182599544525146
+    }
+  ]
+}

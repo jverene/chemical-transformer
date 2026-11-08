@@ -1,0 +1,135 @@
+{
+  "train_tags": [
+    "seed0",
+    "seed1",
+    "seed2"
+  ],
+  "config": {
+    "mode": "train",
+    "teacher_dir": "results-router/teachers-v1",
+    "router_dir": "results-router/dev-v1",
+    "train_tags": "0,1,2",
+    "sizes": "6,12,24,48",
+    "device": "mps",
+    "hidden": 128,
+    "embedding_dim": 16,
+    "epochs": 5,
+    "router_lr": 0.001,
+    "router_batch_size": 2,
+    "router_seed": 7000
+  },
+  "learning_curve": [
+    {
+      "states": 6,
+      "path": "results-router/dev-v1/router_n006.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_bce": 0.6965580185254415
+        },
+        {
+          "epoch": 1,
+          "teacher_bce": 0.6931776404380798
+        },
+        {
+          "epoch": 2,
+          "teacher_bce": 0.6930166681607565
+        },
+        {
+          "epoch": 3,
+          "teacher_bce": 0.6923269629478455
+        },
+        {
+          "epoch": 4,
+          "teacher_bce": 0.6922533909479777
+        }
+      ],
+      "teacher_wallclock_s": 82.83343648910522,
+      "router_train_wallclock_s": 0.8917770385742188
+    },
+    {
+      "states": 12,
+      "path": "results-router/dev-v1/router_n012.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_bce": 0.6965314249197642
+        },
+        {
+          "epoch": 1,
+          "teacher_bce": 0.6933635572592417
+        },
+        {
+          "epoch": 2,
+          "teacher_bce": 0.6928874552249908
+        },
+        {
+          "epoch": 3,
+          "teacher_bce": 0.6927676697572073
+        },
+        {
+          "epoch": 4,
+          "teacher_bce": 0.6923959950606028
+        }
+      ],
+      "teacher_wallclock_s": 156.42325806617737,
+      "router_train_wallclock_s": 0.8281722068786621
+    },
+    {
+      "states": 24,
+      "path": "results-router/dev-v1/router_n024.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_bce": 0.6943270862102509
+        },
+        {
+          "epoch": 1,
+          "teacher_bce": 0.6928636382023493
+        },
+        {
+          "epoch": 2,
+          "teacher_bce": 0.6924261401096979
+        },
+        {
+          "epoch": 3,
+          "teacher_bce": 0.6921495745579401
+        },
+        {
+          "epoch": 4,
+          "teacher_bce": 0.6919861088196436
+        }
+      ],
+      "teacher_wallclock_s": 310.750235080719,
+      "router_train_wallclock_s": 1.6380221843719482
+    },
+    {
+      "states": 48,
+      "path": "results-router/dev-v1/router_n048.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_bce": 0.6935119132200877
+        },
+        {
+          "epoch": 1,
+          "teacher_bce": 0.6923079912861189
+        },
+        {
+          "epoch": 2,
+          "teacher_bce": 0.6919095665216446
+        },
+        {
+          "epoch": 3,
+          "teacher_bce": 0.6916564951340357
+        },
+        {
+          "epoch": 4,
+          "teacher_bce": 0.6916244526704153
+        }
+      ],
+      "teacher_wallclock_s": 612.6356556415558,
+      "router_train_wallclock_s": 3.339811086654663
+    }
+  ]
+}

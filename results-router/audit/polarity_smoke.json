@@ -1,0 +1,372 @@
+{
+  "format": "inverse_router_evaluation_v1",
+  "split": "smoke",
+  "evaluation_checkpoint": "results-opt2/tagged/predictor_stage1_seed0.pt",
+  "evaluation_tag": "seed0",
+  "feature_trajectory": "dense_pre_ffn_planning_features",
+  "config": {
+    "mode": "evaluate",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "allow_legacy_extra_keys": true,
+    "teacher_dir": "results-router/teachers-v1",
+    "eval_tag": "0",
+    "states": 1,
+    "routers": [
+      "results-router/dev-z50/router_n048.pt"
+    ],
+    "split": "smoke",
+    "out": "results-router/audit/polarity_smoke.json",
+    "budget": 0.5,
+    "router_direction": "copt",
+    "candidates": 2,
+    "lr": 0.001,
+    "seed": 8100
+  },
+  "routers": {
+    "results-router/dev-z50/router_n048.pt": {
+      "teacher_states": 48,
+      "teacher_wallclock_s": 612.6356556415558,
+      "router_train_wallclock_s": 33.59193801879883,
+      "summary": {
+        "router_c_hold": {
+          "mean": 0.0005648434162139893,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_c_hold_per_state": [
+          0.0005648434162139893
+        ],
+        "inverse_soft_c_hold": {
+          "mean": 0.00015598535537719727,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "inverse_soft_c_hold_per_state": [
+          0.00015598535537719727
+        ],
+        "inverse_hard_c_hold": {
+          "mean": 0.0005793869495391846,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "inverse_hard_c_hold_per_state": [
+          0.0005793869495391846
+        ],
+        "gategrad_shared_c_hold": {
+          "mean": 4.693865776062012e-05,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "gategrad_shared_c_hold_per_state": [
+          4.693865776062012e-05
+        ],
+        "gategrad_layer_c_hold": {
+          "mean": -3.784894943237305e-05,
+          "se": null,
+          "positive": 0,
+          "n": 1
+        },
+        "gategrad_layer_c_hold_per_state": [
+          -3.784894943237305e-05
+        ],
+        "dense_c_hold": {
+          "mean": 0.00011882185935974121,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "dense_c_hold_per_state": [
+          0.00011882185935974121
+        ],
+        "random_mean_c_hold": {
+          "mean": -5.7384371757507324e-05,
+          "se": null,
+          "positive": 0,
+          "n": 1
+        },
+        "best_of_k_random_c_hold": {
+          "mean": -3.8951635360717773e-05,
+          "se": null,
+          "positive": 0,
+          "n": 1
+        },
+        "router_minus_random": {
+          "mean": 0.0006222277879714966,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_minus_random_per_state": [
+          0.0006222277879714966
+        ],
+        "router_minus_layer": {
+          "mean": 0.0006026923656463623,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_minus_layer_per_state": [
+          0.0006026923656463623
+        ],
+        "router_minus_shared": {
+          "mean": 0.0005179047584533691,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_minus_shared_per_state": [
+          0.0005179047584533691
+        ],
+        "router_minus_best_of_k": {
+          "mean": 0.000603795051574707,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_minus_best_of_k_per_state": [
+          0.000603795051574707
+        ],
+        "router_minus_teacher": {
+          "mean": -1.4543533325195312e-05,
+          "se": null,
+          "positive": 0,
+          "n": 1
+        },
+        "router_minus_teacher_per_state": [
+          -1.4543533325195312e-05
+        ],
+        "router_teacher_mask_iou": {
+          "mean": 0.568335771560669,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_teacher_spearman": {
+          "mean": 0.6074282404427561,
+          "se": null,
+          "positive": 1,
+          "n": 1
+        },
+        "router_orientation": {
+          "top": 1,
+          "bottom": 0
+        }
+      },
+      "states": [
+        {
+          "state_index": 0,
+          "teacher_file": "results-router/teachers-v1/seed0/state_000.pt",
+          "records": [
+            {
+              "train_loss": 3.4913666248321533,
+              "cosine": 0.0389275848865509,
+              "relative_error": 13.96528434753418,
+              "c_opt_loss_after": 1.25089493393898,
+              "c_opt_loss_after_batches": [
+                1.2776259183883667,
+                1.269081711769104,
+                1.2079304456710815,
+                1.2489416599273682
+              ],
+              "c_opt_improvement": -0.00014105439186096191,
+              "c_hold_loss_after": 1.2210843563079834,
+              "c_hold_loss_after_batches": [
+                1.2636302709579468,
+                1.2070647478103638,
+                1.190231442451477,
+                1.223410964012146
+              ],
+              "c_hold_improvement": 4.693865776062012e-05,
+              "active_fraction": 0.500254213809967,
+              "kind": "gategrad_shared",
+              "index": -1
+            },
+            {
+              "train_loss": 3.32888126373291,
+              "cosine": 0.042252685874700546,
+              "relative_error": 19.18349838256836,
+              "c_opt_loss_after": 1.2508932650089264,
+              "c_opt_loss_after_batches": [
+                1.2775073051452637,
+                1.2692370414733887,
+                1.2078614234924316,
+                1.2489672899246216
+              ],
+              "c_opt_improvement": -0.00013938546180725098,
+              "c_hold_loss_after": 1.2211691439151764,
+              "c_hold_loss_after_batches": [
+                1.2637633085250854,
+                1.2075170278549194,
+                1.1902700662612915,
+                1.2231261730194092
+              ],
+              "c_hold_improvement": -3.784894943237305e-05,
+              "active_fraction": 0.500254213809967,
+              "kind": "gategrad_layer",
+              "index": -1
+            },
+            {
+              "train_loss": 1.2144852876663208,
+              "cosine": 1.0000004768371582,
+              "relative_error": 3.457529595962683e-09,
+              "c_opt_loss_after": 1.2506190836429596,
+              "c_opt_loss_after_batches": [
+                1.2774862051010132,
+                1.268758773803711,
+                1.2078323364257812,
+                1.248399019241333
+              ],
+              "c_opt_improvement": 0.0001347959041595459,
+              "c_hold_loss_after": 1.2210124731063843,
+              "c_hold_loss_after_batches": [
+                1.2634189128875732,
+                1.207071304321289,
+                1.1903051137924194,
+                1.2232545614242554
+              ],
+              "c_hold_improvement": 0.00011882185935974121,
+              "active_fraction": 1.0,
+              "kind": "dense",
+              "index": -1
+            },
+            {
+              "train_loss": 3.3025429248809814,
+              "cosine": 0.07064194232225418,
+              "relative_error": 25.66714096069336,
+              "c_opt_loss_after": 1.2506437301635742,
+              "c_opt_loss_after_batches": [
+                1.2773393392562866,
+                1.2689119577407837,
+                1.207497000694275,
+                1.2488266229629517
+              ],
+              "c_opt_improvement": 0.00011014938354492188,
+              "c_hold_loss_after": 1.2209753096103668,
+              "c_hold_loss_after_batches": [
+                1.2637202739715576,
+                1.2074997425079346,
+                1.189876675605774,
+                1.2228045463562012
+              ],
+              "c_hold_improvement": 0.00015598535537719727,
+              "active_fraction": 0.5002553462982178,
+              "kind": "inverse_soft",
+              "index": -1
+            },
+            {
+              "train_loss": 3.2777326107025146,
+              "cosine": 0.1173558384180069,
+              "relative_error": 18.751371383666992,
+              "c_opt_loss_after": 1.2502456605434418,
+              "c_opt_loss_after_batches": [
+                1.2770675420761108,
+                1.2682615518569946,
+                1.2073127031326294,
+                1.2483408451080322
+              ],
+              "c_opt_improvement": 0.0005082190036773682,
+              "c_hold_loss_after": 1.2205519080162048,
+              "c_hold_loss_after_batches": [
+                1.2633247375488281,
+                1.2065542936325073,
+                1.18940269947052,
+                1.2229259014129639
+              ],
+              "c_hold_improvement": 0.0005793869495391846,
+              "active_fraction": 0.500254213809967,
+              "kind": "inverse_hard",
+              "index": -1
+            },
+            {
+              "train_loss": 3.637378215789795,
+              "cosine": 0.0497160479426384,
+              "relative_error": 21.66559600830078,
+              "c_opt_loss_after": 1.2508938014507294,
+              "c_opt_loss_after_batches": [
+                1.2774995565414429,
+                1.2692534923553467,
+                1.2078362703323364,
+                1.2489858865737915
+              ],
+              "c_opt_improvement": -0.0001399219036102295,
+              "c_hold_loss_after": 1.2211702466011047,
+              "c_hold_loss_after_batches": [
+                1.2637873888015747,
+                1.2075392007827759,
+                1.190251350402832,
+                1.2231030464172363
+              ],
+              "c_hold_improvement": -3.8951635360717773e-05,
+              "active_fraction": 0.500254213809967,
+              "kind": "random",
+              "index": 0,
+              "core_selected": true,
+              "best_of_k_selected": true
+            },
+            {
+              "train_loss": 3.6726577281951904,
+              "cosine": 0.04194148629903793,
+              "relative_error": 22.156709671020508,
+              "c_opt_loss_after": 1.250918686389923,
+              "c_opt_loss_after_batches": [
+                1.2775217294692993,
+                1.2693078517913818,
+                1.2078601121902466,
+                1.2489850521087646
+              ],
+              "c_opt_improvement": -0.00016480684280395508,
+              "c_hold_loss_after": 1.2212071120738983,
+              "c_hold_loss_after_batches": [
+                1.2638095617294312,
+                1.2075903415679932,
+                1.1903254985809326,
+                1.2231030464172363
+              ],
+              "c_hold_improvement": -7.581710815429688e-05,
+              "active_fraction": 0.500254213809967,
+              "kind": "random",
+              "index": 1
+            },
+            {
+              "train_loss": 3.1556499004364014,
+              "cosine": 0.12336846441030502,
+              "relative_error": 19.51784324645996,
+              "c_opt_loss_after": 1.2504317462444305,
+              "c_opt_loss_after_batches": [
+                1.2772055864334106,
+                1.2684463262557983,
+                1.2074406147003174,
+                1.2486344575881958
+              ],
+              "c_opt_improvement": 0.00032213330268859863,
+              "c_hold_loss_after": 1.22056645154953,
+              "c_hold_loss_after_batches": [
+                1.263353705406189,
+                1.2064868211746216,
+                1.1893903017044067,
+                1.2230349779129028
+              ],
+              "c_hold_improvement": 0.0005648434162139893,
+              "active_fraction": 0.500254213809967,
+              "kind": "router",
+              "index": -1
+            }
+          ],
+          "router_teacher_mask_iou": 0.568335771560669,
+          "router_teacher_spearman": 0.6074282404427561,
+          "router_orientation": "top",
+          "polarity_c_opt": {
+            "top": 0.00032213330268859863,
+            "bottom": -0.0003642141819000244
+          }
+        }
+      ]
+    }
+  }
+}

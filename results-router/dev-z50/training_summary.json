@@ -1,0 +1,1056 @@
+{
+  "train_tags": [
+    "seed0",
+    "seed1",
+    "seed2"
+  ],
+  "config": {
+    "mode": "train",
+    "teacher_dir": "results-router/teachers-v1",
+    "router_dir": "results-router/dev-z50",
+    "train_tags": "0,1,2",
+    "sizes": "6,12,24,48",
+    "device": "mps",
+    "hidden": 128,
+    "embedding_dim": 16,
+    "epochs": 50,
+    "router_lr": 0.001,
+    "router_batch_size": 2,
+    "loss": "mse-z",
+    "router_seed": 7000
+  },
+  "learning_curve": [
+    {
+      "states": 6,
+      "path": "results-router/dev-z50/router_n006.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9883759419123331,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9030495285987854,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8809075951576233,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8458482027053833,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8230126698811849,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 5,
+          "teacher_loss": 0.8039204875628153,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 6,
+          "teacher_loss": 0.7766275604565939,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 7,
+          "teacher_loss": 0.7516346971193949,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 8,
+          "teacher_loss": 0.729674776395162,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 9,
+          "teacher_loss": 0.7057294249534607,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 10,
+          "teacher_loss": 0.6846278707186381,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 11,
+          "teacher_loss": 0.6635880072911581,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 12,
+          "teacher_loss": 0.6465940078099569,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 13,
+          "teacher_loss": 0.6302372813224792,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 14,
+          "teacher_loss": 0.6218512058258057,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 15,
+          "teacher_loss": 0.6062911550203959,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 16,
+          "teacher_loss": 0.5950057705243429,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 17,
+          "teacher_loss": 0.5896730919679006,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 18,
+          "teacher_loss": 0.5782183408737183,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 19,
+          "teacher_loss": 0.5690360069274902,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 20,
+          "teacher_loss": 0.5621495048205057,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 21,
+          "teacher_loss": 0.5558679898579916,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 22,
+          "teacher_loss": 0.5512990454832712,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 23,
+          "teacher_loss": 0.5444169243176779,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 24,
+          "teacher_loss": 0.5404691894849142,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 25,
+          "teacher_loss": 0.5317746500174204,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 26,
+          "teacher_loss": 0.5268728335698446,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 27,
+          "teacher_loss": 0.526535153388977,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 28,
+          "teacher_loss": 0.5170510411262512,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 29,
+          "teacher_loss": 0.5925837953885397,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 30,
+          "teacher_loss": 0.5371644695599874,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 31,
+          "teacher_loss": 0.5564437607924143,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 32,
+          "teacher_loss": 0.5187803109486898,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 33,
+          "teacher_loss": 0.5282842218875885,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 34,
+          "teacher_loss": 0.5069637695948283,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 35,
+          "teacher_loss": 0.5081041157245636,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 36,
+          "teacher_loss": 0.4999934534231822,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 37,
+          "teacher_loss": 0.49973856409390766,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 38,
+          "teacher_loss": 0.49360273281733197,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 39,
+          "teacher_loss": 0.4921315411726634,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 40,
+          "teacher_loss": 0.48729149500528973,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 41,
+          "teacher_loss": 0.4839355448881785,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 42,
+          "teacher_loss": 0.48961244026819867,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 43,
+          "teacher_loss": 0.48201173543930054,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 44,
+          "teacher_loss": 0.47837862372398376,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 45,
+          "teacher_loss": 0.47899704178174335,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 46,
+          "teacher_loss": 0.4730336864789327,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 47,
+          "teacher_loss": 0.4710800250371297,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 48,
+          "teacher_loss": 0.4670296410719554,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 49,
+          "teacher_loss": 0.46775445342063904,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 82.83343648910522,
+      "router_train_wallclock_s": 4.069844961166382
+    },
+    {
+      "states": 12,
+      "path": "results-router/dev-z50/router_n012.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9872501492500305,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9099393288294474,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8754748205343882,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8447745541731516,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8171706398328146,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 5,
+          "teacher_loss": 0.7907006442546844,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 6,
+          "teacher_loss": 0.763478010892868,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 7,
+          "teacher_loss": 0.7490625480810801,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 8,
+          "teacher_loss": 0.7325743436813354,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 9,
+          "teacher_loss": 0.7158320347468058,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 10,
+          "teacher_loss": 0.7060526808102926,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 11,
+          "teacher_loss": 0.6881676912307739,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 12,
+          "teacher_loss": 0.6851869523525238,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 13,
+          "teacher_loss": 0.6783889929453532,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 14,
+          "teacher_loss": 0.6689141591389974,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 15,
+          "teacher_loss": 0.6601093808809916,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 16,
+          "teacher_loss": 0.6650962034861246,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 17,
+          "teacher_loss": 0.6608295241991679,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 18,
+          "teacher_loss": 0.6475621859232584,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 19,
+          "teacher_loss": 0.659661074479421,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 20,
+          "teacher_loss": 0.6476306319236755,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 21,
+          "teacher_loss": 0.6370865901311239,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 22,
+          "teacher_loss": 0.6323963304360708,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 23,
+          "teacher_loss": 0.623007540901502,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 24,
+          "teacher_loss": 0.6323648790518442,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 25,
+          "teacher_loss": 0.6317854722340902,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 26,
+          "teacher_loss": 0.6231694519519806,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 27,
+          "teacher_loss": 0.6196589767932892,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 28,
+          "teacher_loss": 0.6121559739112854,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 29,
+          "teacher_loss": 0.610526313384374,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 30,
+          "teacher_loss": 0.6026937464872996,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 31,
+          "teacher_loss": 0.59902190665404,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 32,
+          "teacher_loss": 0.6064187735319138,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 33,
+          "teacher_loss": 0.6048700710137686,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 34,
+          "teacher_loss": 0.593362088004748,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 35,
+          "teacher_loss": 0.5906339635451635,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 36,
+          "teacher_loss": 0.5951958894729614,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 37,
+          "teacher_loss": 0.5876768231391907,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 38,
+          "teacher_loss": 0.5841804891824722,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 39,
+          "teacher_loss": 0.5821311672528585,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 40,
+          "teacher_loss": 0.5737392952044805,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 41,
+          "teacher_loss": 0.5739379028479258,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 42,
+          "teacher_loss": 0.5780459841092428,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 43,
+          "teacher_loss": 0.5725004027287165,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 44,
+          "teacher_loss": 0.5726301620403925,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 45,
+          "teacher_loss": 0.5721846620241801,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 46,
+          "teacher_loss": 0.5680764466524124,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 47,
+          "teacher_loss": 0.5708680947621664,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 48,
+          "teacher_loss": 0.5652069946130117,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 49,
+          "teacher_loss": 0.5660859942436218,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 156.42325806617737,
+      "router_train_wallclock_s": 8.163458108901978
+    },
+    {
+      "states": 24,
+      "path": "results-router/dev-z50/router_n024.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9591584453980128,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9028375893831253,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8656346797943115,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8295972545941671,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.8043925215800604,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 5,
+          "teacher_loss": 0.7817011872927347,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 6,
+          "teacher_loss": 0.77646936972936,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 7,
+          "teacher_loss": 0.7724301666021347,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 8,
+          "teacher_loss": 0.7452501455942789,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 9,
+          "teacher_loss": 0.7678703318039576,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 10,
+          "teacher_loss": 0.761800209681193,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 11,
+          "teacher_loss": 0.7398221989472707,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 12,
+          "teacher_loss": 0.7231701761484146,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 13,
+          "teacher_loss": 0.72261909643809,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 14,
+          "teacher_loss": 0.717351625363032,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 15,
+          "teacher_loss": 0.7137832740942637,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 16,
+          "teacher_loss": 0.7047842840353647,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 17,
+          "teacher_loss": 0.6965430676937103,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 18,
+          "teacher_loss": 0.6991976400216421,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 19,
+          "teacher_loss": 0.6915276845296224,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 20,
+          "teacher_loss": 0.6887045403321584,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 21,
+          "teacher_loss": 0.6870236744483312,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 22,
+          "teacher_loss": 0.6746539374192556,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 23,
+          "teacher_loss": 0.6853159268697103,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 24,
+          "teacher_loss": 0.6823104172945023,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 25,
+          "teacher_loss": 0.6880158434311548,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 26,
+          "teacher_loss": 0.6699819912513097,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 27,
+          "teacher_loss": 0.6874424815177917,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 28,
+          "teacher_loss": 0.6656019141276678,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 29,
+          "teacher_loss": 0.6761742184559504,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 30,
+          "teacher_loss": 0.6588188062111536,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 31,
+          "teacher_loss": 0.6516695866982142,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 32,
+          "teacher_loss": 0.668372854590416,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 33,
+          "teacher_loss": 0.661505401134491,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 34,
+          "teacher_loss": 0.6604649970928828,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 35,
+          "teacher_loss": 0.6495408515135447,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 36,
+          "teacher_loss": 0.6473452101151148,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 37,
+          "teacher_loss": 0.6454862902561823,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 38,
+          "teacher_loss": 0.6487673570712408,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 39,
+          "teacher_loss": 0.6582362751166025,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 40,
+          "teacher_loss": 0.6424109364549319,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 41,
+          "teacher_loss": 0.6418518076340357,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 42,
+          "teacher_loss": 0.6340484718481699,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 43,
+          "teacher_loss": 0.6349742114543915,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 44,
+          "teacher_loss": 0.6440465102593104,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 45,
+          "teacher_loss": 0.6291547566652298,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 46,
+          "teacher_loss": 0.6292524437109629,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 47,
+          "teacher_loss": 0.6293938259283701,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 48,
+          "teacher_loss": 0.6279500822226206,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 49,
+          "teacher_loss": 0.6196759516994158,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 310.750235080719,
+      "router_train_wallclock_s": 16.22560691833496
+    },
+    {
+      "states": 48,
+      "path": "results-router/dev-z50/router_n048.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 0.9403822273015976,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.8623437136411667,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8269945854942004,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.7880676686763763,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.7686907375852267,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 5,
+          "teacher_loss": 0.7395072082678477,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 6,
+          "teacher_loss": 0.7210168043772379,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 7,
+          "teacher_loss": 0.7416344707210859,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 8,
+          "teacher_loss": 0.7163683424393336,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 9,
+          "teacher_loss": 0.7136461486419042,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 10,
+          "teacher_loss": 0.6892297441760699,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 11,
+          "teacher_loss": 0.6822819883624712,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 12,
+          "teacher_loss": 0.6795301089684168,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 13,
+          "teacher_loss": 0.670855276286602,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 14,
+          "teacher_loss": 0.6814523835976919,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 15,
+          "teacher_loss": 0.6638771990935007,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 16,
+          "teacher_loss": 0.6759068096677462,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 17,
+          "teacher_loss": 0.663728155195713,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 18,
+          "teacher_loss": 0.6612407950063547,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 19,
+          "teacher_loss": 0.6532612480223179,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 20,
+          "teacher_loss": 0.6527186781167984,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 21,
+          "teacher_loss": 0.6488228191932043,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 22,
+          "teacher_loss": 0.6524045169353485,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 23,
+          "teacher_loss": 0.6469567082822323,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 24,
+          "teacher_loss": 0.646705244978269,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 25,
+          "teacher_loss": 0.6529751171668371,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 26,
+          "teacher_loss": 0.6489017531275749,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 27,
+          "teacher_loss": 0.6632615923881531,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 28,
+          "teacher_loss": 0.6429334133863449,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 29,
+          "teacher_loss": 0.6473809033632278,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 30,
+          "teacher_loss": 0.6440953227380911,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 31,
+          "teacher_loss": 0.6405249039332072,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 32,
+          "teacher_loss": 0.6332682011028131,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 33,
+          "teacher_loss": 0.6387088422973951,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 34,
+          "teacher_loss": 0.6437683142721653,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 35,
+          "teacher_loss": 0.6321674187978109,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 36,
+          "teacher_loss": 0.6263488940894604,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 37,
+          "teacher_loss": 0.6239420138299465,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 38,
+          "teacher_loss": 0.62822258969148,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 39,
+          "teacher_loss": 0.6328455433249474,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 40,
+          "teacher_loss": 0.6280968859791756,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 41,
+          "teacher_loss": 0.6248475487033526,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 42,
+          "teacher_loss": 0.6274664451678594,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 43,
+          "teacher_loss": 0.6183680867155393,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 44,
+          "teacher_loss": 0.6196665552755197,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 45,
+          "teacher_loss": 0.6342037978271643,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 46,
+          "teacher_loss": 0.6213723942637444,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 47,
+          "teacher_loss": 0.6188579549392065,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 48,
+          "teacher_loss": 0.6217976920306683,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 49,
+          "teacher_loss": 0.612205038468043,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 612.6356556415558,
+      "router_train_wallclock_s": 33.59193801879883
+    }
+  ]
+}

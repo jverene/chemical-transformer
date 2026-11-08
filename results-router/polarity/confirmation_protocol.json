@@ -1,0 +1,24 @@
+{
+  "format": "polarity_confirmation_protocol_v1",
+  "router": "results-router/dev-z50/router_n048.pt",
+  "fresh_checkpoint_seeds": [6, 7],
+  "states_per_checkpoint": 6,
+  "feature_trajectory": "dense_pre_ffn_planning_features",
+  "selection": "per-state top-B versus bottom-B using four C-opt batches only",
+  "execution": "selected binary output mask with dense FFN computation",
+  "body_update": "unclipped SGD, lr=0.001",
+  "budget": 0.5,
+  "controls": ["random-8 mean", "per-layer first-order", "shared first-order", "best-of-8 random", "inverse teacher", "dense"],
+  "primary_endpoints": [
+    "absolute selected-router C-hold improvement",
+    "selected-router minus random-8 mean C-hold improvement",
+    "selected-router minus per-layer first-order C-hold improvement"
+  ],
+  "secondary_endpoints": [
+    "selected-router minus best-of-8 random",
+    "selected-router minus inverse teacher",
+    "router-teacher Spearman correlation",
+    "orientation stability"
+  ],
+  "stopping_rule": "Run all six states on each checkpoint. No additional runs or changed settings count as this confirmation."
+}

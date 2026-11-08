@@ -1,0 +1,33 @@
+{
+  "train_tags": [
+    "seed0"
+  ],
+  "config": {
+    "mode": "train",
+    "teacher_dir": "results-router/teachers-v1",
+    "router_dir": "results-router/smoke",
+    "train_tags": "0",
+    "sizes": "1",
+    "device": "mps",
+    "hidden": 32,
+    "embedding_dim": 8,
+    "epochs": 1,
+    "router_lr": 0.001,
+    "router_batch_size": 1,
+    "router_seed": 7900
+  },
+  "learning_curve": [
+    {
+      "states": 1,
+      "path": "results-router/smoke/router_n001.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_bce": 0.7041290402412415
+        }
+      ],
+      "teacher_wallclock_s": 24.264414310455322,
+      "router_train_wallclock_s": 1.1196269989013672
+    }
+  ]
+}

@@ -1,0 +1,2530 @@
+{
+  "train_tags": [
+    "seed0"
+  ],
+  "config": {
+    "mode": "train",
+    "teacher_dir": "results-router/teachers-v1",
+    "router_dir": "results-router/audit/memorize",
+    "train_tags": "0",
+    "sizes": "1",
+    "device": "mps",
+    "hidden": 128,
+    "embedding_dim": 16,
+    "epochs": 500,
+    "router_lr": 0.001,
+    "router_batch_size": 1,
+    "loss": "mse-z",
+    "router_seed": 9000
+  },
+  "learning_curve": [
+    {
+      "states": 1,
+      "path": "results-router/audit/memorize/router_n001.pt",
+      "history": [
+        {
+          "epoch": 0,
+          "teacher_loss": 1.028753638267517,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 1,
+          "teacher_loss": 0.9186249375343323,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 2,
+          "teacher_loss": 0.8533698320388794,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 3,
+          "teacher_loss": 0.8151871562004089,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 4,
+          "teacher_loss": 0.7939227819442749,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 5,
+          "teacher_loss": 0.7714983820915222,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 6,
+          "teacher_loss": 0.7420289516448975,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 7,
+          "teacher_loss": 0.7127806544303894,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 8,
+          "teacher_loss": 0.6886028051376343,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 9,
+          "teacher_loss": 0.667361319065094,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 10,
+          "teacher_loss": 0.6450732946395874,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 11,
+          "teacher_loss": 0.6213774681091309,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 12,
+          "teacher_loss": 0.599372148513794,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 13,
+          "teacher_loss": 0.5811183452606201,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 14,
+          "teacher_loss": 0.5652444958686829,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 15,
+          "teacher_loss": 0.5492567420005798,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 16,
+          "teacher_loss": 0.5324891805648804,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 17,
+          "teacher_loss": 0.5165718793869019,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 18,
+          "teacher_loss": 0.502642035484314,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 19,
+          "teacher_loss": 0.4902860224246979,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 20,
+          "teacher_loss": 0.4790499210357666,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 21,
+          "teacher_loss": 0.46928271651268005,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 22,
+          "teacher_loss": 0.46122992038726807,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 23,
+          "teacher_loss": 0.45410653948783875,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 24,
+          "teacher_loss": 0.4470244348049164,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 25,
+          "teacher_loss": 0.44006162881851196,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 26,
+          "teacher_loss": 0.43383607268333435,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 27,
+          "teacher_loss": 0.4283390939235687,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 28,
+          "teacher_loss": 0.42293021082878113,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 29,
+          "teacher_loss": 0.41704031825065613,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 30,
+          "teacher_loss": 0.4108462929725647,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 31,
+          "teacher_loss": 0.4052639305591583,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 32,
+          "teacher_loss": 0.4008760452270508,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 33,
+          "teacher_loss": 0.39718374609947205,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 34,
+          "teacher_loss": 0.39340004324913025,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 35,
+          "teacher_loss": 0.3895871937274933,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 36,
+          "teacher_loss": 0.38623037934303284,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 37,
+          "teacher_loss": 0.38322359323501587,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 38,
+          "teacher_loss": 0.3800508677959442,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 39,
+          "teacher_loss": 0.3767050504684448,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 40,
+          "teacher_loss": 0.37361302971839905,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 41,
+          "teacher_loss": 0.3708021938800812,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 42,
+          "teacher_loss": 0.3679104745388031,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 43,
+          "teacher_loss": 0.364930123090744,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 44,
+          "teacher_loss": 0.36218446493148804,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 45,
+          "teacher_loss": 0.3596530258655548,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 46,
+          "teacher_loss": 0.3570132255554199,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 47,
+          "teacher_loss": 0.35426878929138184,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 48,
+          "teacher_loss": 0.3516888916492462,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 49,
+          "teacher_loss": 0.34925583004951477,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 50,
+          "teacher_loss": 0.34676140546798706,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 51,
+          "teacher_loss": 0.3442208766937256,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 52,
+          "teacher_loss": 0.34179267287254333,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 53,
+          "teacher_loss": 0.3394309878349304,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 54,
+          "teacher_loss": 0.3369935154914856,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 55,
+          "teacher_loss": 0.33455902338027954,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 56,
+          "teacher_loss": 0.3322519063949585,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 57,
+          "teacher_loss": 0.3299890160560608,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 58,
+          "teacher_loss": 0.3277115225791931,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 59,
+          "teacher_loss": 0.3255023956298828,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 60,
+          "teacher_loss": 0.3233390152454376,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 61,
+          "teacher_loss": 0.32117024064064026,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 62,
+          "teacher_loss": 0.31906190514564514,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 63,
+          "teacher_loss": 0.3169889748096466,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 64,
+          "teacher_loss": 0.31490516662597656,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 65,
+          "teacher_loss": 0.3128862977027893,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 66,
+          "teacher_loss": 0.3109046220779419,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 67,
+          "teacher_loss": 0.30891016125679016,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 68,
+          "teacher_loss": 0.3069601058959961,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 69,
+          "teacher_loss": 0.3050273060798645,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 70,
+          "teacher_loss": 0.30310767889022827,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 71,
+          "teacher_loss": 0.3012325167655945,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 72,
+          "teacher_loss": 0.2993488609790802,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 73,
+          "teacher_loss": 0.29748913645744324,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 74,
+          "teacher_loss": 0.2956480085849762,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 75,
+          "teacher_loss": 0.29380589723587036,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 76,
+          "teacher_loss": 0.2920152246952057,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 77,
+          "teacher_loss": 0.2902261018753052,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 78,
+          "teacher_loss": 0.2884528636932373,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 79,
+          "teacher_loss": 0.28670090436935425,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 80,
+          "teacher_loss": 0.28494641184806824,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 81,
+          "teacher_loss": 0.2832183837890625,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 82,
+          "teacher_loss": 0.28148987889289856,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 83,
+          "teacher_loss": 0.2797834873199463,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 84,
+          "teacher_loss": 0.27808502316474915,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 85,
+          "teacher_loss": 0.2763988673686981,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 86,
+          "teacher_loss": 0.2747298777103424,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 87,
+          "teacher_loss": 0.2730676233768463,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 88,
+          "teacher_loss": 0.27142173051834106,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 89,
+          "teacher_loss": 0.2697819769382477,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 90,
+          "teacher_loss": 0.2681571841239929,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 91,
+          "teacher_loss": 0.2665363550186157,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 92,
+          "teacher_loss": 0.2649330496788025,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 93,
+          "teacher_loss": 0.2633330821990967,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 94,
+          "teacher_loss": 0.2617416977882385,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 95,
+          "teacher_loss": 0.2601551413536072,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 96,
+          "teacher_loss": 0.25857654213905334,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 97,
+          "teacher_loss": 0.25700172781944275,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 98,
+          "teacher_loss": 0.25543883442878723,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 99,
+          "teacher_loss": 0.2538977563381195,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 100,
+          "teacher_loss": 0.25244587659835815,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 101,
+          "teacher_loss": 0.2513919174671173,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 102,
+          "teacher_loss": 0.2519078254699707,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 103,
+          "teacher_loss": 0.2558322846889496,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 104,
+          "teacher_loss": 0.2535192370414734,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 105,
+          "teacher_loss": 0.24573935568332672,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 106,
+          "teacher_loss": 0.24630913138389587,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 107,
+          "teacher_loss": 0.24686457216739655,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 108,
+          "teacher_loss": 0.24137024581432343,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 109,
+          "teacher_loss": 0.24207910895347595,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 110,
+          "teacher_loss": 0.24087098240852356,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 111,
+          "teacher_loss": 0.2373160868883133,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 112,
+          "teacher_loss": 0.2381831556558609,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 113,
+          "teacher_loss": 0.23557208478450775,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 114,
+          "teacher_loss": 0.23397447168827057,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 115,
+          "teacher_loss": 0.23399579524993896,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 116,
+          "teacher_loss": 0.23116998374462128,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 117,
+          "teacher_loss": 0.23073621094226837,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 118,
+          "teacher_loss": 0.22971494495868683,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 119,
+          "teacher_loss": 0.22742553055286407,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 120,
+          "teacher_loss": 0.22723914682865143,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 121,
+          "teacher_loss": 0.2256442755460739,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 122,
+          "teacher_loss": 0.2238963097333908,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 123,
+          "teacher_loss": 0.22355979681015015,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 124,
+          "teacher_loss": 0.22183895111083984,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 125,
+          "teacher_loss": 0.22038578987121582,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 126,
+          "teacher_loss": 0.21985213458538055,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 127,
+          "teacher_loss": 0.2182283103466034,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 128,
+          "teacher_loss": 0.21685288846492767,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 129,
+          "teacher_loss": 0.2161969095468521,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 130,
+          "teacher_loss": 0.21475838124752045,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 131,
+          "teacher_loss": 0.21333889663219452,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 132,
+          "teacher_loss": 0.21257789433002472,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 133,
+          "teacher_loss": 0.2113800197839737,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 134,
+          "teacher_loss": 0.20990198850631714,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 135,
+          "teacher_loss": 0.2089640200138092,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 136,
+          "teacher_loss": 0.2080080658197403,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 137,
+          "teacher_loss": 0.2066226750612259,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 138,
+          "teacher_loss": 0.20540675520896912,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 139,
+          "teacher_loss": 0.20449994504451752,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 140,
+          "teacher_loss": 0.20341484248638153,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 141,
+          "teacher_loss": 0.20211592316627502,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 142,
+          "teacher_loss": 0.20094776153564453,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 143,
+          "teacher_loss": 0.19997499883174896,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 144,
+          "teacher_loss": 0.19895611703395844,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 145,
+          "teacher_loss": 0.1977681964635849,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 146,
+          "teacher_loss": 0.19655610620975494,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 147,
+          "teacher_loss": 0.19545240700244904,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 148,
+          "teacher_loss": 0.19444331526756287,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 149,
+          "teacher_loss": 0.19343459606170654,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 150,
+          "teacher_loss": 0.19236144423484802,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 151,
+          "teacher_loss": 0.19123749434947968,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 152,
+          "teacher_loss": 0.1900932490825653,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 153,
+          "teacher_loss": 0.18896526098251343,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 154,
+          "teacher_loss": 0.18786302208900452,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 155,
+          "teacher_loss": 0.1867840439081192,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 156,
+          "teacher_loss": 0.18572387099266052,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 157,
+          "teacher_loss": 0.1846819818019867,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 158,
+          "teacher_loss": 0.18367323279380798,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 159,
+          "teacher_loss": 0.18273983895778656,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 160,
+          "teacher_loss": 0.18201018869876862,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 161,
+          "teacher_loss": 0.18180765211582184,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 162,
+          "teacher_loss": 0.18303173780441284,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 163,
+          "teacher_loss": 0.18650783598423004,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 164,
+          "teacher_loss": 0.1902841329574585,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 165,
+          "teacher_loss": 0.17714010179042816,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 166,
+          "teacher_loss": 0.18005120754241943,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 167,
+          "teacher_loss": 0.18862570822238922,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 168,
+          "teacher_loss": 0.17402435839176178,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 169,
+          "teacher_loss": 0.1822289079427719,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 170,
+          "teacher_loss": 0.18367105722427368,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 171,
+          "teacher_loss": 0.17185083031654358,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 172,
+          "teacher_loss": 0.1839970499277115,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 173,
+          "teacher_loss": 0.17066939175128937,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 174,
+          "teacher_loss": 0.17537561058998108,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 175,
+          "teacher_loss": 0.17586536705493927,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 176,
+          "teacher_loss": 0.1677091419696808,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 177,
+          "teacher_loss": 0.17261873185634613,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 178,
+          "teacher_loss": 0.1689307540655136,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 179,
+          "teacher_loss": 0.16643120348453522,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 180,
+          "teacher_loss": 0.16917340457439423,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 181,
+          "teacher_loss": 0.16430827975273132,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 182,
+          "teacher_loss": 0.16582287847995758,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 183,
+          "teacher_loss": 0.16476471722126007,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 184,
+          "teacher_loss": 0.16210977733135223,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 185,
+          "teacher_loss": 0.16382625699043274,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 186,
+          "teacher_loss": 0.1607583463191986,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 187,
+          "teacher_loss": 0.16075856983661652,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 188,
+          "teacher_loss": 0.16042174398899078,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 189,
+          "teacher_loss": 0.15807968378067017,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 190,
+          "teacher_loss": 0.1588643193244934,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 191,
+          "teacher_loss": 0.15702883899211884,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 192,
+          "teacher_loss": 0.1562553197145462,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 193,
+          "teacher_loss": 0.1563090980052948,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 194,
+          "teacher_loss": 0.15436656773090363,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 195,
+          "teacher_loss": 0.1544160693883896,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 196,
+          "teacher_loss": 0.15361416339874268,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 197,
+          "teacher_loss": 0.15219751000404358,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 198,
+          "teacher_loss": 0.15229001641273499,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 199,
+          "teacher_loss": 0.15110041201114655,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 200,
+          "teacher_loss": 0.15015853941440582,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 201,
+          "teacher_loss": 0.15001364052295685,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 202,
+          "teacher_loss": 0.14879602193832397,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 203,
+          "teacher_loss": 0.14809522032737732,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 204,
+          "teacher_loss": 0.1477419137954712,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 205,
+          "teacher_loss": 0.14662888646125793,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 206,
+          "teacher_loss": 0.1459907740354538,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 207,
+          "teacher_loss": 0.14553718268871307,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 208,
+          "teacher_loss": 0.14453855156898499,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 209,
+          "teacher_loss": 0.14387336373329163,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 210,
+          "teacher_loss": 0.14339441061019897,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 211,
+          "teacher_loss": 0.14250455796718597,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 212,
+          "teacher_loss": 0.14176997542381287,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 213,
+          "teacher_loss": 0.14128050208091736,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 214,
+          "teacher_loss": 0.14051830768585205,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 215,
+          "teacher_loss": 0.13971976935863495,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 216,
+          "teacher_loss": 0.1391727775335312,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 217,
+          "teacher_loss": 0.1385423094034195,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 218,
+          "teacher_loss": 0.13775122165679932,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 219,
+          "teacher_loss": 0.13709749281406403,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 220,
+          "teacher_loss": 0.13653315603733063,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 221,
+          "teacher_loss": 0.13584090769290924,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 222,
+          "teacher_loss": 0.13511140644550323,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 223,
+          "teacher_loss": 0.13449464738368988,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 224,
+          "teacher_loss": 0.13390833139419556,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 225,
+          "teacher_loss": 0.13323932886123657,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 226,
+          "teacher_loss": 0.13254325091838837,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 227,
+          "teacher_loss": 0.13191480934619904,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 228,
+          "teacher_loss": 0.13132640719413757,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 229,
+          "teacher_loss": 0.1307012140750885,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 230,
+          "teacher_loss": 0.13003815710544586,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 231,
+          "teacher_loss": 0.12939035892486572,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 232,
+          "teacher_loss": 0.12878406047821045,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 233,
+          "teacher_loss": 0.1281949132680893,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 234,
+          "teacher_loss": 0.1275898814201355,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 235,
+          "teacher_loss": 0.12696528434753418,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 236,
+          "teacher_loss": 0.12633979320526123,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 237,
+          "teacher_loss": 0.12573501467704773,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 238,
+          "teacher_loss": 0.12516316771507263,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 239,
+          "teacher_loss": 0.1246393546462059,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 240,
+          "teacher_loss": 0.12421709299087524,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 241,
+          "teacher_loss": 0.12404632568359375,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 242,
+          "teacher_loss": 0.12447184324264526,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 243,
+          "teacher_loss": 0.1257304698228836,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 244,
+          "teacher_loss": 0.12713952362537384,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 245,
+          "teacher_loss": 0.1264478862285614,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 246,
+          "teacher_loss": 0.12532445788383484,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 247,
+          "teacher_loss": 0.12651541829109192,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 248,
+          "teacher_loss": 0.12534666061401367,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 249,
+          "teacher_loss": 0.12069139629602432,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 250,
+          "teacher_loss": 0.1189647987484932,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 251,
+          "teacher_loss": 0.12095439434051514,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 252,
+          "teacher_loss": 0.12077448517084122,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 253,
+          "teacher_loss": 0.1191500648856163,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 254,
+          "teacher_loss": 0.11872224509716034,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 255,
+          "teacher_loss": 0.11716556549072266,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 256,
+          "teacher_loss": 0.11609778553247452,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 257,
+          "teacher_loss": 0.11724153161048889,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 258,
+          "teacher_loss": 0.1167580708861351,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 259,
+          "teacher_loss": 0.11485470086336136,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 260,
+          "teacher_loss": 0.11451918631792068,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 261,
+          "teacher_loss": 0.11414560675621033,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 262,
+          "teacher_loss": 0.11342160403728485,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 263,
+          "teacher_loss": 0.1136094182729721,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 264,
+          "teacher_loss": 0.1131289154291153,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 265,
+          "teacher_loss": 0.1118173748254776,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 266,
+          "teacher_loss": 0.1113968938589096,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 267,
+          "teacher_loss": 0.11116308718919754,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 268,
+          "teacher_loss": 0.11057489365339279,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 269,
+          "teacher_loss": 0.11038388311862946,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 270,
+          "teacher_loss": 0.11008325964212418,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 271,
+          "teacher_loss": 0.10926800221204758,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 272,
+          "teacher_loss": 0.10866796225309372,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 273,
+          "teacher_loss": 0.1082836464047432,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 274,
+          "teacher_loss": 0.10774002224206924,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 275,
+          "teacher_loss": 0.10733761638402939,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 276,
+          "teacher_loss": 0.10711620002985,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 277,
+          "teacher_loss": 0.10674374550580978,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 278,
+          "teacher_loss": 0.10631765425205231,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 279,
+          "teacher_loss": 0.10597746074199677,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 280,
+          "teacher_loss": 0.1055825874209404,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 281,
+          "teacher_loss": 0.10511194169521332,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 282,
+          "teacher_loss": 0.104713074862957,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 283,
+          "teacher_loss": 0.10434944927692413,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 284,
+          "teacher_loss": 0.10396131128072739,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 285,
+          "teacher_loss": 0.10361646115779877,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 286,
+          "teacher_loss": 0.10339798033237457,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 287,
+          "teacher_loss": 0.10325326025485992,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 288,
+          "teacher_loss": 0.10325725376605988,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 289,
+          "teacher_loss": 0.10353091359138489,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 290,
+          "teacher_loss": 0.10423929989337921,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 291,
+          "teacher_loss": 0.10515089333057404,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 292,
+          "teacher_loss": 0.10620787739753723,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 293,
+          "teacher_loss": 0.10607302188873291,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 294,
+          "teacher_loss": 0.10334392637014389,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 295,
+          "teacher_loss": 0.10036251693964005,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 296,
+          "teacher_loss": 0.09905228018760681,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 297,
+          "teacher_loss": 0.09965730458498001,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 298,
+          "teacher_loss": 0.10087308287620544,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 299,
+          "teacher_loss": 0.10130003094673157,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 300,
+          "teacher_loss": 0.10011451691389084,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 301,
+          "teacher_loss": 0.09819237142801285,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 302,
+          "teacher_loss": 0.09693997353315353,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 303,
+          "teacher_loss": 0.09702219069004059,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 304,
+          "teacher_loss": 0.09770497679710388,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 305,
+          "teacher_loss": 0.09782619029283524,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 306,
+          "teacher_loss": 0.09704719483852386,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 307,
+          "teacher_loss": 0.09582194685935974,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 308,
+          "teacher_loss": 0.09498253464698792,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 309,
+          "teacher_loss": 0.0948081687092781,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 310,
+          "teacher_loss": 0.09501010924577713,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 311,
+          "teacher_loss": 0.09508273005485535,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 312,
+          "teacher_loss": 0.09464330971240997,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 313,
+          "teacher_loss": 0.09384942799806595,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 314,
+          "teacher_loss": 0.09309885650873184,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 315,
+          "teacher_loss": 0.09269920736551285,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 316,
+          "teacher_loss": 0.09258881211280823,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 317,
+          "teacher_loss": 0.09254743903875351,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 318,
+          "teacher_loss": 0.09242313355207443,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 319,
+          "teacher_loss": 0.09212027490139008,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 320,
+          "teacher_loss": 0.09166167676448822,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 321,
+          "teacher_loss": 0.09111960232257843,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 322,
+          "teacher_loss": 0.09061378240585327,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 323,
+          "teacher_loss": 0.09021636098623276,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 324,
+          "teacher_loss": 0.08993265777826309,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 325,
+          "teacher_loss": 0.08972365409135818,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 326,
+          "teacher_loss": 0.08955014497041702,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 327,
+          "teacher_loss": 0.08939189463853836,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 328,
+          "teacher_loss": 0.08923673629760742,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 329,
+          "teacher_loss": 0.08909378945827484,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 330,
+          "teacher_loss": 0.08895508199930191,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 331,
+          "teacher_loss": 0.08885173499584198,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 332,
+          "teacher_loss": 0.08877327293157578,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 333,
+          "teacher_loss": 0.0887732207775116,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 334,
+          "teacher_loss": 0.08880088478326797,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 335,
+          "teacher_loss": 0.08890512585639954,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 336,
+          "teacher_loss": 0.0889553353190422,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 337,
+          "teacher_loss": 0.08896400034427643,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 338,
+          "teacher_loss": 0.08869016170501709,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 339,
+          "teacher_loss": 0.08815091848373413,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 340,
+          "teacher_loss": 0.08723950386047363,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 341,
+          "teacher_loss": 0.08620336651802063,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 342,
+          "teacher_loss": 0.08525601774454117,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 343,
+          "teacher_loss": 0.08461737632751465,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 344,
+          "teacher_loss": 0.08432749658823013,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 345,
+          "teacher_loss": 0.08430247753858566,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 346,
+          "teacher_loss": 0.08441737294197083,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 347,
+          "teacher_loss": 0.08455487340688705,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 348,
+          "teacher_loss": 0.08465272933244705,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 349,
+          "teacher_loss": 0.0846228301525116,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 350,
+          "teacher_loss": 0.08447034657001495,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 351,
+          "teacher_loss": 0.08411786705255508,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 352,
+          "teacher_loss": 0.08364207297563553,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 353,
+          "teacher_loss": 0.08303414285182953,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 354,
+          "teacher_loss": 0.0824209526181221,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 355,
+          "teacher_loss": 0.08184901624917984,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 356,
+          "teacher_loss": 0.08138725161552429,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 357,
+          "teacher_loss": 0.08104527741670609,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 358,
+          "teacher_loss": 0.08081137388944626,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 359,
+          "teacher_loss": 0.0806596651673317,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 360,
+          "teacher_loss": 0.08056813478469849,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 361,
+          "teacher_loss": 0.08053385466337204,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 362,
+          "teacher_loss": 0.08056151121854782,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 363,
+          "teacher_loss": 0.08069661259651184,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 364,
+          "teacher_loss": 0.08095188438892365,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 365,
+          "teacher_loss": 0.08142081648111343,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 366,
+          "teacher_loss": 0.08203520625829697,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 367,
+          "teacher_loss": 0.08284168690443039,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 368,
+          "teacher_loss": 0.0833902508020401,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 369,
+          "teacher_loss": 0.08304131031036377,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 370,
+          "teacher_loss": 0.08175569027662277,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 371,
+          "teacher_loss": 0.079976387321949,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 372,
+          "teacher_loss": 0.07838304340839386,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 373,
+          "teacher_loss": 0.07765815407037735,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 374,
+          "teacher_loss": 0.07787750661373138,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 375,
+          "teacher_loss": 0.07854358106851578,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 376,
+          "teacher_loss": 0.07906574755907059,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 377,
+          "teacher_loss": 0.07886100560426712,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 378,
+          "teacher_loss": 0.07802201062440872,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 379,
+          "teacher_loss": 0.07685914635658264,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 380,
+          "teacher_loss": 0.0760195180773735,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 381,
+          "teacher_loss": 0.07579215615987778,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 382,
+          "teacher_loss": 0.07603701204061508,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 383,
+          "teacher_loss": 0.07637638598680496,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 384,
+          "teacher_loss": 0.07642105966806412,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 385,
+          "teacher_loss": 0.07608804106712341,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 386,
+          "teacher_loss": 0.07543015480041504,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 387,
+          "teacher_loss": 0.07476657629013062,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 388,
+          "teacher_loss": 0.07431656867265701,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 389,
+          "teacher_loss": 0.0741538256406784,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 390,
+          "teacher_loss": 0.0741845890879631,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 391,
+          "teacher_loss": 0.07425330579280853,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 392,
+          "teacher_loss": 0.07424702495336533,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 393,
+          "teacher_loss": 0.07409781962633133,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 394,
+          "teacher_loss": 0.07383867353200912,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 395,
+          "teacher_loss": 0.07351262867450714,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 396,
+          "teacher_loss": 0.0731978490948677,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 397,
+          "teacher_loss": 0.07295253872871399,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 398,
+          "teacher_loss": 0.0728224590420723,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 399,
+          "teacher_loss": 0.07286462187767029,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 400,
+          "teacher_loss": 0.07314591109752655,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 401,
+          "teacher_loss": 0.07377183437347412,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 402,
+          "teacher_loss": 0.07466776669025421,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 403,
+          "teacher_loss": 0.07554492354393005,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 404,
+          "teacher_loss": 0.07536956667900085,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 405,
+          "teacher_loss": 0.07393869012594223,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 406,
+          "teacher_loss": 0.07208281010389328,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 407,
+          "teacher_loss": 0.07151664048433304,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 408,
+          "teacher_loss": 0.07219026237726212,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 409,
+          "teacher_loss": 0.07259523868560791,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 410,
+          "teacher_loss": 0.07177669554948807,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 411,
+          "teacher_loss": 0.07046903669834137,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 412,
+          "teacher_loss": 0.07007627934217453,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 413,
+          "teacher_loss": 0.07049518823623657,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 414,
+          "teacher_loss": 0.07055500894784927,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 415,
+          "teacher_loss": 0.06992854923009872,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 416,
+          "teacher_loss": 0.0693821832537651,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 417,
+          "teacher_loss": 0.06947074085474014,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 418,
+          "teacher_loss": 0.06971807777881622,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 419,
+          "teacher_loss": 0.06950617581605911,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 420,
+          "teacher_loss": 0.06903215497732162,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 421,
+          "teacher_loss": 0.0688609704375267,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 422,
+          "teacher_loss": 0.06910999864339828,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 423,
+          "teacher_loss": 0.06934874504804611,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 424,
+          "teacher_loss": 0.06935431063175201,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 425,
+          "teacher_loss": 0.06937219202518463,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 426,
+          "teacher_loss": 0.06982170045375824,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 427,
+          "teacher_loss": 0.07054222375154495,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 428,
+          "teacher_loss": 0.07129217684268951,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 429,
+          "teacher_loss": 0.07149761915206909,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 430,
+          "teacher_loss": 0.07130087912082672,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 431,
+          "teacher_loss": 0.07038918882608414,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 432,
+          "teacher_loss": 0.0690472275018692,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 433,
+          "teacher_loss": 0.0675007551908493,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 434,
+          "teacher_loss": 0.06646592170000076,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 435,
+          "teacher_loss": 0.06641601771116257,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 436,
+          "teacher_loss": 0.067081019282341,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 437,
+          "teacher_loss": 0.06771617382764816,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 438,
+          "teacher_loss": 0.06775984913110733,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 439,
+          "teacher_loss": 0.06728562712669373,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 440,
+          "teacher_loss": 0.06653209775686264,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 441,
+          "teacher_loss": 0.06582224369049072,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 442,
+          "teacher_loss": 0.06531074643135071,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 443,
+          "teacher_loss": 0.06514695286750793,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 444,
+          "teacher_loss": 0.06529487669467926,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 445,
+          "teacher_loss": 0.06551364064216614,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 446,
+          "teacher_loss": 0.06556105613708496,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 447,
+          "teacher_loss": 0.0653240755200386,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 448,
+          "teacher_loss": 0.06493467092514038,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 449,
+          "teacher_loss": 0.06450299918651581,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 450,
+          "teacher_loss": 0.06414493173360825,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 451,
+          "teacher_loss": 0.06390241533517838,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 452,
+          "teacher_loss": 0.06379269063472748,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 453,
+          "teacher_loss": 0.06378678977489471,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 454,
+          "teacher_loss": 0.06381001323461533,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 455,
+          "teacher_loss": 0.0637982115149498,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 456,
+          "teacher_loss": 0.06370935589075089,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 457,
+          "teacher_loss": 0.06356623768806458,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 458,
+          "teacher_loss": 0.06337489187717438,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 459,
+          "teacher_loss": 0.06316465139389038,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 460,
+          "teacher_loss": 0.06293853372335434,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 461,
+          "teacher_loss": 0.06272284686565399,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 462,
+          "teacher_loss": 0.06252942234277725,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 463,
+          "teacher_loss": 0.06236056983470917,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 464,
+          "teacher_loss": 0.062204428017139435,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 465,
+          "teacher_loss": 0.06205090880393982,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 466,
+          "teacher_loss": 0.06189985200762749,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 467,
+          "teacher_loss": 0.06175726652145386,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 468,
+          "teacher_loss": 0.06162585690617561,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 469,
+          "teacher_loss": 0.06150023639202118,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 470,
+          "teacher_loss": 0.06137489899992943,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 471,
+          "teacher_loss": 0.06124960258603096,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 472,
+          "teacher_loss": 0.06113450229167938,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 473,
+          "teacher_loss": 0.061044249683618546,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 474,
+          "teacher_loss": 0.06100008636713028,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 475,
+          "teacher_loss": 0.06103295832872391,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 476,
+          "teacher_loss": 0.061205245554447174,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 477,
+          "teacher_loss": 0.061643656343221664,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 478,
+          "teacher_loss": 0.06258178502321243,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 479,
+          "teacher_loss": 0.06444676220417023,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 480,
+          "teacher_loss": 0.06766514480113983,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 481,
+          "teacher_loss": 0.06079506874084473,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 482,
+          "teacher_loss": 0.060489118099212646,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 483,
+          "teacher_loss": 0.06469789892435074,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 484,
+          "teacher_loss": 0.0688662976026535,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 485,
+          "teacher_loss": 0.05963318794965744,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 486,
+          "teacher_loss": 0.06659102439880371,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 487,
+          "teacher_loss": 0.06736787408590317,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 488,
+          "teacher_loss": 0.05983112007379532,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 489,
+          "teacher_loss": 0.06771916151046753,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 490,
+          "teacher_loss": 0.06392339617013931,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 491,
+          "teacher_loss": 0.06139957904815674,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 492,
+          "teacher_loss": 0.06511469185352325,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 493,
+          "teacher_loss": 0.06696928292512894,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 494,
+          "teacher_loss": 0.06199277937412262,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 495,
+          "teacher_loss": 0.06082971394062042,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 496,
+          "teacher_loss": 0.0630897805094719,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 497,
+          "teacher_loss": 0.06073380634188652,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 498,
+          "teacher_loss": 0.058434005826711655,
+          "loss_name": "mse-z"
+        },
+        {
+          "epoch": 499,
+          "teacher_loss": 0.06113404780626297,
+          "loss_name": "mse-z"
+        }
+      ],
+      "teacher_wallclock_s": 24.264414310455322,
+      "router_train_wallclock_s": 15.848649263381958
+    }
+  ]
+}
