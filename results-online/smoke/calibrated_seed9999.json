@@ -1,0 +1,92 @@
+{
+  "format": "online_polarity_pilot_v1",
+  "split": "development",
+  "arm": "calibrated",
+  "seed": 9999,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+  "optimizer": "AdamW initialized fresh at shared checkpoint",
+  "body_lr": 0.0003,
+  "dropout": 0.1,
+  "feature_trajectory": "on_policy_hard_gather",
+  "execution": "active_row_gather_scatter_for_all_non_dense_arms",
+  "router": "results-router/dev-z50/router_n048.pt",
+  "router_teacher_states": 48,
+  "config": {
+    "mode": "run",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "allow_legacy_extra_keys": false,
+    "ckpt": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+    "router": "results-router/dev-z50/router_n048.pt",
+    "outdir": "results-online/smoke",
+    "task": "tagged",
+    "arms": "calibrated,bottom,top,random,layer,dense,dense-fewer",
+    "steps": 2,
+    "batch_size": 8,
+    "budget": 0.5,
+    "calibrate_every": 1,
+    "c_opt_batches": 1,
+    "calibration_batch_size": 4,
+    "body_lr": 0.0003,
+    "eval_every": 2,
+    "eval_batches": 1,
+    "seed": 9999
+  },
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.2124892473220825,
+      "heldout_acc": 0.5773809523809523,
+      "cum_train_flops": 0.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 0.0,
+      "wallclock_s": 0.4821481704711914
+    },
+    {
+      "step": 2,
+      "heldout_loss": 1.468214750289917,
+      "heldout_acc": 0.47619047619047616,
+      "cum_train_flops": 225303330816.0,
+      "cum_calibration_flops": 647938179072.0,
+      "cum_router_flops": 9889735680.0,
+      "cum_total_flops": 883131245568.0,
+      "wallclock_s": 2.8298869132995605
+    }
+  ],
+  "calibration_history": [
+    {
+      "step": 1,
+      "rewards": {
+        "top": -0.0468522310256958,
+        "bottom": -0.057880282402038574
+      },
+      "selected": "top",
+      "calibration_flops": 324054024192.0,
+      "calibration_a_tokens": 3926,
+      "calibration_c_opt_tokens": 2048
+    },
+    {
+      "step": 2,
+      "rewards": {
+        "top": -0.25328493118286133,
+        "bottom": -0.18004226684570312
+      },
+      "selected": "bottom",
+      "calibration_flops": 323884154880.0,
+      "calibration_a_tokens": 3950,
+      "calibration_c_opt_tokens": 2048
+    }
+  ],
+  "final": {
+    "step": 2,
+    "heldout_loss": 1.468214750289917,
+    "heldout_acc": 0.47619047619047616,
+    "cum_train_flops": 225303330816.0,
+    "cum_calibration_flops": 647938179072.0,
+    "cum_router_flops": 9889735680.0,
+    "cum_total_flops": 883131245568.0,
+    "wallclock_s": 2.8298869132995605
+  }
+}

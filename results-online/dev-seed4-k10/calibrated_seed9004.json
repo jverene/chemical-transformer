@@ -1,0 +1,331 @@
+{
+  "format": "online_polarity_pilot_v1",
+  "split": "development",
+  "arm": "calibrated",
+  "seed": 9004,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+  "optimizer": "AdamW initialized fresh at shared checkpoint",
+  "body_lr": 0.0003,
+  "dropout": 0.1,
+  "feature_trajectory": "on_policy_hard_gather",
+  "execution": "active_row_gather_scatter_for_all_non_dense_arms",
+  "router": "results-router/dev-z50/router_n048.pt",
+  "router_teacher_states": 48,
+  "config": {
+    "mode": "run",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "allow_legacy_extra_keys": false,
+    "ckpt": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+    "router": "results-router/dev-z50/router_n048.pt",
+    "outdir": "results-online/dev-seed4-k10",
+    "task": "tagged",
+    "arms": "calibrated,bottom,top,random,layer,dense,dense-fewer",
+    "steps": 200,
+    "batch_size": 32,
+    "budget": 0.5,
+    "calibrate_every": 10,
+    "c_opt_batches": 4,
+    "calibration_batch_size": 8,
+    "body_lr": 0.0003,
+    "eval_every": 50,
+    "eval_batches": 4,
+    "seed": 9004
+  },
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.1733885026070159,
+      "heldout_acc": 0.6222179400712978,
+      "cum_train_flops": 0.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 0.0,
+      "wallclock_s": 1.97633695602417
+    },
+    {
+      "step": 50,
+      "heldout_loss": 1.3183972571515892,
+      "heldout_acc": 0.5299161768956547,
+      "cum_train_flops": 22626564046848.0,
+      "cum_calibration_flops": 10162346655744.0,
+      "cum_router_flops": 411290449920.0,
+      "cum_total_flops": 33200201152512.0,
+      "wallclock_s": 125.51435589790344
+    },
+    {
+      "step": 100,
+      "heldout_loss": 1.2242848963850992,
+      "heldout_acc": 0.5732729550052992,
+      "cum_train_flops": 45237924790272.0,
+      "cum_calibration_flops": 18618441007104.0,
+      "cum_router_flops": 808914915840.0,
+      "cum_total_flops": 64665280713216.0,
+      "wallclock_s": 207.46225786209106
+    },
+    {
+      "step": 150,
+      "heldout_loss": 1.2484386662541538,
+      "heldout_acc": 0.562674631467386,
+      "cum_train_flops": 67855400828928.0,
+      "cum_calibration_flops": 27080225980416.0,
+      "cum_router_flops": 1206572029440.0,
+      "cum_total_flops": 96142198838784.0,
+      "wallclock_s": 287.95140385627747
+    },
+    {
+      "step": 200,
+      "heldout_loss": 1.2184775538476518,
+      "heldout_acc": 0.5897485306869641,
+      "cum_train_flops": 90465317683200.0,
+      "cum_calibration_flops": 35543454842880.0,
+      "cum_router_flops": 1604111109120.0,
+      "cum_total_flops": 127612883635200.0,
+      "wallclock_s": 368.72947096824646
+    }
+  ],
+  "calibration_history": [
+    {
+      "step": 1,
+      "rewards": {
+        "top": -0.045520126819610596,
+        "bottom": -0.08462071418762207
+      },
+      "selected": "top",
+      "calibration_flops": 1693681975296.0,
+      "calibration_a_tokens": 15880,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 10,
+      "rewards": {
+        "top": 0.010061651468276978,
+        "bottom": 0.024636000394821167
+      },
+      "selected": "bottom",
+      "calibration_flops": 1691388739584.0,
+      "calibration_a_tokens": 15754,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 20,
+      "rewards": {
+        "top": 0.012444555759429932,
+        "bottom": 0.0022628307342529297
+      },
+      "selected": "top",
+      "calibration_flops": 1694531321856.0,
+      "calibration_a_tokens": 15814,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 30,
+      "rewards": {
+        "top": 0.03350219130516052,
+        "bottom": 0.08780688047409058
+      },
+      "selected": "bottom",
+      "calibration_flops": 1689944850432.0,
+      "calibration_a_tokens": 15820,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 40,
+      "rewards": {
+        "top": 0.012195736169815063,
+        "bottom": 0.008475571870803833
+      },
+      "selected": "top",
+      "calibration_flops": 1696739622912.0,
+      "calibration_a_tokens": 15918,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 50,
+      "rewards": {
+        "top": 0.02067488431930542,
+        "bottom": 0.09210598468780518
+      },
+      "selected": "bottom",
+      "calibration_flops": 1696060145664.0,
+      "calibration_a_tokens": 15924,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 60,
+      "rewards": {
+        "top": 0.009620815515518188,
+        "bottom": 0.0023120343685150146
+      },
+      "selected": "top",
+      "calibration_flops": 1682640470016.0,
+      "calibration_a_tokens": 15708,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 70,
+      "rewards": {
+        "top": 0.062156885862350464,
+        "bottom": 0.12297847867012024
+      },
+      "selected": "bottom",
+      "calibration_flops": 1691643543552.0,
+      "calibration_a_tokens": 15802,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 80,
+      "rewards": {
+        "top": 0.013052493333816528,
+        "bottom": 0.006678879261016846
+      },
+      "selected": "top",
+      "calibration_flops": 1691218870272.0,
+      "calibration_a_tokens": 15838,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 90,
+      "rewards": {
+        "top": -0.0029324889183044434,
+        "bottom": 0.014260202646255493
+      },
+      "selected": "bottom",
+      "calibration_flops": 1699712335872.0,
+      "calibration_a_tokens": 15962,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 100,
+      "rewards": {
+        "top": 0.015356451272964478,
+        "bottom": 0.002921193838119507
+      },
+      "selected": "top",
+      "calibration_flops": 1690879131648.0,
+      "calibration_a_tokens": 15846,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 110,
+      "rewards": {
+        "top": 0.0008910000324249268,
+        "bottom": 0.020848989486694336
+      },
+      "selected": "bottom",
+      "calibration_flops": 1687821484032.0,
+      "calibration_a_tokens": 15664,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 120,
+      "rewards": {
+        "top": 0.01930251717567444,
+        "bottom": 0.007253915071487427
+      },
+      "selected": "top",
+      "calibration_flops": 1687396810752.0,
+      "calibration_a_tokens": 15812,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 130,
+      "rewards": {
+        "top": 0.0014360249042510986,
+        "bottom": 0.02539774775505066
+      },
+      "selected": "bottom",
+      "calibration_flops": 1693087432704.0,
+      "calibration_a_tokens": 15858,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 140,
+      "rewards": {
+        "top": 0.019997328519821167,
+        "bottom": 0.0076947808265686035
+      },
+      "selected": "top",
+      "calibration_flops": 1693342236672.0,
+      "calibration_a_tokens": 15860,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 150,
+      "rewards": {
+        "top": -0.002940952777862549,
+        "bottom": 0.004616498947143555
+      },
+      "selected": "bottom",
+      "calibration_flops": 1700137009152.0,
+      "calibration_a_tokens": 15836,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 160,
+      "rewards": {
+        "top": 0.025734812021255493,
+        "bottom": 0.009965360164642334
+      },
+      "selected": "top",
+      "calibration_flops": 1694446387200.0,
+      "calibration_a_tokens": 15840,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 170,
+      "rewards": {
+        "top": 0.006580710411071777,
+        "bottom": 0.013426065444946289
+      },
+      "selected": "bottom",
+      "calibration_flops": 1691643543552.0,
+      "calibration_a_tokens": 15838,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 180,
+      "rewards": {
+        "top": 0.013217002153396606,
+        "bottom": 0.007117807865142822
+      },
+      "selected": "top",
+      "calibration_flops": 1691983282176.0,
+      "calibration_a_tokens": 15780,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 190,
+      "rewards": {
+        "top": 0.0009259581565856934,
+        "bottom": 0.006950855255126953
+      },
+      "selected": "bottom",
+      "calibration_flops": 1691898347520.0,
+      "calibration_a_tokens": 15806,
+      "calibration_c_opt_tokens": 16384
+    },
+    {
+      "step": 200,
+      "rewards": {
+        "top": 0.021923601627349854,
+        "bottom": 0.006533533334732056
+      },
+      "selected": "top",
+      "calibration_flops": 1693257302016.0,
+      "calibration_a_tokens": 15796,
+      "calibration_c_opt_tokens": 16384
+    }
+  ],
+  "final": {
+    "step": 200,
+    "heldout_loss": 1.2184775538476518,
+    "heldout_acc": 0.5897485306869641,
+    "cum_train_flops": 90465317683200.0,
+    "cum_calibration_flops": 35543454842880.0,
+    "cum_router_flops": 1604111109120.0,
+    "cum_total_flops": 127612883635200.0,
+    "wallclock_s": 368.72947096824646
+  }
+}

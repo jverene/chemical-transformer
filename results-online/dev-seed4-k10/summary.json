@@ -1,0 +1,130 @@
+{
+  "format": "online_polarity_pilot_summary_v1",
+  "split": "development_not_confirmation",
+  "source_dir": "results-online/dev-seed4-k10",
+  "arms": {
+    "bottom": {
+      "step": 200,
+      "heldout_loss": 1.2060945838553963,
+      "heldout_acc": 0.600732247808074,
+      "cum_train_flops": 90465317683200.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 1325889254400.0,
+      "cum_total_flops": 91791206937600.0,
+      "wallclock_s": 254.34655499458313
+    },
+    "top": {
+      "step": 200,
+      "heldout_loss": 1.2529258914772967,
+      "heldout_acc": 0.5868580788129878,
+      "cum_train_flops": 90465317683200.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 1325889254400.0,
+      "cum_total_flops": 91791206937600.0,
+      "wallclock_s": 256.81133913993835
+    },
+    "calibrated": {
+      "step": 200,
+      "heldout_loss": 1.2184775538476518,
+      "heldout_acc": 0.5897485306869641,
+      "cum_train_flops": 90465317683200.0,
+      "cum_calibration_flops": 35543454842880.0,
+      "cum_router_flops": 1604111109120.0,
+      "cum_total_flops": 127612883635200.0,
+      "wallclock_s": 368.72947096824646
+    },
+    "random": {
+      "step": 200,
+      "heldout_loss": 1.1862482079284709,
+      "heldout_acc": 0.6152808555737547,
+      "cum_train_flops": 90465317683200.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 90465317683200.0,
+      "wallclock_s": 267.9996380805969
+    },
+    "layer": {
+      "step": 200,
+      "heldout_loss": 1.1949377342073728,
+      "heldout_acc": 0.6147991135947587,
+      "cum_train_flops": 89615942811648.0,
+      "cum_calibration_flops": 16549517721600.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 106165460533248.0,
+      "wallclock_s": 275.2023422718048
+    },
+    "dense-fewer": {
+      "step": 100,
+      "heldout_loss": 1.1645516935867066,
+      "heldout_acc": 0.6359957606705848,
+      "cum_train_flops": 78868141572096.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 78868141572096.0,
+      "wallclock_s": 171.57985186576843
+    },
+    "dense": {
+      "step": 200,
+      "heldout_loss": 1.1588582010676993,
+      "heldout_acc": 0.6448598130841121,
+      "cum_train_flops": 157718276997120.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 157718276997120.0,
+      "wallclock_s": 343.03874468803406
+    }
+  },
+  "orientation_counts": {
+    "top": 11,
+    "bottom": 10
+  },
+  "orientation_sequence": [
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top",
+    "bottom",
+    "top"
+  ],
+  "alternations": 20,
+  "calibration_margin_stats": {
+    "median": 0.01243525743484497,
+    "mean": 0.02016199202764602,
+    "min": 0.0037201642990112305,
+    "max": 0.07143110036849976
+  },
+  "calibration_tokens": {
+    "a": 332356,
+    "c_opt": 344064
+  },
+  "matched_total_cost": {
+    "total_flops": 78868141572096.0,
+    "heldout_loss_by_arm": {
+      "bottom": 1.2055076392587396,
+      "top": 1.24714209927078,
+      "calibrated": 1.2351834421480319,
+      "random": 1.1886964523857098,
+      "layer": 1.196188580928939,
+      "dense-fewer": 1.1645516935867066,
+      "dense": 1.1628757079708996
+    },
+    "note": "linear interpolation of history; dense-fewer endpoint"
+  },
+  "initial_heldout_loss": 1.1733885026070159,
+  "initial_heldout_acc": 0.6222179400712978
+}

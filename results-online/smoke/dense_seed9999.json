@@ -1,0 +1,69 @@
+{
+  "format": "online_polarity_pilot_v1",
+  "split": "development",
+  "arm": "dense",
+  "seed": 9999,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+  "optimizer": "AdamW initialized fresh at shared checkpoint",
+  "body_lr": 0.0003,
+  "dropout": 0.1,
+  "feature_trajectory": "static_hard_gather_or_dense",
+  "execution": "active_row_gather_scatter_for_all_non_dense_arms",
+  "router": "results-router/dev-z50/router_n048.pt",
+  "router_teacher_states": 48,
+  "config": {
+    "mode": "run",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "allow_legacy_extra_keys": false,
+    "ckpt": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+    "router": "results-router/dev-z50/router_n048.pt",
+    "outdir": "results-online/smoke",
+    "task": "tagged",
+    "arms": "calibrated,bottom,top,random,layer,dense,dense-fewer",
+    "steps": 2,
+    "batch_size": 8,
+    "budget": 0.5,
+    "calibrate_every": 1,
+    "c_opt_batches": 1,
+    "calibration_batch_size": 4,
+    "body_lr": 0.0003,
+    "eval_every": 2,
+    "eval_batches": 1,
+    "seed": 9999
+  },
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.2124892473220825,
+      "heldout_acc": 0.5773809523809523,
+      "cum_train_flops": 0.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 0.0,
+      "wallclock_s": 0.05540299415588379
+    },
+    {
+      "step": 2,
+      "heldout_loss": 1.3240082263946533,
+      "heldout_acc": 0.5282738095238095,
+      "cum_train_flops": 392454733824.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 392454733824.0,
+      "wallclock_s": 0.6459901332855225
+    }
+  ],
+  "calibration_history": [],
+  "final": {
+    "step": 2,
+    "heldout_loss": 1.3240082263946533,
+    "heldout_acc": 0.5282738095238095,
+    "cum_train_flops": 392454733824.0,
+    "cum_calibration_flops": 0.0,
+    "cum_router_flops": 0.0,
+    "cum_total_flops": 392454733824.0,
+    "wallclock_s": 0.6459901332855225
+  }
+}

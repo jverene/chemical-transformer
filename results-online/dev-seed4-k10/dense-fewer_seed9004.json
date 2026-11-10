@@ -1,0 +1,79 @@
+{
+  "format": "online_polarity_pilot_v1",
+  "split": "development",
+  "arm": "dense-fewer",
+  "seed": 9004,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+  "optimizer": "AdamW initialized fresh at shared checkpoint",
+  "body_lr": 0.0003,
+  "dropout": 0.1,
+  "feature_trajectory": "static_hard_gather_or_dense",
+  "execution": "active_row_gather_scatter_for_all_non_dense_arms",
+  "router": "results-router/dev-z50/router_n048.pt",
+  "router_teacher_states": 48,
+  "config": {
+    "mode": "run",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "allow_legacy_extra_keys": false,
+    "ckpt": "results-inverse-ckpt/tagged/predictor_stage1_seed4.pt",
+    "router": "results-router/dev-z50/router_n048.pt",
+    "outdir": "results-online/dev-seed4-k10",
+    "task": "tagged",
+    "arms": "calibrated,bottom,top,random,layer,dense,dense-fewer",
+    "steps": 200,
+    "batch_size": 32,
+    "budget": 0.5,
+    "calibrate_every": 10,
+    "c_opt_batches": 4,
+    "calibration_batch_size": 8,
+    "body_lr": 0.0003,
+    "eval_every": 50,
+    "eval_batches": 4,
+    "seed": 9004
+  },
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.1733885026070159,
+      "heldout_acc": 0.6222179400712978,
+      "cum_train_flops": 0.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 0.0,
+      "wallclock_s": 1.807811975479126
+    },
+    {
+      "step": 50,
+      "heldout_loss": 1.173199402290557,
+      "heldout_acc": 0.6243376047788805,
+      "cum_train_flops": 39449826164736.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 39449826164736.0,
+      "wallclock_s": 86.65211892127991
+    },
+    {
+      "step": 100,
+      "heldout_loss": 1.1645516935867066,
+      "heldout_acc": 0.6359957606705848,
+      "cum_train_flops": 78868141572096.0,
+      "cum_calibration_flops": 0.0,
+      "cum_router_flops": 0.0,
+      "cum_total_flops": 78868141572096.0,
+      "wallclock_s": 171.57985186576843
+    }
+  ],
+  "calibration_history": [],
+  "final": {
+    "step": 100,
+    "heldout_loss": 1.1645516935867066,
+    "heldout_acc": 0.6359957606705848,
+    "cum_train_flops": 78868141572096.0,
+    "cum_calibration_flops": 0.0,
+    "cum_router_flops": 0.0,
+    "cum_total_flops": 78868141572096.0,
+    "wallclock_s": 171.57985186576843
+  }
+}
