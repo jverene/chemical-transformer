@@ -1,0 +1,22 @@
+{
+  "format": "online_training_stream_meta_router_confirmation_protocol_v1",
+  "frozen_after": "results-meta/dev-seed4-k10-m4/summary.json",
+  "split": "confirmation",
+  "body_seeds": [8, 9],
+  "online_seeds": [9208, 9209],
+  "body_training": {
+    "method": "predictor",
+    "task": "tagged",
+    "steps": 3000,
+    "batch_size": 32,
+    "seq_len": 256,
+    "sparsity_lambda": 0.001,
+    "device": "mps"
+  },
+  "online_config": "identical to results-meta/dev-seed4-k10-m4/protocol.json except checkpoint, online seed, output directory, and split",
+  "primary_endpoint": "final sparse held-out loss at step 200, paired meta-minus-random and meta-minus-shuffled on each fresh body",
+  "secondary_endpoint": "the same paired comparisons under dense evaluation",
+  "practical_endpoint": "sparse loss interpolated at dense-fewer total training FLOPs; all meta and router costs included",
+  "analysis": "two fixed fresh-body replicates; report both and mean/standard error; no optional stopping, tuning, or extension",
+  "scope": "shared-mid-training-checkpoint continuation, not from-initialization training"
+}

@@ -1,0 +1,85 @@
+{
+  "format": "online_training_stream_meta_router_summary_v1",
+  "split": "development_not_confirmation",
+  "arms": {
+    "meta": {
+      "step": 200,
+      "heldout_loss": 1.2086977311711926,
+      "sparse_heldout_loss": 1.208708785104897,
+      "heldout_acc": 0.6022738221408613,
+      "sparse_heldout_acc": 0.5934097697273341,
+      "cum_train_flops": 37001874112512.0,
+      "cum_meta_flops": 83615966822400.0,
+      "cum_eval_flops": 6672584540160.0,
+      "cum_total_flops": 120617840934912.0,
+      "wallclock_s": 779.5782749652863
+    },
+    "shuffled": {
+      "step": 200,
+      "heldout_loss": 1.188529249164187,
+      "sparse_heldout_loss": 1.2171183983780427,
+      "heldout_acc": 0.6103670873879949,
+      "sparse_heldout_acc": 0.5770305424414683,
+      "cum_train_flops": 37001874112512.0,
+      "cum_meta_flops": 83615966822400.0,
+      "cum_eval_flops": 6672584540160.0,
+      "cum_total_flops": 120617840934912.0,
+      "wallclock_s": 860.9062569141388
+    },
+    "random": {
+      "step": 200,
+      "heldout_loss": 1.1883312272125306,
+      "sparse_heldout_loss": 1.219033771769224,
+      "heldout_acc": 0.6093072550342037,
+      "sparse_heldout_acc": 0.5740437421716929,
+      "cum_train_flops": 34432248446976.0,
+      "cum_meta_flops": 0.0,
+      "cum_eval_flops": 6535430799360.0,
+      "cum_total_flops": 34432248446976.0,
+      "wallclock_s": 246.34959268569946
+    },
+    "dense": {
+      "step": 200,
+      "heldout_loss": 1.1493912470945413,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.6584449368918007,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 46413329203200.0,
+      "cum_meta_flops": 0.0,
+      "cum_eval_flops": 3868238807040.0,
+      "cum_total_flops": 46413329203200.0,
+      "wallclock_s": 565.4084041118622
+    },
+    "dense-fewer": {
+      "step": 100,
+      "heldout_loss": 1.170861987941234,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.6342614895461991,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 23206664601600.0,
+      "cum_meta_flops": 0.0,
+      "cum_eval_flops": 2320943284224.0,
+      "cum_total_flops": 23206664601600.0,
+      "wallclock_s": 373.56830406188965
+    }
+  },
+  "dense_fewer_matched_total_cost": {
+    "total_flops": 23206664601600.0,
+    "primary_sparse_deployment_loss_by_arm": {
+      "meta": 1.6939849337606534,
+      "shuffled": 1.6742072399566887,
+      "random": 1.234962771251874,
+      "dense": 1.1689020279002136,
+      "dense-fewer": 1.170861987941234
+    },
+    "meta_minus_dense_fewer": 0.5231229458194193
+  },
+  "level2": {
+    "meta_minus_random_sparse_loss": -0.010324986664326907,
+    "meta_minus_shuffled_sparse_loss": -0.00840961327314571,
+    "development_passes_descriptive": true
+  },
+  "level3_development_passes_descriptive": false,
+  "meta_updates": 20,
+  "note": "one development seed; no uncertainty or confirmation claim"
+}
