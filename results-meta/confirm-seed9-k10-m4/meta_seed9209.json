@@ -1,0 +1,598 @@
+{
+  "format": "online_training_stream_meta_router_v1",
+  "split": "confirmation",
+  "completed": true,
+  "arm": "meta",
+  "seed": 9209,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed9.pt",
+  "optimizer": "realized differentiable AdamW on meta-steps; ordinary AdamW otherwise",
+  "data_stream": "one pregenerated ordinary stream; reward indices subsequently body-trained",
+  "execution": "hard per-layer top-b; gather/scatter ordinarily, equivalent dense output masking on differentiable meta-steps",
+  "accounting": "FlopCounterMode executed matmul/attention FLOPs; train/meta/eval separated; wallclock includes all work",
+  "config": {
+    "mode": "run",
+    "ckpt": "results-inverse-ckpt/tagged/predictor_stage1_seed9.pt",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "task": "tagged",
+    "batch_size": 32,
+    "budget": 0.5,
+    "reward_batches": 4,
+    "body_lr": 0.0003,
+    "router_lr": 0.001,
+    "router_hidden": 128,
+    "dropout": 0.1,
+    "seed": 9209,
+    "outdir": "results-meta/confirm-seed9-k10-m4",
+    "arms": "meta,shuffled,random,dense,dense-fewer",
+    "steps": 200,
+    "meta_every": 10,
+    "weight_decay": 0.01,
+    "eval_every": 50,
+    "eval_batches": 4,
+    "split": "confirmation"
+  },
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.2194500846616372,
+      "heldout_acc": 0.5800173427112438,
+      "sparse_heldout_loss": 3.9058176612553934,
+      "sparse_heldout_acc": 0.22179400712978128,
+      "cum_train_flops": 0.0,
+      "cum_meta_flops": 0.0,
+      "cum_eval_flops": 1334516908032.0,
+      "cum_total_flops": 0.0,
+      "cum_all_flops": 1334516908032.0,
+      "wallclock_s": 3.9515419006347656
+    },
+    {
+      "step": 50,
+      "heldout_loss": 1.56556446209243,
+      "heldout_acc": 0.44146834955197994,
+      "sparse_heldout_loss": 1.3188819996643213,
+      "sparse_heldout_acc": 0.47682821081029003,
+      "cum_train_flops": 9248691978240.0,
+      "cum_meta_flops": 20903991705600.0,
+      "cum_eval_flops": 2669033816064.0,
+      "cum_total_flops": 30152683683840.0,
+      "cum_all_flops": 32821717499904.0,
+      "wallclock_s": 195.76633095741272
+    },
+    {
+      "step": 100,
+      "heldout_loss": 1.3817900997209331,
+      "heldout_acc": 0.5061181231332499,
+      "sparse_heldout_loss": 1.269674043042527,
+      "sparse_heldout_acc": 0.5280855573754697,
+      "cum_train_flops": 18496265650176.0,
+      "cum_meta_flops": 41807983411200.0,
+      "cum_eval_flops": 4003550724096.0,
+      "cum_total_flops": 60304249061376.0,
+      "cum_all_flops": 64307799785472.0,
+      "wallclock_s": 421.15371203422546
+    },
+    {
+      "step": 150,
+      "heldout_loss": 1.3527727498865418,
+      "heldout_acc": 0.5088158782156277,
+      "sparse_heldout_loss": 1.2517993480740022,
+      "sparse_heldout_acc": 0.5507274303882841,
+      "cum_train_flops": 27748255924224.0,
+      "cum_meta_flops": 62711975116800.0,
+      "cum_eval_flops": 5338067632128.0,
+      "cum_total_flops": 90460231041024.0,
+      "cum_all_flops": 95798298673152.0,
+      "wallclock_s": 661.9008288383484
+    },
+    {
+      "step": 200,
+      "heldout_loss": 1.3037948750590296,
+      "heldout_acc": 0.5388765777049812,
+      "sparse_heldout_loss": 1.2342713237217962,
+      "sparse_heldout_acc": 0.5705751999229213,
+      "cum_train_flops": 36997853872128.0,
+      "cum_meta_flops": 83615966822400.0,
+      "cum_eval_flops": 6672584540160.0,
+      "cum_total_flops": 120613820694528.0,
+      "cum_all_flops": 127286405234688.0,
+      "wallclock_s": 1898.4152040481567
+    }
+  ],
+  "meta_history": [
+    {
+      "train_loss": 4.098008632659912,
+      "body_grad_norm": 24.271181106567383,
+      "router_grad_norm": 0.9113640785217285,
+      "reward_losses": [
+        1.6579902172088623,
+        1.6835895776748657,
+        1.6946488618850708,
+        1.6698908805847168
+      ],
+      "reward_loss": 1.676529884338379,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1052236578816.0,
+      "active_fraction": 0.500063419342041,
+      "state_detached": true,
+      "step": 1,
+      "reward_batch_indices": [
+        2,
+        3,
+        4,
+        5
+      ]
+    },
+    {
+      "train_loss": 1.5367778539657593,
+      "body_grad_norm": 1.1818305253982544,
+      "router_grad_norm": 0.6657091379165649,
+      "reward_losses": [
+        1.8216497898101807,
+        1.77166748046875,
+        1.8352490663528442,
+        1.8209953308105469
+      ],
+      "reward_loss": 1.8123904168605804,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1053538910208.0,
+      "active_fraction": 0.49981003999710083,
+      "state_detached": true,
+      "step": 11,
+      "reward_batch_indices": [
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "train_loss": 1.4487630128860474,
+      "body_grad_norm": 1.0044878721237183,
+      "router_grad_norm": 0.2514351010322571,
+      "reward_losses": [
+        1.747550129890442,
+        1.7721818685531616,
+        1.7258601188659668,
+        1.7378655672073364
+      ],
+      "reward_loss": 1.7458644211292267,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1052463071232.0,
+      "active_fraction": 0.49987342953681946,
+      "state_detached": true,
+      "step": 21,
+      "reward_batch_indices": [
+        22,
+        23,
+        24,
+        25
+      ]
+    },
+    {
+      "train_loss": 1.3968991041183472,
+      "body_grad_norm": 0.989770233631134,
+      "router_grad_norm": 0.4560340642929077,
+      "reward_losses": [
+        1.7590148448944092,
+        1.8188762664794922,
+        1.7843791246414185,
+        1.797820806503296
+      ],
+      "reward_loss": 1.790022760629654,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1050113212416.0,
+      "active_fraction": 0.4999369978904724,
+      "state_detached": true,
+      "step": 31,
+      "reward_batch_indices": [
+        32,
+        33,
+        34,
+        35
+      ]
+    },
+    {
+      "train_loss": 1.349028468132019,
+      "body_grad_norm": 0.5656682848930359,
+      "router_grad_norm": 0.17206619679927826,
+      "reward_losses": [
+        1.6739015579223633,
+        1.6473236083984375,
+        1.62514328956604,
+        1.62942636013031
+      ],
+      "reward_loss": 1.6439487040042877,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051726970880.0,
+      "active_fraction": 0.49993687868118286,
+      "state_detached": true,
+      "step": 41,
+      "reward_batch_indices": [
+        42,
+        43,
+        44,
+        45
+      ]
+    },
+    {
+      "train_loss": 1.337580919265747,
+      "body_grad_norm": 0.5319188833236694,
+      "router_grad_norm": 0.4721841514110565,
+      "reward_losses": [
+        1.55319082736969,
+        1.5794488191604614,
+        1.5327399969100952,
+        1.5878032445907593
+      ],
+      "reward_loss": 1.5632957220077515,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1048103092224.0,
+      "active_fraction": 0.5001901388168335,
+      "state_detached": true,
+      "step": 51,
+      "reward_batch_indices": [
+        52,
+        53,
+        54,
+        55
+      ]
+    },
+    {
+      "train_loss": 1.3367419242858887,
+      "body_grad_norm": 0.9434869885444641,
+      "router_grad_norm": 0.3274756073951721,
+      "reward_losses": [
+        1.534075379371643,
+        1.528730034828186,
+        1.5392004251480103,
+        1.5794986486434937
+      ],
+      "reward_loss": 1.5453761219978333,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1049886720000.0,
+      "active_fraction": 0.5000630021095276,
+      "state_detached": true,
+      "step": 61,
+      "reward_batch_indices": [
+        62,
+        63,
+        64,
+        65
+      ]
+    },
+    {
+      "train_loss": 1.3225722312927246,
+      "body_grad_norm": 0.8510839343070984,
+      "router_grad_norm": 0.20618367195129395,
+      "reward_losses": [
+        1.4925235509872437,
+        1.4724342823028564,
+        1.494746208190918,
+        1.4889869689941406
+      ],
+      "reward_loss": 1.4871727526187897,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1050084900864.0,
+      "active_fraction": 0.5002527832984924,
+      "state_detached": true,
+      "step": 71,
+      "reward_batch_indices": [
+        72,
+        73,
+        74,
+        75
+      ]
+    },
+    {
+      "train_loss": 1.2680226564407349,
+      "body_grad_norm": 0.6392737030982971,
+      "router_grad_norm": 0.3400059938430786,
+      "reward_losses": [
+        1.4979314804077148,
+        1.4758728742599487,
+        1.4909882545471191,
+        1.4805482625961304
+      ],
+      "reward_loss": 1.4863352179527283,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1047366991872.0,
+      "active_fraction": 0.4998107850551605,
+      "state_detached": true,
+      "step": 81,
+      "reward_batch_indices": [
+        82,
+        83,
+        84,
+        85
+      ]
+    },
+    {
+      "train_loss": 1.2923552989959717,
+      "body_grad_norm": 0.5221307277679443,
+      "router_grad_norm": 0.25961750745773315,
+      "reward_losses": [
+        1.4474971294403076,
+        1.4631739854812622,
+        1.4583797454833984,
+        1.4393024444580078
+      ],
+      "reward_loss": 1.452088326215744,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051783593984.0,
+      "active_fraction": 0.4999370872974396,
+      "state_detached": true,
+      "step": 91,
+      "reward_batch_indices": [
+        92,
+        93,
+        94,
+        95
+      ]
+    },
+    {
+      "train_loss": 1.2968199253082275,
+      "body_grad_norm": 1.1102083921432495,
+      "router_grad_norm": 0.08060190826654434,
+      "reward_losses": [
+        1.388708233833313,
+        1.370189905166626,
+        1.385349154472351,
+        1.3758906126022339
+      ],
+      "reward_loss": 1.380034476518631,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1053737091072.0,
+      "active_fraction": 0.5006330609321594,
+      "state_detached": true,
+      "step": 101,
+      "reward_batch_indices": [
+        102,
+        103,
+        104,
+        105
+      ]
+    },
+    {
+      "train_loss": 1.2791720628738403,
+      "body_grad_norm": 0.7543497085571289,
+      "router_grad_norm": 0.1427685171365738,
+      "reward_losses": [
+        1.3295243978500366,
+        1.3529068231582642,
+        1.333563208580017,
+        1.3570079803466797
+      ],
+      "reward_loss": 1.3432506024837494,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1049377112064.0,
+      "active_fraction": 0.4996834099292755,
+      "state_detached": true,
+      "step": 111,
+      "reward_batch_indices": [
+        112,
+        113,
+        114,
+        115
+      ]
+    },
+    {
+      "train_loss": 1.2757400274276733,
+      "body_grad_norm": 0.6085220575332642,
+      "router_grad_norm": 0.06765753775835037,
+      "reward_losses": [
+        1.349647045135498,
+        1.3463704586029053,
+        1.3491235971450806,
+        1.3391515016555786
+      ],
+      "reward_loss": 1.3460731506347656,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051415543808.0,
+      "active_fraction": 0.4998105466365814,
+      "state_detached": true,
+      "step": 121,
+      "reward_batch_indices": [
+        122,
+        123,
+        124,
+        125
+      ]
+    },
+    {
+      "train_loss": 1.2799454927444458,
+      "body_grad_norm": 0.9013071656227112,
+      "router_grad_norm": 0.08848423510789871,
+      "reward_losses": [
+        1.3289257287979126,
+        1.3243675231933594,
+        1.335074782371521,
+        1.3209351301193237
+      ],
+      "reward_loss": 1.3273257911205292,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1053284106240.0,
+      "active_fraction": 0.49961939454078674,
+      "state_detached": true,
+      "step": 131,
+      "reward_batch_indices": [
+        132,
+        133,
+        134,
+        135
+      ]
+    },
+    {
+      "train_loss": 1.2704205513000488,
+      "body_grad_norm": 0.8314617276191711,
+      "router_grad_norm": 0.04839423671364784,
+      "reward_losses": [
+        1.3278626203536987,
+        1.3318099975585938,
+        1.3295918703079224,
+        1.3140774965286255
+      ],
+      "reward_loss": 1.32583549618721,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1054756306944.0,
+      "active_fraction": 0.4996209144592285,
+      "state_detached": true,
+      "step": 141,
+      "reward_batch_indices": [
+        142,
+        143,
+        144,
+        145
+      ]
+    },
+    {
+      "train_loss": 1.2739216089248657,
+      "body_grad_norm": 1.2404463291168213,
+      "router_grad_norm": 0.04696601256728172,
+      "reward_losses": [
+        1.3067327737808228,
+        1.3173658847808838,
+        1.3211559057235718,
+        1.3005690574645996
+      ],
+      "reward_loss": 1.3114559054374695,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1050792689664.0,
+      "active_fraction": 0.49987363815307617,
+      "state_detached": true,
+      "step": 151,
+      "reward_batch_indices": [
+        152,
+        153,
+        154,
+        155
+      ]
+    },
+    {
+      "train_loss": 1.273310899734497,
+      "body_grad_norm": 0.900542140007019,
+      "router_grad_norm": 0.06766020506620407,
+      "reward_losses": [
+        1.344128131866455,
+        1.3383160829544067,
+        1.322488784790039,
+        1.2960288524627686
+      ],
+      "reward_loss": 1.3252404630184174,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051217362944.0,
+      "active_fraction": 0.49974727630615234,
+      "state_detached": true,
+      "step": 161,
+      "reward_batch_indices": [
+        162,
+        163,
+        164,
+        165
+      ]
+    },
+    {
+      "train_loss": 1.2721647024154663,
+      "body_grad_norm": 0.7983051538467407,
+      "router_grad_norm": 0.05188034474849701,
+      "reward_losses": [
+        1.285697340965271,
+        1.306923508644104,
+        1.3230293989181519,
+        1.3180322647094727
+      ],
+      "reward_loss": 1.3084206283092499,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1049433735168.0,
+      "active_fraction": 0.5,
+      "state_detached": true,
+      "step": 171,
+      "reward_batch_indices": [
+        172,
+        173,
+        174,
+        175
+      ]
+    },
+    {
+      "train_loss": 1.2496771812438965,
+      "body_grad_norm": 0.52283775806427,
+      "router_grad_norm": 0.05661490187048912,
+      "reward_losses": [
+        1.3445466756820679,
+        1.309661865234375,
+        1.318955659866333,
+        1.302358627319336
+      ],
+      "reward_loss": 1.318880707025528,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051019182080.0,
+      "active_fraction": 0.5001266002655029,
+      "state_detached": true,
+      "step": 181,
+      "reward_batch_indices": [
+        182,
+        183,
+        184,
+        185
+      ]
+    },
+    {
+      "train_loss": 1.2830862998962402,
+      "body_grad_norm": 0.7679132223129272,
+      "router_grad_norm": 0.046568408608436584,
+      "reward_losses": [
+        1.3166958093643188,
+        1.2972060441970825,
+        1.2917931079864502,
+        1.2952287197113037
+      ],
+      "reward_loss": 1.3002309203147888,
+      "train_flops": 238924333056.0,
+      "meta_flops": 4180798341120.0,
+      "reward_forward_flops_analytical": 1051245674496.0,
+      "active_fraction": 0.49987325072288513,
+      "state_detached": true,
+      "step": 191,
+      "reward_batch_indices": [
+        192,
+        193,
+        194,
+        195
+      ]
+    }
+  ],
+  "final": {
+    "step": 200,
+    "heldout_loss": 1.3037948750590296,
+    "heldout_acc": 0.5388765777049812,
+    "sparse_heldout_loss": 1.2342713237217962,
+    "sparse_heldout_acc": 0.5705751999229213,
+    "cum_train_flops": 36997853872128.0,
+    "cum_meta_flops": 83615966822400.0,
+    "cum_eval_flops": 6672584540160.0,
+    "cum_total_flops": 120613820694528.0,
+    "cum_all_flops": 127286405234688.0,
+    "wallclock_s": 1898.4152040481567
+  }
+}

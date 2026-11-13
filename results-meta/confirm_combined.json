@@ -1,0 +1,168 @@
+{
+  "format": "online_meta_router_confirmation_combined_v1",
+  "body_seeds": [8, 9],
+  "online_seeds": [9208, 9209],
+  "n": 2,
+  "sparse_deployment_loss": {
+    "meta_minus_random": {
+      "mean": -0.05011765084859521,
+      "se": 0.013511918570411563,
+      "per_seed": [-0.036605732278183645, -0.06362956941900677],
+      "n": 2
+    },
+    "meta_minus_shuffled": {
+      "mean": -0.051936238060735995,
+      "se": 0.013777538031498835,
+      "per_seed": [-0.03815870002923716, -0.06571377609223483],
+      "n": 2
+    },
+    "meta_minus_dense": {
+      "mean": 0.02402796780422023,
+      "se": 0.0005747579225686693,
+      "per_seed": [0.0246027257267889, 0.02345320988165156],
+      "n": 2
+    },
+    "meta_minus_dense_fewer": {
+      "mean": 0.016505386558177237,
+      "se": 0.0007673823917575539,
+      "per_seed": [0.015738004166419683, 0.01727276894993479],
+      "n": 2
+    }
+  },
+  "dense_deployment_loss": {
+    "meta_minus_random": {
+      "mean": 0.04993293852091385,
+      "se": 0.011748476123009664,
+      "per_seed": [0.038184462397904184, 0.061681414643923516],
+      "n": 2
+    },
+    "meta_minus_shuffled": {
+      "mean": 0.045566824751442137,
+      "se": 0.006859845895970883,
+      "per_seed": [0.03870697885547125, 0.05242667064741302],
+      "n": 2
+    },
+    "meta_minus_dense": {
+      "mean": 0.08069940096067163,
+      "se": 0.012277360258213355,
+      "per_seed": [0.06842204070245828, 0.09297676121888498],
+      "n": 2
+    },
+    "meta_minus_dense_fewer": {
+      "mean": 0.07317681971462864,
+      "se": 0.013619500572539578,
+      "per_seed": [0.05955731914208906, 0.08679632028716822],
+      "n": 2
+    }
+  },
+  "sparse_answer_accuracy": {
+    "meta_minus_random": {
+      "mean": 0.05438866942865406,
+      "se": 0.013055207630792931,
+      "per_seed": [0.041333461797861126, 0.06744387705944699],
+      "n": 2
+    },
+    "meta_minus_shuffled": {
+      "mean": 0.05708642451103191,
+      "se": 0.014115039984584242,
+      "per_seed": [0.042971384526447665, 0.07120146449561615],
+      "n": 2
+    },
+    "meta_minus_dense": {
+      "mean": -0.02577319587628868,
+      "se": 0.004865593987860128,
+      "per_seed": [-0.030638789864148808, -0.02090760188842855],
+      "n": 2
+    },
+    "meta_minus_dense_fewer": {
+      "mean": -0.015367569129974001,
+      "se": 0.00024087098949804317,
+      "per_seed": [-0.015126698140475958, -0.015608440119472045],
+      "n": 2
+    }
+  },
+  "trajectory_paired_sparse_loss": {
+    "50": {
+      "meta_minus_random": {
+        "mean": -0.03132640431733824,
+        "se": 0.004339796073967728,
+        "per_seed": [-0.026986608243370513, -0.03566620039130597],
+        "n": 2
+      },
+      "meta_minus_shuffled": {
+        "mean": -0.03462187723064125,
+        "se": 0.0033234775316433036,
+        "per_seed": [-0.03129839969899795, -0.037945354762284556],
+        "n": 2
+      }
+    },
+    "100": {
+      "meta_minus_random": {
+        "mean": -0.035771540615460395,
+        "se": 0.013527347677132262,
+        "per_seed": [-0.022244192938328133, -0.04929888829259266],
+        "n": 2
+      },
+      "meta_minus_shuffled": {
+        "mean": -0.0427694693548728,
+        "se": 0.012069438468355065,
+        "per_seed": [-0.030700030886517737, -0.05483890782322787],
+        "n": 2
+      }
+    },
+    "150": {
+      "meta_minus_random": {
+        "mean": -0.04454928664966551,
+        "se": 0.009761858768448704,
+        "per_seed": [-0.034787427881216804, -0.054311145418114215],
+        "n": 2
+      },
+      "meta_minus_shuffled": {
+        "mean": -0.04451535920620331,
+        "se": 0.013424203334011063,
+        "per_seed": [-0.031091155872192244, -0.05793956254021437],
+        "n": 2
+      }
+    },
+    "200": {
+      "meta_minus_random": {
+        "mean": -0.05011765084859521,
+        "se": 0.013511918570411563,
+        "per_seed": [-0.036605732278183645, -0.06362956941900677],
+        "n": 2
+      },
+      "meta_minus_shuffled": {
+        "mean": -0.051936238060735995,
+        "se": 0.013777538031498835,
+        "per_seed": [-0.03815870002923716, -0.06571377609223483],
+        "n": 2
+      }
+    }
+  },
+  "practical_cost": {
+    "8": {
+      "meta_total_flops": 120617118990336.0,
+      "random_total_flops": 34429983522816.0,
+      "dense_fewer_total_flops": 23206664601600.0,
+      "meta_over_dense_fewer_cost": 5.197520671799599,
+      "meta_over_random_cost": 3.503258109618486,
+      "meta_over_dense_fewer_wallclock": 9.820495838699488,
+      "meta_over_random_wallclock": 1.8186965033040072,
+      "meta_minus_dense_fewer_final_sparse_loss": 0.015738004166419683,
+      "meta_minus_dense_200_final_sparse_loss": 0.0246027257267889
+    },
+    "9": {
+      "meta_total_flops": 120613820694528.0,
+      "random_total_flops": 34426699382784.0,
+      "dense_fewer_total_flops": 23206664601600.0,
+      "meta_over_dense_fewer_cost": 5.197378544705308,
+      "meta_over_random_cost": 3.503496497106667,
+      "meta_over_dense_fewer_wallclock": 12.936622428791757,
+      "meta_over_random_wallclock": 8.592250555606245,
+      "meta_minus_dense_fewer_final_sparse_loss": 0.01727276894993479,
+      "meta_minus_dense_200_final_sparse_loss": 0.02345320988165156
+    }
+  },
+  "evaluation_scope": "fresh bodies and online streams; the original fixed held-out set is shared with earlier experiments",
+  "scope": "two frozen fresh-body replicates; scoped Level 2 positive at matched hard allocation budget; no Level 3 practical advantage"
+}
