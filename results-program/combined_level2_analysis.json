@@ -1,0 +1,65 @@
+{
+  "format": "fixed_allocation_program_combined_level2_analysis_v1",
+  "scope": "four development regimes plus four fresh-to-program confirmation regimes; same task and fixed held-out set",
+  "program": "score = -max_abs(pre_ffn_activation); exact per-layer Top-B; no router learning",
+  "regime_count": 8,
+  "paired_sparse_loss_by_step": {
+    "50": {
+      "mean_minus_random_loss": -0.029061332640531512,
+      "standard_error": 0.0040294334186357856,
+      "wins": 8,
+      "total_regimes": 8
+    },
+    "100": {
+      "mean_minus_random_loss": -0.03786781844544462,
+      "standard_error": 0.0054038452800874645,
+      "wins": 8,
+      "total_regimes": 8
+    },
+    "150": {
+      "mean_minus_random_loss": -0.03840642952105183,
+      "standard_error": 0.004798455543055623,
+      "wins": 8,
+      "total_regimes": 8
+    },
+    "200": {
+      "mean_minus_random_loss": -0.031904027087601206,
+      "standard_error": 0.004343297373331218,
+      "wins": 8,
+      "total_regimes": 8
+    }
+  },
+  "final_sparse_loss": {
+    "values": [
+      -0.019742009296024543,
+      -0.027977413855191813,
+      -0.020769852715808,
+      -0.030225134118652575,
+      -0.04582305157075495,
+      -0.054975556722585806,
+      -0.025919754970264774,
+      -0.029799443451527186
+    ],
+    "mean_minus_random": -0.031904027087601206,
+    "standard_error": 0.004343297373331218,
+    "worst": -0.019742009296024543
+  },
+  "final_sparse_accuracy": {
+    "values": [
+      0.029482609114558245,
+      0.030927835051546393,
+      0.019462375951440458,
+      0.03362559013392419,
+      0.04981212062819157,
+      0.05617111475093933,
+      0.024376144137200018,
+      0.026014066865786667
+    ],
+    "mean_minus_random": 0.03373398207919836,
+    "standard_error": 0.004509388632710463,
+    "worst": 0.019462375951440458
+  },
+  "level_2_conclusion": "confirmed scoped online allocation benefit across four bodies and two budgets, with no online router training",
+  "level_3_conclusion": "not achieved; dense-fewer remains superior at matched total cost in every measured regime",
+  "independence_caveat": "confirmation bodies were fresh to this program but not globally untouched; no new held-out set or model size has been tested"
+}

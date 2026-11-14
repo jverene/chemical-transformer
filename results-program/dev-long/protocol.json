@@ -1,0 +1,42 @@
+{
+  "format": "fixed_allocation_program_long_development_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "selected_program": {
+    "name": "low_max_abs",
+    "expression": "-max_abs(pre_ffn_activation)",
+    "selection": "strongest mean step-50 advantage among programs beating random in all four screening regimes"
+  },
+  "body_seeds": [4, 8],
+  "budgets": [0.375, 0.5],
+  "online_seed_rule": "9400 + body_seed",
+  "steps": 200,
+  "dense_fewer_steps": 100,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "arms": ["low_max_abs", "random", "dense", "dense-fewer"],
+  "unchanged_execution": "on-policy pre-FFN features; exact per-layer Top-B; padding excluded; gather/scatter; real AdamW; no router learning",
+  "primary_endpoints": [
+    "low_max_abs minus random sparse held-out loss at steps 50, 100, 150, and 200 in all four regimes",
+    "low_max_abs minus random sparse held-out accuracy at the same evaluations",
+    "interpolated loss at dense-fewer total cost and over available common cost points",
+    "dense held-out evaluation reported separately",
+    "realized active fraction and auxiliary operation estimates"
+  ],
+  "decision_rules": {
+    "development_level_2": "low_max_abs beats random at step 200 in all four body-budget regimes",
+    "fresh_body_confirmation_earned": "the development Level 2 condition holds without changing the program or training recipe",
+    "development_level_3_signal": "low_max_abs beats cost-matched dense-fewer at both budgets in both bodies; fresh replication and broader regimes remain necessary for any Level 3 claim",
+    "no_level_3": "a win over random without a matched-total-cost win over dense-fewer is not practical efficiency"
+  },
+  "prohibited": [
+    "changing the selected program or adding features after seeing long-run results",
+    "calling these same-regime extensions fresh confirmation",
+    "omitting auxiliary operations from cost reporting",
+    "using dense-body quality as a substitute for sparse-deployment quality"
+  ]
+}

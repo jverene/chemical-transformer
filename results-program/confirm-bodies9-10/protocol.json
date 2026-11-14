@@ -1,0 +1,42 @@
+{
+  "format": "fixed_allocation_program_confirmation_protocol_v1",
+  "split": "confirmation",
+  "status": "frozen_before_runs",
+  "selected_program": {
+    "name": "low_max_abs",
+    "expression": "-max_abs(pre_ffn_activation)",
+    "source": "frozen after the four-regime development screen; unchanged through long development"
+  },
+  "body_seeds": [9, 10],
+  "freshness_scope": "bodies 9 and 10 were not used for program discovery, selection, or tuning; they participated in earlier unrelated mechanisms, so this is fresh-to-program replication rather than an entirely untouched benchmark",
+  "budgets": [0.375, 0.5],
+  "online_seed_rule": "9400 + body_seed",
+  "steps": 200,
+  "dense_fewer_steps": 100,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "arms": ["low_max_abs", "random", "dense", "dense-fewer"],
+  "execution": "on-policy pre-FFN features; exact per-layer Top-B; padding excluded; gather/scatter; real AdamW; no router learning",
+  "primary_endpoints": [
+    "low_max_abs minus random sparse held-out loss at steps 50, 100, 150, and 200 in all four regimes",
+    "low_max_abs minus random sparse held-out accuracy at the same evaluations",
+    "interpolated loss at dense-fewer total cost and random total cost",
+    "dense held-out evaluation reported separately",
+    "realized active fraction and auxiliary operation estimates"
+  ],
+  "decision_rules": {
+    "fresh_to_program_level_2_confirmation": "low_max_abs beats random at step 200 in all four fresh-to-program body-budget regimes without any recipe changes",
+    "failed_replication": "any final regime loss difference against random is nonnegative; do not tune the program on these runs",
+    "fresh_to_program_level_3": "low_max_abs also beats dense-fewer at matched total cost in every regime; development cost gaps make this unlikely and no such claim is presupposed"
+  },
+  "prohibited": [
+    "changing the program, budgets, seeds, or training settings after seeing results",
+    "calling bodies 9 and 10 globally untouched",
+    "claiming practical efficiency from wins over random alone",
+    "omitting auxiliary operations or substituting dense-body quality for sparse-deployment quality"
+  ]
+}

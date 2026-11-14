@@ -1,0 +1,329 @@
+{
+  "format": "fixed_allocation_program_confirmation_analysis_v1",
+  "split": "fresh_to_program_confirmation",
+  "selected_program": "score = -max_abs(pre_ffn_activation); exact per-layer Top-B",
+  "validation": {
+    "sixteen_completed_artifacts": true,
+    "checkpoint_protocol_and_final_step_checks_passed": true,
+    "realized_budgets_match_paired_random_controls": true,
+    "auxiliary_operations_included_in_program_cost_estimates": true
+  },
+  "regimes": [
+    {
+      "body_seed": 9,
+      "budget": 0.375,
+      "paired_sparse_loss_by_step": {
+        "50": -0.018421165537143125,
+        "100": -0.03568887765129314,
+        "150": -0.05558500195122429,
+        "200": -0.04582305157075495
+      },
+      "paired_sparse_accuracy_by_step": {
+        "50": 0.02119664707582619,
+        "100": 0.04258599094325077,
+        "150": 0.06021774737450625,
+        "200": 0.04981212062819157
+      },
+      "final": {
+        "low_max_abs": {
+          "dense_loss": 1.2641456878248922,
+          "dense_accuracy": 0.5535215338664611,
+          "sparse_loss": 1.269748660249168,
+          "sparse_accuracy": 0.5308796608536468,
+          "total_flops": 31632601147686.0,
+          "aux_ops": 7315679526.0,
+          "active_fraction": 0.37497261997881437
+        },
+        "random": {
+          "dense_loss": 1.2676661827926141,
+          "dense_accuracy": 0.535118990268812,
+          "sparse_loss": 1.315571711819923,
+          "sparse_accuracy": 0.4810675402254552,
+          "total_flops": 31625295298560.0,
+          "aux_ops": 9830400.0,
+          "active_fraction": 0.37497261997881437
+        },
+        "dense": {
+          "dense_loss": 1.2069573635413027,
+          "dense_accuracy": 0.5989979766836883,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 46413329203200.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        },
+        "dense-fewer": {
+          "dense_loss": 1.2098605290657687,
+          "dense_accuracy": 0.591579150207149,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 23206664601600.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        }
+      },
+      "matched_cost": {
+        "dense_fewer_cost": {
+          "total_flops": 23206664601600.0,
+          "loss": {
+            "low_max_abs": 1.2807045766744047,
+            "random": 1.3349790233701309,
+            "dense": 1.207220936201166,
+            "dense-fewer": 1.2098605290657687
+          }
+        },
+        "random_cost": {
+          "total_flops": 31625295298560.0,
+          "loss": {
+            "low_max_abs": 1.2697569724776863,
+            "random": 1.315571711819923,
+            "dense": 1.2094576799828751,
+            "dense-fewer": 1.2098605290657687
+          }
+        }
+      }
+    },
+    {
+      "body_seed": 9,
+      "budget": 0.5,
+      "paired_sparse_loss_by_step": {
+        "50": -0.04114813061500655,
+        "100": -0.0587717645682968,
+        "150": -0.058824080635717424,
+        "200": -0.054975556722585806
+      },
+      "paired_sparse_accuracy_by_step": {
+        "50": 0.042875036130648414,
+        "100": 0.06060314095770303,
+        "150": 0.06243376047788801,
+        "200": 0.05617111475093933
+      },
+      "final": {
+        "low_max_abs": {
+          "dense_loss": 1.2382838401537102,
+          "dense_accuracy": 0.5684555352153386,
+          "sparse_loss": 1.248744294820261,
+          "sparse_accuracy": 0.5506310819924848,
+          "total_flops": 34435940247846.0,
+          "aux_ops": 7315679526.0,
+          "active_fraction": 0.5000412803737736
+        },
+        "random": {
+          "dense_loss": 1.2535574245234649,
+          "dense_accuracy": 0.5458136622025244,
+          "sparse_loss": 1.3037198515428468,
+          "sparse_accuracy": 0.49445996724154545,
+          "total_flops": 34428634398720.0,
+          "aux_ops": 9830400.0,
+          "active_fraction": 0.5000412803737736
+        },
+        "dense": {
+          "dense_loss": 1.2035796567058854,
+          "dense_accuracy": 0.5979381443298969,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 46413329203200.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        },
+        "dense-fewer": {
+          "dense_loss": 1.209844074376115,
+          "dense_accuracy": 0.5897485306869641,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 23206664601600.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        }
+      },
+      "matched_cost": {
+        "dense_fewer_cost": {
+          "total_flops": 23206664601600.0,
+          "loss": {
+            "low_max_abs": 1.2534524308437367,
+            "random": 1.3122543739609724,
+            "dense": 1.2077731415572555,
+            "dense-fewer": 1.209844074376115
+          }
+        },
+        "random_cost": {
+          "total_flops": 34428634398720.0,
+          "loss": {
+            "low_max_abs": 1.2487454728779828,
+            "random": 1.3037198515428468,
+            "dense": 1.2163737859726853,
+            "dense-fewer": 1.209844074376115
+          }
+        }
+      }
+    },
+    {
+      "body_seed": 10,
+      "budget": 0.375,
+      "paired_sparse_loss_by_step": {
+        "50": -0.013414186900758462,
+        "100": -0.028468573086594562,
+        "150": -0.023408550249084392,
+        "200": -0.025919754970264774
+      },
+      "paired_sparse_accuracy_by_step": {
+        "50": 0.005010116581558921,
+        "100": 0.023412660179207956,
+        "150": 0.023027266596011176,
+        "200": 0.024376144137200018
+      },
+      "final": {
+        "low_max_abs": {
+          "dense_loss": 1.242701145038179,
+          "dense_accuracy": 0.5805954330860391,
+          "sparse_loss": 1.2536378990458132,
+          "sparse_accuracy": 0.5535215338664611,
+          "total_flops": 31636808753694.0,
+          "aux_ops": 7319020062.0,
+          "active_fraction": 0.3749887486506028
+        },
+        "random": {
+          "dense_loss": 1.2291438124454448,
+          "dense_accuracy": 0.5850274592928028,
+          "sparse_loss": 1.279557654016078,
+          "sparse_accuracy": 0.5291453897292611,
+          "total_flops": 31629499564032.0,
+          "aux_ops": 9830400.0,
+          "active_fraction": 0.3749887486506028
+        },
+        "dense": {
+          "dense_loss": 1.153910139071223,
+          "dense_accuracy": 0.6598901628287889,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 46413329203200.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        },
+        "dense-fewer": {
+          "dense_loss": 1.158544136107559,
+          "dense_accuracy": 0.6464977358126988,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 23206664601600.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        }
+      },
+      "matched_cost": {
+        "dense_fewer_cost": {
+          "total_flops": 23206664601600.0,
+          "loss": {
+            "low_max_abs": 1.2745696657935528,
+            "random": 1.2982933753919657,
+            "dense": 1.1738265994779942,
+            "dense-fewer": 1.158544136107559
+          }
+        },
+        "random_cost": {
+          "total_flops": 31629499564032.0,
+          "loss": {
+            "low_max_abs": 1.2536558430328124,
+            "random": 1.279557654016078,
+            "dense": 1.1613638848318408,
+            "dense-fewer": 1.158544136107559
+          }
+        }
+      }
+    },
+    {
+      "body_seed": 10,
+      "budget": 0.5,
+      "paired_sparse_loss_by_step": {
+        "50": -0.04704905043886787,
+        "100": -0.06211180665582128,
+        "150": -0.045374849704637565,
+        "200": -0.029799443451527186
+      },
+      "paired_sparse_accuracy_by_step": {
+        "50": 0.04538009442142782,
+        "100": 0.0658059543308604,
+        "150": 0.043356778109644445,
+        "200": 0.026014066865786667
+      },
+      "final": {
+        "low_max_abs": {
+          "dense_loss": 1.2150349123026922,
+          "dense_accuracy": 0.5960111764139127,
+          "sparse_loss": 1.2237733248805927,
+          "sparse_accuracy": 0.583293188168417,
+          "total_flops": 34441591743006.0,
+          "aux_ops": 7319020062.0,
+          "active_fraction": 0.50006454559693
+        },
+        "random": {
+          "dense_loss": 1.2031593160557437,
+          "dense_accuracy": 0.6031409577030542,
+          "sparse_loss": 1.2535727683321198,
+          "sparse_accuracy": 0.5572791213026304,
+          "total_flops": 34434282553344.0,
+          "aux_ops": 9830400.0,
+          "active_fraction": 0.50006454559693
+        },
+        "dense": {
+          "dense_loss": 1.1530421274386682,
+          "dense_accuracy": 0.6643221890355525,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 46413329203200.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        },
+        "dense-fewer": {
+          "dense_loss": 1.161253682069884,
+          "dense_accuracy": 0.6424511031891319,
+          "sparse_loss": null,
+          "sparse_accuracy": null,
+          "total_flops": 23206664601600.0,
+          "aux_ops": 0.0,
+          "active_fraction": null
+        }
+      },
+      "matched_cost": {
+        "dense_fewer_cost": {
+          "total_flops": 23206664601600.0,
+          "loss": {
+            "low_max_abs": 1.2324301539269265,
+            "random": 1.2828931315506402,
+            "dense": 1.162202233921745,
+            "dense-fewer": 1.161253682069884
+          }
+        },
+        "random_cost": {
+          "total_flops": 34434282553344.0,
+          "loss": {
+            "low_max_abs": 1.223777459364515,
+            "random": 1.2535727683321198,
+            "dense": 1.1552823335499984,
+            "dense-fewer": 1.161253682069884
+          }
+        }
+      }
+    }
+  ],
+  "summary": {
+    "final_minus_random_loss": [
+      -0.04582305157075495,
+      -0.054975556722585806,
+      -0.025919754970264774,
+      -0.029799443451527186
+    ],
+    "mean_final_minus_random_loss": -0.03912945167878318,
+    "worst_final_minus_random_loss": -0.025919754970264774,
+    "wins_at_every_evaluation_in_every_regime": true,
+    "low_max_abs_minus_dense_fewer_at_dense_fewer_cost": {
+      "body9_budget0.375": 0.07084404760863605,
+      "body9_budget0.5": 0.043608356467621734,
+      "body10_budget0.375": 0.11602552968599378,
+      "body10_budget0.5": 0.07117647185704246
+    },
+    "fresh_to_program_level_2_confirmation": true,
+    "fresh_to_program_level_3": false
+  },
+  "scope": "bodies 9 and 10 were fresh to this program but used in earlier unrelated mechanisms; not an entirely untouched benchmark"
+}
