@@ -1,0 +1,50 @@
+{
+  "format": "fixed_allocation_program_screen_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "hypothesis": "a low-complexity fixed allocation program can generalize across bodies and budgets without online router learning",
+  "body_seeds": [4, 8],
+  "budgets": [0.375, 0.5],
+  "online_seed_rule": "9400 + body_seed",
+  "steps": 50,
+  "eval_every": 25,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "programs": [
+    "high_rms",
+    "low_rms",
+    "high_abs_mean",
+    "low_abs_mean",
+    "high_max_abs",
+    "low_max_abs",
+    "high_position",
+    "low_position",
+    "high_outlier = z(max_abs) - z(rms)",
+    "low_outlier = z(rms) - z(max_abs)"
+  ],
+  "control": "exact per-layer Top-B random masks with identical realized sequence budgets and common training batches",
+  "execution": "on-policy pre-FFN features; exact per-layer Top-B; padding excluded; gather/scatter; real AdamW; no router learning and no dense planning pass",
+  "primary_endpoint": "program minus random sparse held-out loss at step 50 in every body-budget regime",
+  "secondary_endpoints": [
+    "paired sparse loss at step 25",
+    "paired sparse accuracy at steps 25 and 50",
+    "dense held-out evaluation reported separately",
+    "realized active fraction",
+    "executed matmul/attention FLOPs and separately estimated feature/selection operations"
+  ],
+  "selection_rule": {
+    "advance": "at most one program, requiring a negative step-50 loss difference against random in all four regimes; if several qualify, select the smallest mean paired loss difference",
+    "kill": "if no program wins in all four regimes, stop the fixed-program route and do not add evolution or tune programs on these results",
+    "after_selection": "the selected unchanged program must complete longer development runs before any fresh-body confirmation or dense-fewer frontier experiment"
+  },
+  "prohibited": [
+    "calling this 50-step screen Level 1, Level 2, or Level 3",
+    "selecting different programs for different bodies or budgets",
+    "using confirmation bodies for program discovery",
+    "claiming total-cost efficiency from this screen",
+    "silently treating estimated auxiliary operations as exact hardware FLOPs"
+  ]
+}

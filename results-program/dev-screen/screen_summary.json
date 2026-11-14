@@ -1,0 +1,438 @@
+{
+  "format": "fixed_allocation_program_screen_summary_v1",
+  "split": "development",
+  "steps": 50,
+  "programs": {
+    "high_rms": {
+      "program": {
+        "name": "high_rms",
+        "expression": "rms",
+        "terms": [
+          [
+            "rms",
+            1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": 0.021916268380610227,
+          "minus_random_accuracy": -0.021967434242219863
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": 0.012705283138608303,
+          "minus_random_accuracy": -0.02553232488679069
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.010491354969237143,
+          "minus_random_accuracy": -0.006069948935350233
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": 0.018287516294954953,
+          "minus_random_accuracy": -0.010309278350515483
+        }
+      ],
+      "wins": 0,
+      "mean_minus_random_loss": 0.015850105695852656,
+      "worst_minus_random_loss": 0.021916268380610227,
+      "eligible_all_regimes_win": false
+    },
+    "low_rms": {
+      "program": {
+        "name": "low_rms",
+        "expression": "-rms",
+        "terms": [
+          [
+            "rms",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.02323839053636645,
+          "minus_random_accuracy": 0.026399460448983558
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.04699605358956327,
+          "minus_random_accuracy": 0.04933037864919543
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.005490649619418919,
+          "minus_random_accuracy": -0.003083148665574742
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": -0.03362439194314826,
+          "minus_random_accuracy": 0.030638789864148752
+        }
+      ],
+      "wins": 3,
+      "mean_minus_random_loss": -0.024592046612414764,
+      "worst_minus_random_loss": 0.005490649619418919,
+      "eligible_all_regimes_win": false
+    },
+    "high_abs_mean": {
+      "program": {
+        "name": "high_abs_mean",
+        "expression": "abs_mean",
+        "terms": [
+          [
+            "abs_mean",
+            1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": 0.005381611037308831,
+          "minus_random_accuracy": 0.0030831486655746865
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.0013057967572609464,
+          "minus_random_accuracy": -0.005780903747952593
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": -0.0059460605559322754,
+          "minus_random_accuracy": 0.0044320262067636396
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": -0.007566000751918045,
+          "minus_random_accuracy": 0.008864052413527279
+        }
+      ],
+      "wins": 3,
+      "mean_minus_random_loss": -0.002359061756950609,
+      "worst_minus_random_loss": 0.005381611037308831,
+      "eligible_all_regimes_win": false
+    },
+    "low_abs_mean": {
+      "program": {
+        "name": "low_abs_mean",
+        "expression": "-abs_mean",
+        "terms": [
+          [
+            "abs_mean",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.024870605958863035,
+          "minus_random_accuracy": 0.027073899219578035
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.04038871250745446,
+          "minus_random_accuracy": 0.042971384526447665
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": -0.0005643961540529041,
+          "minus_random_accuracy": 0.004142981019366054
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": -0.006708256985557437,
+          "minus_random_accuracy": 0.008093265247133608
+        }
+      ],
+      "wins": 4,
+      "mean_minus_random_loss": -0.01813299290148196,
+      "worst_minus_random_loss": -0.0005643961540529041,
+      "eligible_all_regimes_win": true
+    },
+    "high_max_abs": {
+      "program": {
+        "name": "high_max_abs",
+        "expression": "max_abs",
+        "terms": [
+          [
+            "max_abs",
+            1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": 0.007957475329518404,
+          "minus_random_accuracy": -0.003083148665574742
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": 0.000528203984146991,
+          "minus_random_accuracy": -0.005299161768956506
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.005710852739467365,
+          "minus_random_accuracy": -0.0014452259369881482
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": 0.011321533042269571,
+          "minus_random_accuracy": -0.009634839579921006
+        }
+      ],
+      "wins": 0,
+      "mean_minus_random_loss": 0.006379516273850583,
+      "worst_minus_random_loss": 0.011321533042269571,
+      "eligible_all_regimes_win": false
+    },
+    "low_max_abs": {
+      "program": {
+        "name": "low_max_abs",
+        "expression": "-max_abs",
+        "terms": [
+          [
+            "max_abs",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.025517323629079547,
+          "minus_random_accuracy": 0.0362269968205029
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.03535865067662769,
+          "minus_random_accuracy": 0.036516042007900595
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": -0.02491026622343373,
+          "minus_random_accuracy": 0.026495808844782753
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": -0.029411935651693533,
+          "minus_random_accuracy": 0.02957895751035744
+        }
+      ],
+      "wins": 4,
+      "mean_minus_random_loss": -0.028799544045208625,
+      "worst_minus_random_loss": -0.02491026622343373,
+      "eligible_all_regimes_win": true
+    },
+    "high_position": {
+      "program": {
+        "name": "high_position",
+        "expression": "position",
+        "terms": [
+          [
+            "position",
+            1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": 0.0009810370652389988,
+          "minus_random_accuracy": -0.0033721938529723827
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": 0.00785485244179207,
+          "minus_random_accuracy": -0.0166682724732633
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.01808028016310459,
+          "minus_random_accuracy": -0.011272762308507545
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": 0.018906354426792005,
+          "minus_random_accuracy": -0.010116581558917093
+        }
+      ],
+      "wins": 0,
+      "mean_minus_random_loss": 0.011455631024231916,
+      "worst_minus_random_loss": 0.018906354426792005,
+      "eligible_all_regimes_win": false
+    },
+    "low_position": {
+      "program": {
+        "name": "low_position",
+        "expression": "-position",
+        "terms": [
+          [
+            "position",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.0020277637343295574,
+          "minus_random_accuracy": 0.0003853935831968358
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.003013232366262164,
+          "minus_random_accuracy": -0.008382310434531304
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.014418966539664568,
+          "minus_random_accuracy": -0.005202813373157311
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": 0.016386477184331838,
+          "minus_random_accuracy": -0.007322478080739991
+        }
+      ],
+      "wins": 2,
+      "mean_minus_random_loss": 0.006441111905851171,
+      "worst_minus_random_loss": 0.016386477184331838,
+      "eligible_all_regimes_win": false
+    },
+    "high_outlier": {
+      "program": {
+        "name": "high_outlier",
+        "expression": "max_abs - rms",
+        "terms": [
+          [
+            "max_abs",
+            1.0
+          ],
+          [
+            "rms",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.010538060402797589,
+          "minus_random_accuracy": 0.013777820599287005
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.011579406911593981,
+          "minus_random_accuracy": 0.004817419789960531
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": 0.006773024138196915,
+          "minus_random_accuracy": 0.001348877541188953
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": 0.008495609420205996,
+          "minus_random_accuracy": 0.0008671355621928667
+        }
+      ],
+      "wins": 2,
+      "mean_minus_random_loss": -0.0017122084389971648,
+      "worst_minus_random_loss": 0.008495609420205996,
+      "eligible_all_regimes_win": false
+    },
+    "low_outlier": {
+      "program": {
+        "name": "low_outlier",
+        "expression": "-max_abs + rms",
+        "terms": [
+          [
+            "max_abs",
+            -1.0
+          ],
+          [
+            "rms",
+            1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 4,
+          "budget": 0.375,
+          "minus_random_loss": -0.021841337919962678,
+          "minus_random_accuracy": 0.025050582907794605
+        },
+        {
+          "body_seed": 4,
+          "budget": 0.5,
+          "minus_random_loss": -0.02044421316193401,
+          "minus_random_accuracy": 0.016186530494267215
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.375,
+          "minus_random_loss": -0.012064478160496606,
+          "minus_random_accuracy": 0.015223046536275153
+        },
+        {
+          "body_seed": 8,
+          "budget": 0.5,
+          "minus_random_loss": -0.013754231592428612,
+          "minus_random_accuracy": 0.015704788515271184
+        }
+      ],
+      "wins": 4,
+      "mean_minus_random_loss": -0.017026065208705476,
+      "worst_minus_random_loss": -0.012064478160496606,
+      "eligible_all_regimes_win": true
+    }
+  },
+  "selected_for_longer_development": "low_max_abs",
+  "decision": "advance one frozen program to longer development",
+  "note": "short development screen only; no Level 2 or Level 3 claim and no dense-fewer frontier claim"
+}
