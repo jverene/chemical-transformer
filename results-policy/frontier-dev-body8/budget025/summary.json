@@ -1,0 +1,85 @@
+{
+  "format": "ordinary_stream_policy_router_summary_v1",
+  "split": "development",
+  "arms": {
+    "scratch": {
+      "step": 200,
+      "heldout_loss": 1.3057299600722314,
+      "sparse_heldout_loss": 1.3437381981553056,
+      "heldout_acc": 0.49185856055496674,
+      "sparse_heldout_acc": 0.4582329704210425,
+      "cum_train_flops": 30232303632384.0,
+      "cum_policy_flops": 2121417784320.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 32353721416704.0,
+      "wallclock_s": 1826.002403974533,
+      "mean_active_fraction": 0.2515456853076292
+    },
+    "random": {
+      "step": 200,
+      "heldout_loss": 1.3073818960960906,
+      "sparse_heldout_loss": 1.321825395539278,
+      "heldout_acc": 0.49156951536756915,
+      "sparse_heldout_acc": 0.4757683784564987,
+      "cum_train_flops": 28828859105280.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 28828859105280.0,
+      "wallclock_s": 959.5703809261322,
+      "mean_active_fraction": 0.2501156177158366
+    },
+    "dense": {
+      "step": 200,
+      "heldout_loss": 1.2370437672240966,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.5648906445707679,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 46413329203200.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 46413329203200.0,
+      "wallclock_s": 809.7237710952759,
+      "mean_active_fraction": null
+    },
+    "dense-fewer": {
+      "step": 100,
+      "heldout_loss": 1.240197931033432,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.5573754696984295,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 23206664601600.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 23206664601600.0,
+      "wallclock_s": 321.05990505218506,
+      "mean_active_fraction": null
+    }
+  },
+  "matched_cost": {
+    "dense_fewer": {
+      "total_flops": 23206664601600.0,
+      "loss": {
+        "scratch": 1.365087726947403,
+        "random": 1.3270445838053313,
+        "dense": 1.2401883034170538,
+        "dense-fewer": 1.240197931033432
+      }
+    },
+    "random_cost": {
+      "total_flops": 28828859105280.0,
+      "loss": {
+        "scratch": 1.3513146208175777,
+        "random": 1.321825395539278,
+        "dense": 1.2413482096493162,
+        "dense-fewer": 1.240197931033432
+      }
+    }
+  },
+  "paired_final_sparse_loss": {
+    "scratch": {
+      "minus_random": 0.02191280261602757,
+      "minus_dense_fewer": 0.1035402671218737
+    }
+  },
+  "note": "development pilot; expected rather than exact per-step Bernoulli budget; one seed"
+}

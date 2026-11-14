@@ -1,0 +1,31 @@
+{
+  "format": "ordinary_stream_policy_frontier_partial_analysis_v1",
+  "split": "development",
+  "budget": 0.375,
+  "status": "scratch_and_random_completed; dense_reference_reruns_stopped_by_user_to_prioritize_confirmation",
+  "scratch_minus_random_sparse_loss_by_step": {
+    "50": 0.24769797055072051,
+    "100": 0.09944983967881815,
+    "150": 0.06139776859685364,
+    "200": 0.056413700046837656
+  },
+  "scratch_minus_random_sparse_accuracy_by_step": {
+    "50": -0.09625204740341076,
+    "100": -0.06233741208208887,
+    "150": -0.04557279121302632,
+    "200": -0.04778880431640814
+  },
+  "final_sparse_loss": {
+    "scratch": 1.3618978971656637,
+    "random": 1.305484197118826
+  },
+  "corrected_total_flops": {
+    "scratch": 35136640809984.0,
+    "random": 31630277738496.0
+  },
+  "realized_active_fraction": {
+    "scratch": 0.3756526379730559,
+    "random": 0.37505038041334354
+  },
+  "interpretation": "no learned-allocation advantage over random at 37.5%; no completed matched-dense-fewer analysis at this budget and no Level 3 claim"
+}

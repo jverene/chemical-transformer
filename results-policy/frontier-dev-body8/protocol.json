@@ -1,0 +1,51 @@
+{
+  "format": "ordinary_stream_policy_frontier_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_lower_budget_runs",
+  "body_checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed8.pt",
+  "online_seed": 9308,
+  "budgets": [0.25, 0.375],
+  "exploratory_reference": {
+    "budget": 0.5,
+    "outdir": "results-policy/dev-body8-window4",
+    "note": "already observed; not fresh confirmation"
+  },
+  "arms": ["scratch", "random", "dense", "dense-fewer"],
+  "unchanged_settings": {
+    "steps": 200,
+    "batch_size": 32,
+    "temperature": 1.0,
+    "reward_window": 4,
+    "baseline_beta": 0.2,
+    "body_lr": 0.0003,
+    "router_lr": 0.001,
+    "router_hidden": 128,
+    "weight_decay": 0.01,
+    "dropout": 0.1,
+    "eval_every": 50,
+    "eval_batches": 4,
+    "seq_len": 256,
+    "task": "tagged",
+    "size": "small"
+  },
+  "execution": "unchanged causal per-token Bernoulli hard gates with previous-batch expected-budget threshold and gather/scatter",
+  "primary_metrics": [
+    "scratch minus random sparse held-out loss at steps 50, 100, 150, and 200",
+    "scratch minus random sparse held-out accuracy at steps 50, 100, 150, and 200",
+    "interpolated sparse held-out loss at each arm's matched total FLOPs",
+    "scratch minus dense-fewer loss at dense-fewer total FLOPs",
+    "realized active fraction and corrected policy overhead"
+  ],
+  "accounting": "use max(executed router backward counter, analytical router backward estimate); include body, routing, router updates, and ordinary training; exclude held-out evaluation from cumulative training cost and report it separately",
+  "decision_rules": {
+    "frontier_opening": "scratch beats random at both lower budgets and reduces the matched-cost gap to dense-fewer relative to random at both budgets",
+    "development_level_3_signal": "scratch beats cost-matched dense-fewer at both lower budgets while also beating random; requires fresh-body replication before any Level 3 claim",
+    "no_frontier_opening": "do not tune these runs or call them confirmation; reassess before nonuniform or temporal budget allocation"
+  },
+  "prohibited": [
+    "changing learning settings after seeing lower-budget results",
+    "calling this development probe confirmation",
+    "amortizing or omitting warm-source costs",
+    "claiming practical efficiency from fixed-budget wins over random alone"
+  ]
+}

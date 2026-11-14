@@ -1,0 +1,31 @@
+{
+  "format": "ordinary_stream_policy_router_protocol_v1",
+  "split": "development_not_confirmation",
+  "body_checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed8.pt",
+  "body_role": "fresh for this Level 3 mechanism, previously used in meta-router confirmation",
+  "online_seed": 9308,
+  "arms": ["warm", "scratch", "shuffled", "random", "dense", "dense-fewer"],
+  "warm_source": "results-meta/warmstart-source/meta_router_seed9104.pt",
+  "warm_source_cost_policy": "report source meta-training cost separately; do not assume it is amortized",
+  "steps": 200,
+  "dense_fewer_steps": 100,
+  "batch_size": 32,
+  "seq_len": 256,
+  "budget": 0.5,
+  "budget_semantics": "causal per-token Bernoulli policy; previous-batch per-layer threshold targets expected budget; report realized active fraction",
+  "temperature": 1.0,
+  "reward_window": 4,
+  "reward": "next ordinary body-training loss, EMA baseline, delayed score-function update",
+  "baseline_beta": 0.2,
+  "body_lr": 0.0003,
+  "router_lr": 0.001,
+  "dropout": 0.1,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "extra_reward_forward_passes": 0,
+  "primary_comparisons": [
+    "warm and scratch final sparse loss against random and shuffled",
+    "quality-cost curves at random and dense-fewer total-cost operating points"
+  ],
+  "stopping": "one fixed development trajectory; no tuning or extension based on observed outcomes"
+}

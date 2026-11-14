@@ -1,0 +1,71 @@
+{
+  "format": "ordinary_stream_policy_frontier_analysis_v1",
+  "split": "development",
+  "budget": 0.25,
+  "paired_sparse_loss_by_step": {
+    "0": {
+      "scratch_minus_random": -0.23215663017069987
+    },
+    "50": {
+      "scratch_minus_random": 0.08298505919976251
+    },
+    "100": {
+      "scratch_minus_random": 0.05227214054784901
+    },
+    "150": {
+      "scratch_minus_random": 0.03259307840550618
+    },
+    "200": {
+      "scratch_minus_random": 0.02191280261602757
+    }
+  },
+  "paired_sparse_accuracy_by_step": {
+    "0": {
+      "scratch_minus_random": -0.0006744387705944627
+    },
+    "50": {
+      "scratch_minus_random": -0.04499470083823104
+    },
+    "100": {
+      "scratch_minus_random": -0.048463243087002617
+    },
+    "150": {
+      "scratch_minus_random": -0.03275845457173138
+    },
+    "200": {
+      "scratch_minus_random": -0.017535408035456224
+    }
+  },
+  "matched_cost_loss": {
+    "dense_fewer": {
+      "total_flops": 23206664601600.0,
+      "loss": {
+        "scratch": 1.365087726947403,
+        "random": 1.3270445838053313,
+        "dense": 1.2401883034170538,
+        "dense-fewer": 1.240197931033432
+      }
+    },
+    "random_cost": {
+      "total_flops": 28828859105280.0,
+      "loss": {
+        "scratch": 1.3513146208175777,
+        "random": 1.321825395539278,
+        "dense": 1.2413482096493162,
+        "dense-fewer": 1.240197931033432
+      }
+    }
+  },
+  "total_flops": {
+    "scratch": 32353721416704.0,
+    "random": 28828859105280.0,
+    "dense": 46413329203200.0,
+    "dense-fewer": 23206664601600.0
+  },
+  "mean_active_fraction": {
+    "scratch": 0.2515456853076292,
+    "random": 0.2501156177158366,
+    "dense": null,
+    "dense-fewer": null
+  }
+}

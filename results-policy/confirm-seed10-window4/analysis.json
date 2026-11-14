@@ -1,0 +1,114 @@
+{
+  "format": "ordinary_stream_policy_router_analysis_v1",
+  "split": "single_fresh_body_confirmation",
+  "body_seed": 10,
+  "online_seed": 9310,
+  "validation": {
+    "all_six_arms_completed": true,
+    "checkpoint_and_protocol_identity_checks_passed": true,
+    "zero_extra_reward_forward_passes": true,
+    "policy_cost_reconstructed_from_max_of_counter_and_analytical_backward": true
+  },
+  "scratch_paired_sparse_loss_by_step": {
+    "50": {
+      "minus_random": 0.01606902157323753,
+      "minus_shuffled": 0.00017838814302217898
+    },
+    "100": {
+      "minus_random": -0.010475489483545042,
+      "minus_shuffled": -0.021285260819370322
+    },
+    "150": {
+      "minus_random": -0.011551720622293482,
+      "minus_shuffled": -0.014245117147127173
+    },
+    "200": {
+      "minus_random": 0.0007534356152709698,
+      "minus_shuffled": -0.01197796646281124
+    }
+  },
+  "scratch_paired_sparse_accuracy_by_step": {
+    "50": {
+      "minus_random": -0.017150014452259332,
+      "minus_shuffled": 0.01397051739088545
+    },
+    "100": {
+      "minus_random": 0.026110415261585862,
+      "minus_shuffled": 0.033914635321321884
+    },
+    "150": {
+      "minus_random": 0.01792080161865306,
+      "minus_shuffled": 0.01907698236824351
+    },
+    "200": {
+      "minus_random": -0.0019269679159842346,
+      "minus_shuffled": 0.01368147220348781
+    }
+  },
+  "final_sparse_loss": {
+    "warm": 1.2739764972327776,
+    "scratch": 1.2620123175038898,
+    "shuffled": 1.273990283966701,
+    "random": 1.2612588818886188,
+    "dense": null,
+    "dense-fewer": null
+  },
+  "final_sparse_accuracy": {
+    "warm": 0.5337701127276231,
+    "scratch": 0.5497639464302919,
+    "shuffled": 0.5360824742268041,
+    "random": 0.5516909143462762,
+    "dense": null,
+    "dense-fewer": null
+  },
+  "corrected_total_flops": {
+    "warm": 37914763450368.0,
+    "scratch": 37923700463616.0,
+    "shuffled": 37876792940544.0,
+    "random": 34427853078528.0,
+    "dense": 46413329203200.0,
+    "dense-fewer": 23206664601600.0
+  },
+  "matched_cost_loss": {
+    "dense_fewer": {
+      "total_flops": 23206664601600.0,
+      "loss": {
+        "warm": 1.2933012361269627,
+        "scratch": 1.2718587346651693,
+        "shuffled": 1.2898702860014502,
+        "random": 1.2783141123615571,
+        "dense": 1.1644732870508203,
+        "dense-fewer": 1.1612171723949918
+      }
+    },
+    "random_cost": {
+      "total_flops": 34427853078528.0,
+      "loss": {
+        "warm": 1.2786465222866403,
+        "scratch": 1.2617356670099225,
+        "shuffled": 1.274542302718749,
+        "random": 1.2612588818886188,
+        "dense": 1.1558752458795338,
+        "dense-fewer": 1.1612171723949918
+      }
+    }
+  },
+  "realized_active_fraction": {
+    "warm": 0.49993628693566633,
+    "scratch": 0.5003360081832053,
+    "shuffled": 0.4982403842454933,
+    "random": 0.5001467857054558,
+    "dense": null,
+    "dense-fewer": null
+  },
+  "policy_backward_flops": 2120126945280.0,
+  "meta_router_meta_flops": 83615966822400.0,
+  "policy_overhead_reduction_factor": 39.439132174869385,
+  "interpretation": {
+    "frozen_decision": "kill cheap-policy route: scratch does not beat random at every evaluation and loses to random at the final evaluation, despite beating shuffled at the final evaluation",
+    "cheap_level_2": "not replicated on fresh body 10; the body-8 advantage over random remains development-only",
+    "level_3": "not achieved; scratch remains far worse than dense-fewer at matched total cost",
+    "retained_result": "the independently confirmed second-order meta-router remains the scoped Level 2 result",
+    "warm_source_accounting": "warm-source meta-training cost is not included in deployment-arm totals and cannot be treated as amortized"
+  }
+}

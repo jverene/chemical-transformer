@@ -1,0 +1,126 @@
+{
+  "format": "ordinary_stream_policy_router_summary_v1",
+  "split": "confirmation",
+  "arms": {
+    "warm": {
+      "step": 200,
+      "heldout_loss": 1.260458505308237,
+      "sparse_heldout_loss": 1.2739764972327776,
+      "heldout_acc": 0.5912901050197514,
+      "sparse_heldout_acc": 0.5337701127276231,
+      "cum_train_flops": 35794636505088.0,
+      "cum_policy_flops": 2120126945280.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 37914763450368.0,
+      "wallclock_s": 3483.2048881053925,
+      "mean_active_fraction": 0.49993628693566633
+    },
+    "scratch": {
+      "step": 200,
+      "heldout_loss": 1.2016950284907328,
+      "sparse_heldout_loss": 1.2620123175038898,
+      "heldout_acc": 0.6079583774930147,
+      "sparse_heldout_acc": 0.5497639464302919,
+      "cum_train_flops": 35803573518336.0,
+      "cum_policy_flops": 2120126945280.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 37923700463616.0,
+      "wallclock_s": 4287.460693120956,
+      "mean_active_fraction": 0.5003360081832053
+    },
+    "shuffled": {
+      "step": 200,
+      "heldout_loss": 1.212647518545139,
+      "sparse_heldout_loss": 1.273990283966701,
+      "heldout_acc": 0.5948549956643222,
+      "sparse_heldout_acc": 0.5360824742268041,
+      "cum_train_flops": 35756665995264.0,
+      "cum_policy_flops": 2120126945280.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 37876792940544.0,
+      "wallclock_s": 4304.48366689682,
+      "mean_active_fraction": 0.4982403842454933
+    },
+    "random": {
+      "step": 200,
+      "heldout_loss": 1.2487512229963806,
+      "sparse_heldout_loss": 1.2612588818886188,
+      "heldout_acc": 0.5901339242701609,
+      "sparse_heldout_acc": 0.5516909143462762,
+      "cum_train_flops": 34427853078528.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 34427853078528.0,
+      "wallclock_s": 355.302533864975,
+      "mean_active_fraction": 0.5001467857054558
+    },
+    "dense": {
+      "step": 200,
+      "heldout_loss": 1.157942561590426,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.6557471818094228,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 46413329203200.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 46413329203200.0,
+      "wallclock_s": 661.4913280010223,
+      "mean_active_fraction": null
+    },
+    "dense-fewer": {
+      "step": 100,
+      "heldout_loss": 1.1612171723949918,
+      "sparse_heldout_loss": null,
+      "heldout_acc": 0.6480393101454861,
+      "sparse_heldout_acc": null,
+      "cum_train_flops": 23206664601600.0,
+      "cum_policy_flops": 0.0,
+      "cum_reward_eval_flops": 0.0,
+      "cum_total_flops": 23206664601600.0,
+      "wallclock_s": 306.17933416366577,
+      "mean_active_fraction": null
+    }
+  },
+  "matched_cost": {
+    "dense_fewer": {
+      "total_flops": 23206664601600.0,
+      "loss": {
+        "warm": 1.2933012361269627,
+        "scratch": 1.2718587346651693,
+        "shuffled": 1.2898702860014502,
+        "random": 1.2783141123615571,
+        "dense": 1.1644732870508203,
+        "dense-fewer": 1.1612171723949918
+      }
+    },
+    "random_cost": {
+      "total_flops": 34427853078528.0,
+      "loss": {
+        "warm": 1.2786465222866403,
+        "scratch": 1.2617356670099225,
+        "shuffled": 1.274542302718749,
+        "random": 1.2612588818886188,
+        "dense": 1.1558752458795338,
+        "dense-fewer": 1.1612171723949918
+      }
+    }
+  },
+  "paired_final_sparse_loss": {
+    "warm": {
+      "minus_random": 0.012717615344158828,
+      "minus_shuffled": -1.3786733923382144e-05,
+      "minus_dense_fewer": 0.11275932483778583
+    },
+    "scratch": {
+      "minus_random": 0.0007534356152709698,
+      "minus_shuffled": -0.01197796646281124,
+      "minus_dense_fewer": 0.10079514510889798
+    },
+    "shuffled": {
+      "minus_random": 0.01273140207808221,
+      "minus_shuffled": 0.0,
+      "minus_dense_fewer": 0.11277311157170922
+    }
+  },
+  "note": "confirmation run; expected rather than exact per-step Bernoulli budget; one online seed"
+}
