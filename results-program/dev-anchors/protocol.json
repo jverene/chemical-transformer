@@ -1,0 +1,57 @@
+{
+  "format": "fixed_allocation_program_dense_anchor_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "purpose": "test whether dense recovery updates let the confirmed low-max-abs allocator improve the total-cost frontier rather than only beat uniform random sparsity",
+  "body_seeds": [4, 8],
+  "average_budgets": [0.375, 0.5],
+  "anchor_schedules": {
+    "anchor4": {
+      "dense_steps": "every fourth body update",
+      "anchor_fraction": 0.25,
+      "non_anchor_budget_at_0.375": 0.16666666666666666,
+      "non_anchor_budget_at_0.5": 0.3333333333333333
+    },
+    "anchor10": {
+      "dense_steps": "every tenth body update",
+      "anchor_fraction": 0.1,
+      "non_anchor_budget_at_0.375": 0.3055555555555556,
+      "non_anchor_budget_at_0.5": 0.4444444444444444
+    }
+  },
+  "new_arms_per_regime": [
+    "low_max_abs_anchor4",
+    "random_anchor4",
+    "low_max_abs_anchor10",
+    "random_anchor10"
+  ],
+  "reused_frozen_references": "uniform low_max_abs, uniform random, dense, and dense-fewer from results-program/dev-long with identical body and online seeds",
+  "online_seed_rule": "9400 + body_seed",
+  "steps": 200,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "sparse_evaluation": "uniform low_max_abs or random at the original average budget, never the anchor schedule",
+  "primary_endpoints": [
+    "anchored low_max_abs minus anchored random sparse loss at every evaluation",
+    "anchored low_max_abs minus uniform low_max_abs sparse loss at every evaluation",
+    "anchored low_max_abs minus dense-fewer at matched total cost including auxiliary operations",
+    "dense evaluation, realized average activity, and per-schedule costs"
+  ],
+  "selection_rule": {
+    "allocation_and_schedule_benefit": "a schedule must beat its random-anchor control and uniform low_max_abs at step 200 in all four regimes",
+    "schedule_selection": "if both schedules qualify, select the one with the smallest mean final loss difference from uniform low_max_abs",
+    "development_level_3_signal": "the selected schedule must also beat dense-fewer at matched total cost in all four regimes",
+    "kill": "if neither schedule satisfies allocation_and_schedule_benefit, stop anchor tuning; if none beats dense-fewer, do not claim a practical frontier opening",
+    "fresh_confirmation": "only a selected schedule with a development Level 3 signal earns an unchanged fresh-to-schedule replication on bodies 9 and 10"
+  },
+  "prohibited": [
+    "changing anchor frequency or non-anchor budgets after seeing results",
+    "comparing anchored low_max_abs only with uniform random",
+    "using anchored inference to inflate the sparse-training comparison",
+    "calling an improvement over uniform low_max_abs a Level 3 result without a dense-fewer win"
+  ]
+}
