@@ -1,0 +1,62 @@
+{
+  "format": "scaled50_sparse_backward_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "batch_size": 32,
+  "backward_activity": 0.5,
+  "backward_scale": 2.0,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_scaled_ema",
+      "steps": 125
+    },
+    {
+      "name": "random_scaled_ema",
+      "steps": 126,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_ema",
+      "steps": 100
+    }
+  ],
+  "execution": {
+    "sparse_arms": "dense forward with gathered 50% FFN backward and inverse-activity scale 2",
+    "dense_arm": "ordinary dense forward and backward",
+    "ema": "identical final 0.95 EMA for every arm with no decay sweep or checkpoint selection",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "step_pricing": {
+    "source": "realized active fractions in results-update/dev-body6/low_max_abs_update_seed9406.json and the identical pregenerated batch stream",
+    "rule": "for each step, recompute valid tokens and exact active counts, then apply the CPU-calibrated dense-minus-inactive-backward formula plus program scoring, gather/scatter, scale multiplications, and EMA overhead",
+    "dense_budget_flops": 58025799597200,
+    "low125_predicted_total_flops": 57587910741370,
+    "remaining_headroom_flops": 437888855830,
+    "low126_predicted_total_flops": 58048173788214,
+    "selected_low_steps": 125,
+    "selected_random_steps": 126
+  },
+  "validation": {
+    "scale2_batch40_cpu_formula_verified": true,
+    "scale2_gradient_identity_verified": true,
+    "batch_size_returned_to32": true,
+    "no_anchors_or_attention_sparsity": true
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-scaling-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs does not beat random despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs beats random but not dense EMA; stop",
+    "development_level_3": "low_max_abs EMA loss is below random and dense EMA while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "changing steps, activity, scale, batch size, EMA decay, or evaluation after launch",
+    "using the failed larger-batch, attention, or anchor variants",
+    "excluding scaling or EMA overhead",
+    "launching body 7 without a development-level win"
+  ]
+}

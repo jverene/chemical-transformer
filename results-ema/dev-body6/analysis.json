@@ -1,0 +1,37 @@
+{
+  "format": "equal_final_ema_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "protocol": "results-ema/dev-body6/protocol.json",
+  "final_ema": {
+    "low_max_abs_loss": 1.1782363114529684,
+    "random_loss": 1.1812188223640312,
+    "dense_loss": 1.178602285932208,
+    "low_max_abs_accuracy": 0.6333556469350674,
+    "random_accuracy": 0.629530458066367,
+    "dense_accuracy": 0.6327818686047624,
+    "low_max_abs_total_flops": 57208842973980.0,
+    "random_total_flops": 57749967584552.0,
+    "dense_total_flops": 58025799597200.0,
+    "low_max_abs_minus_random_loss": -0.00298251091106283,
+    "low_max_abs_minus_dense_loss": -0.0003659744792396946,
+    "low_max_abs_minus_random_accuracy": 0.0038251888687004243,
+    "low_max_abs_minus_dense_accuracy": 0.0005737783303050303,
+    "low_max_abs_raw_loss": 1.1885531119175319,
+    "random_raw_loss": 1.1955565210568853,
+    "dense_raw_loss": 1.1829262507860396,
+    "low_max_abs_ema_improvement": 0.010316800464563514,
+    "random_ema_improvement": 0.014337698692854062,
+    "dense_ema_improvement": 0.0043239648538315745,
+    "low_max_abs_wallclock_s": 227.58110809326172,
+    "random_wallclock_s": 258.3909571170807,
+    "dense_wallclock_s": 194.89613389968872
+  },
+  "decision": {
+    "development_level_3": true,
+    "body_7_replication_required": true,
+    "claim_scope": "one small-margin development win under the frozen EMA protocol; not yet a replicated or hard Level 3 result",
+    "reason": "low_max_abs EMA beat random and dense EMA on the primary loss and accuracy endpoints at lower training-plus-EMA cost"
+  }
+}

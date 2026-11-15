@@ -1,0 +1,69 @@
+{
+  "format": "equal_temperature_calibration_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "calibration_seed": 24680,
+  "calibration_batches": 8,
+  "final_evaluation_batches": 4,
+  "online_seed": 9406,
+  "arms": [
+    {
+      "name": "low_max_abs_calibrated",
+      "backward_activity": 0.875,
+      "steps": 105
+    },
+    {
+      "name": "random_calibrated",
+      "backward_activity": 0.875,
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional training step and greater total cost"
+    },
+    {
+      "name": "dense_calibrated",
+      "backward_activity": 1.0,
+      "steps": 100
+    }
+  ],
+  "calibration": {
+    "method": "one scalar temperature per arm fitted by LBFGS on the same separately generated calibration stream",
+    "final_holdout_use": "evaluation only; never temperature fitting",
+    "deployment": "ordinary dense inference with logits divided by the fitted temperature",
+    "equal_opportunity": "identical calibration data, fitting rule, and calibration compute budget for every arm",
+    "accuracy": "unchanged by scalar temperature and retained as a secondary endpoint"
+  },
+  "validation": {
+    "calibration_smoke_temperature": 1.0569818019866943,
+    "calibration_loss_before": 1.203568935394287,
+    "calibration_loss_after": 1.2034465074539185,
+    "independent_final_loss_before": 1.1955211162567139,
+    "independent_final_loss_after": 1.196009635925293,
+    "accuracy_unchanged": true,
+    "uncalibrated_evaluator_loss_difference": 1.597000329756071e-07,
+    "uncalibrated_reproduction_requirement": "rerun low-87.5 and dense-100 final uncalibrated losses must match their existing references within 2e-6; otherwise the calibrated comparison is invalid"
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated dense-forward sparse-backward formula as the 87.5% experiment; dense pays full forward/backward cost",
+    "calibration_forward": "forward-only executed model FLOPs for eight calibration batches; the MPS standard-backward undercount does not apply to these forward-only measurements",
+    "calibration_aux": "ten estimated operations per calibration logit per LBFGS closure evaluation, included in total cost",
+    "final_evaluation": "reported separately and excluded from training-plus-calibration cost for every arm",
+    "expected_low_training_flops_before_recalibration": 57206514607800.0,
+    "expected_dense_training_flops": 58023582105600
+  },
+  "primary_endpoint": "temperature-calibrated ordinary dense held-out loss at final training-plus-calibration cost",
+  "decision_rules": {
+    "validity_first": "if low or dense uncalibrated reproduction fails, stop without interpreting calibrated outcomes",
+    "allocation_failure": "low_max_abs calibrated loss is not below random calibrated loss despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs beats random but not dense-fewer; stop",
+    "development_level_3": "low_max_abs calibrated loss is below both random and dense while its total training-plus-calibration cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "fitting temperature on the final held-out seed",
+    "calibrating only the sparse arm",
+    "excluding calibration forward or optimization cost",
+    "changing steps, calibration data, fitting rule, or final evaluation after launch",
+    "launching body 7 without a development-level calibrated win"
+  ]
+}

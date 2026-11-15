@@ -1,0 +1,64 @@
+{
+  "format": "scaled_sparse_backward_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "backward_activity": 0.875,
+  "backward_scale": 1.1428571428571428,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_scaled_ema",
+      "steps": 105
+    },
+    {
+      "name": "random_scaled_ema",
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_ema",
+      "steps": 100,
+      "backward_scale": 1.0
+    }
+  ],
+  "mechanism": {
+    "forward": "ordinary dense FFN and attention",
+    "backward": "existing gathered active-row-only FFN dgrad/wgrad at 87.5%, with all returned FFN-path gradients multiplied by 1/activity",
+    "random_interpretation": "uniform exact-budget row sampling with inverse-probability scaling gives an unbiased sparse-gradient estimator",
+    "low_max_abs_interpretation": "the same variance correction is applied, but deterministic low_max_abs selection is not claimed to be unbiased",
+    "ema": "identical final 0.95 EMA for every arm with no decay sweep or checkpoint selection",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "validation": {
+    "outputs_unchanged": true,
+    "scale2_gradients_exactly_twice_scale1": true,
+    "isolated_flops_unchanged": 780,
+    "full_scaled_cpu_batch4_flops": 68480925696,
+    "full_scaled_cpu_batch4_expected": 68480925696,
+    "all_gradients_finite": true,
+    "attention_all_backward_combination_disabled": true
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated FFN sparse-backward formula as the unscaled 87.5% experiment",
+    "scale_aux": "one multiplication per returned FFN input gradient, weight gradient, and bias gradient element, included separately",
+    "ema_aux": "two estimated operations per parameter per step for every arm",
+    "evaluation": "reported separately and excluded from training-plus-EMA cost"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-scaling-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "scaled low_max_abs EMA does not beat scaled random despite random receiving more steps and cost; stop",
+    "no_level_3": "scaled low_max_abs beats random but not dense EMA; stop",
+    "development_level_3": "scaled low_max_abs EMA loss is below random and dense EMA while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "claiming low_max_abs gradients are unbiased",
+    "combining this shot with attention projection sparsity",
+    "changing scale, activity, EMA decay, steps, or evaluation after launch",
+    "excluding scaling or EMA overhead",
+    "launching body 7 without a development-level win"
+  ]
+}

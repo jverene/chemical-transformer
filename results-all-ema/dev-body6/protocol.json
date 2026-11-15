@@ -1,0 +1,65 @@
+{
+  "format": "all_projection_sparse_backward_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_all_ema",
+      "backward_activity": 0.875,
+      "steps": 108
+    },
+    {
+      "name": "random_all_ema",
+      "backward_activity": 0.875,
+      "steps": 109,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_ema",
+      "backward_activity": 1.0,
+      "steps": 100
+    }
+  ],
+  "execution": {
+    "forward": "ordinary dense attention projections, attention matmuls, and FFN for every token",
+    "mask_resolution": "current pre-FFN low_max_abs or random mask is resolved after dense attention forward and before backward; no planning pre-pass",
+    "backward": "gathered active-row-only Q/K/V/O projection and FFN dgrad/wgrad; dense attention-score backward; inactive projection-path input gradients zero; residual paths intact",
+    "ema": "identical final 0.95 EMA for every arm, with no decay sweep or intermediate checkpoint selection",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "validation": {
+    "late_mask_linear_output_input_weight_bias_errors": [0.0, 0.0, 0.0, 0.0],
+    "full_body_cpu_batch4_flops": 66456649728,
+    "full_body_cpu_batch4_expected": 66456649728,
+    "mps_all_backward_step_finite": true,
+    "mps_all_backward_loss": 1.2102322578430176,
+    "ema_tensors": 168
+  },
+  "cost_accounting": {
+    "dense_batch32_forward_backward_per_step": 580235821056,
+    "per_step_formula": "dense_step - (8*d_model*d_ff + 16*d_model*d_model) * realized_inactive_rows",
+    "nominal875_all_batch32_step": 536749277184,
+    "nominal108_base_flops": 57968921935872,
+    "dense100_with_ema_flops": 58025799597200,
+    "auxiliary_operations": "realized scoring, FFN and attention gather/scatter estimates, and two EMA operations per parameter per step included",
+    "evaluation": "reported separately and excluded from training-plus-EMA cost"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs all-projection EMA does not beat random despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs beats random but not dense EMA, or its total cost exceeds dense; stop",
+    "development_level_3": "low_max_abs EMA loss is below random and dense EMA while its total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "a second dense planning forward pass",
+    "computing dense projection backward and merely masking its gradients",
+    "sweeping EMA decay or activity after launch",
+    "excluding attention gather/scatter or EMA costs",
+    "launching body 7 without a development-level win"
+  ]
+}

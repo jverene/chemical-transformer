@@ -1,0 +1,63 @@
+{
+  "format": "dense_backward_anchor_scaled_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "backward_activity": 0.875,
+  "backward_scale": 1.1428571428571428,
+  "anchor_every": 10,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_scaled_anchor10_ema",
+      "steps": 104,
+      "dense_anchor_steps": 10
+    },
+    {
+      "name": "random_scaled_anchor10_ema",
+      "steps": 105,
+      "dense_anchor_steps": 10,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_ema",
+      "steps": 100
+    }
+  ],
+  "execution": {
+    "sparse_steps": "dense forward with gathered 87.5% FFN backward and 8/7 gradient scaling",
+    "anchor_steps": "every tenth step uses native dense forward and native dense backward with no oracle gates, sparse scaling, or gather/scatter",
+    "ema": "identical final 0.95 EMA for every arm with no decay sweep or intermediate checkpoint selection",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "validation": {
+    "sparse_cpu_batch4_flops": 68480925696,
+    "native_dense_anchor_cpu_batch4_flops": 72529477632,
+    "anchor_uses_no_mask": true,
+    "anchor_charges_no_sparse_scale_or_gather_aux": true
+  },
+  "cost_accounting": {
+    "sparse_nominal_step": 551244791808,
+    "dense_nominal_step": 580235821056,
+    "realized_row_formula": "same CPU-calibrated formula on sparse steps and full dense cost on anchor steps",
+    "low104_base_flops": 57619368640512,
+    "dense100_with_ema_flops": 58025799597200,
+    "auxiliary_operations": "sparse scoring, gather/scatter and gradient scaling only on non-anchor steps; two EMA operations per parameter per step on every step",
+    "evaluation": "reported separately and excluded from training-plus-EMA cost"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-anchor-plus-scaling-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "anchored low_max_abs does not beat anchored random despite random receiving more steps and cost; stop",
+    "no_level_3": "anchored low_max_abs beats random but not dense EMA; stop",
+    "development_level_3": "anchored low_max_abs EMA loss is below random and dense EMA while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "changing anchor frequency, scale, activity, EMA decay, steps, or evaluation after launch",
+    "using the failed sparse-forward anchor mechanism",
+    "omitting dense anchor cost or EMA overhead",
+    "launching body 7 without a development-level win"
+  ]
+}

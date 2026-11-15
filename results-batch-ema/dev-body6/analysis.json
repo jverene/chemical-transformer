@@ -1,0 +1,29 @@
+{
+  "format": "larger_batch_sparse_backward_ema_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-batch-ema/dev-body6/protocol.json",
+  "final_ema": {
+    "low_max_abs_loss": 1.1876728087010835,
+    "random_loss": 1.1872634882925612,
+    "dense_batch32_loss": 1.1785231903174136,
+    "dense_batch40_loss": 1.1788851763382273,
+    "low_max_abs_accuracy": 0.6245319067634696,
+    "random_accuracy": 0.623232709209018,
+    "dense_batch32_accuracy": 0.6340250549870899,
+    "dense_batch40_accuracy": 0.6337027130301872,
+    "low_max_abs_total_flops": 57011070490422.0,
+    "random_total_flops": 57582611342480.0,
+    "dense_batch32_total_flops": 58025799597200.0,
+    "dense_batch40_total_flops": 58025356098880.0,
+    "low_minus_random_loss": 0.0004093204085223079,
+    "low_minus_dense_batch32_loss": 0.009149618383669913,
+    "low_minus_dense_batch40_loss": 0.00878763236285621
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "larger_batch_branch_closed": true,
+    "reason": "batch-40 low_max_abs lost to random and both dense operating points; reinvesting savings in larger batches did not preserve the allocation advantage"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "format": "scaled50_sparse_backward_ema_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-50-ema/dev-body6/protocol.json",
+  "final_ema": {
+    "low_max_abs_loss": 1.1967171900535483,
+    "random_loss": 1.1929798613731968,
+    "dense_loss": 1.178584265752738,
+    "low_max_abs_accuracy": 0.6181505211819833,
+    "random_accuracy": 0.615090370087023,
+    "dense_accuracy": 0.6332600172133499,
+    "low_max_abs_total_flops": 57587910741370.0,
+    "random_total_flops": 58043569583736.0,
+    "dense_total_flops": 58025799597200.0,
+    "low_minus_random_loss": 0.0037373286803514956,
+    "low_minus_dense_loss": 0.018132924300810337
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "reason": "scale-2 low_max_abs lost to random and dense; the correction harmed the deterministic allocation rule",
+    "next_shot": "remove gradient scaling while preserving the 50% FFN backward, batch size, steps, and EMA protocol"
+  }
+}

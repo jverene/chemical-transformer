@@ -1,0 +1,52 @@
+{
+  "format": "equal_final_ema_level3_protocol_v1",
+  "split": "confirmation",
+  "status": "frozen_before_body7_runs",
+  "body_seed": 7,
+  "held_out_seed": 54321,
+  "online_seed": 9407,
+  "ema_decay": 0.95,
+  "development_evidence": "results-ema/dev-body6/analysis.json: low_max_abs EMA loss 1.1782363114529684 versus random 1.1812188223640312 and dense 1.178602285932208 at lower cost; dense margin only 0.0003659744792396946",
+  "arms": [
+    {
+      "name": "low_max_abs_ema",
+      "backward_activity": 0.875,
+      "steps": 105
+    },
+    {
+      "name": "random_ema",
+      "backward_activity": 0.875,
+      "steps": 106
+    },
+    {
+      "name": "dense_ema",
+      "backward_activity": 1.0,
+      "steps": 100
+    }
+  ],
+  "ema": {
+    "update": "after every optimizer step, EMA=0.95*EMA+0.05*current parameter; initialize from the first updated parameters",
+    "evaluation": "evaluate only the final averaged parameters, with no intermediate EMA checkpoint selection or decay sweep",
+    "equal_opportunity": "identical decay, update rule, final evaluation, and per-parameter cost for every arm",
+    "deployment": "ordinary dense inference using the averaged weights"
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated formula as the development experiment; dense pays full forward/backward cost",
+    "ema_aux": "two estimated operations per model parameter per step, added to every arm's total",
+    "ema_evaluation": "reported separately and excluded from training cost for every arm",
+    "held_out_scope": "same fixed held-out set as development; this is a body-level replication, not an independent-dataset replication"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-EMA cost",
+  "decision_rules": {
+    "allocation_confirmation": "low_max_abs EMA loss below random EMA loss at lower cost",
+    "dense_confirmation": "low_max_abs EMA loss below dense EMA loss at no greater cost",
+    "replicated_level_3": "both allocation_confirmation and dense_confirmation hold without changing the development recipe",
+    "failure": "either comparison fails; report the body-6 result as development-only and do not tune body 7"
+  },
+  "prohibited": [
+    "changing steps, decay, masks, evaluation, or cost rules after seeing body-7 results",
+    "sweeping EMA decay or selecting intermediate checkpoints",
+    "calling the body-6 development margin confirmed before body 7 completes",
+    "claiming independent held-out-set replication from this experiment"
+  ]
+}

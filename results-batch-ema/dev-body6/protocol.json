@@ -1,0 +1,76 @@
+{
+  "format": "larger_batch_sparse_backward_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_scaled_batch40_ema",
+      "batch_size": 40,
+      "backward_activity": 0.5,
+      "backward_scale": 2.0,
+      "steps": 99,
+      "training_sequences": 3960
+    },
+    {
+      "name": "random_scaled_batch40_ema",
+      "batch_size": 40,
+      "backward_activity": 0.5,
+      "backward_scale": 2.0,
+      "steps": 100,
+      "training_sequences": 4000
+    },
+    {
+      "name": "dense_ema",
+      "batch_size": 32,
+      "backward_activity": 1.0,
+      "steps": 100,
+      "training_sequences": 3200
+    },
+    {
+      "name": "dense_batch40_ema",
+      "batch_size": 40,
+      "backward_activity": 1.0,
+      "steps": 80,
+      "training_sequences": 3200,
+      "purpose": "predeclared dense larger-batch operating-point control"
+    }
+  ],
+  "hypothesis": "reinvesting sparse-backward savings in a larger batch can reduce gradient variance instead of merely buying more optimizer steps",
+  "execution": {
+    "sparse_arms": "dense forward with gathered 50% FFN backward and inverse-activity scale 2",
+    "dense_arms": "ordinary dense forward and backward at both batch sizes",
+    "ema": "identical final 0.95 EMA for every arm with no decay sweep or checkpoint selection",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "validation": {
+    "batch40_sparse_cpu_step_flops": 576376012800,
+    "batch40_sparse_cpu_step_expected": 576376012800,
+    "nominal50_batch40_step": 580339630080,
+    "low99_base_flops": 57453623377920,
+    "dense32_100_with_ema_flops": 58025799597200,
+    "all_gradients_finite": true
+  },
+  "cost_accounting": {
+    "training": "realized-row CPU-calibrated formulas scaled to each arm's actual batch size",
+    "auxiliary_operations": "actual scoring, gather/scatter and gradient scaling for sparse arms; two EMA operations per parameter per step for every arm",
+    "data_accounting": "training sequence counts reported per arm; generated data are not held out as a compute-free resource",
+    "evaluation": "identical final held-out batches, reported separately from training-plus-EMA cost"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-scaling-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs does not beat random at the same batch size despite random receiving more steps and sequences; stop",
+    "no_level_3": "low_max_abs fails to beat either dense batch-32 or dense batch-40 EMA; stop",
+    "development_level_3": "low_max_abs loss is below random and both dense arms while total cost is no greater than every control",
+    "confirmation": "only development_level_3 launches the identical four-arm body-7 comparison"
+  },
+  "prohibited": [
+    "omitting the dense batch-40 control",
+    "changing batch size, activity, scale, steps, EMA decay, or evaluation after launch",
+    "excluding scaling or EMA overhead",
+    "launching body 7 without a development-level win over every control"
+  ]
+}

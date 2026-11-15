@@ -1,0 +1,38 @@
+{
+  "format": "equal_temperature_calibration_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-calibration/dev-body6/protocol.json",
+  "validity": {
+    "required_uncalibrated_tolerance": 2e-06,
+    "low_previous_final_loss": 1.1889014892306777,
+    "low_rerun_final_loss": 1.1906666318098367,
+    "low_absolute_reproduction_difference": 0.0017651425791590214,
+    "dense_previous_final_loss": 1.1832916910576354,
+    "dense_rerun_final_loss": 1.1849297419016187,
+    "dense_absolute_reproduction_difference": 0.0016380508439832926,
+    "protocol_valid": false,
+    "reason": "both final-loss reproduction checks exceeded the frozen tolerance; calibrated outcomes are exploratory and cannot establish Level 3"
+  },
+  "exploratory_only": {
+    "low_temperature": 0.9907819628715515,
+    "random_temperature": 0.9544079899787903,
+    "dense_temperature": 1.1754454374313354,
+    "low_calibrated_loss": 1.1906731128692627,
+    "random_calibrated_loss": 1.197224497795105,
+    "dense_calibrated_loss": 1.1878339052200317,
+    "low_calibrated_minus_random": -0.006551384925842293,
+    "low_calibrated_minus_dense": 0.002839207649230972,
+    "low_total_with_calibration_flops": 58753882220216.0,
+    "random_total_with_calibration_flops": 59295027909632.0,
+    "dense_total_with_calibration_flops": 59571021807616.0,
+    "dense_temperature_changed_uncalibrated_loss_by": 0.0029040575027465154,
+    "note": "these values do not pass the protocol validity gate and are not a confirmed experimental result"
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "temperature_branch_closed": true,
+    "reason": "the frozen reproduction check failed, and the exploratory calibrated values did not offer a dense-fewer win in any event"
+  }
+}

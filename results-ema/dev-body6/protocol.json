@@ -1,0 +1,59 @@
+{
+  "format": "equal_final_ema_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "ema_decay": 0.95,
+  "arms": [
+    {
+      "name": "low_max_abs_ema",
+      "backward_activity": 0.875,
+      "steps": 105
+    },
+    {
+      "name": "random_ema",
+      "backward_activity": 0.875,
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_ema",
+      "backward_activity": 1.0,
+      "steps": 100
+    }
+  ],
+  "ema": {
+    "update": "after every optimizer step, EMA=0.95*EMA+0.05*current parameter; initialize from the first updated parameters",
+    "evaluation": "evaluate only the final averaged parameters, with no intermediate EMA checkpoint selection or decay sweep",
+    "equal_opportunity": "identical decay, update rule, final evaluation, and per-parameter cost for every arm",
+    "deployment": "ordinary dense inference using the averaged weights"
+  },
+  "validation": {
+    "two_step_parameter_average_exact": true,
+    "install_ema_exact": true,
+    "no_reproduction_gate": "EMA is part of the new development method; raw final weights are secondary and are not substituted for the frozen EMA endpoint"
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated formula as the 87.5% experiment; dense pays full forward/backward cost",
+    "ema_aux": "two estimated operations per model parameter per step, added to every arm's total",
+    "ema_evaluation": "reported separately and excluded from training cost for every arm",
+    "final_evaluation": "identical newly generated held-out batches for every arm"
+  },
+  "primary_endpoint": "final EMA ordinary dense held-out loss at training-plus-EMA cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs EMA loss is not below random EMA loss despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs EMA beats random but not dense EMA; stop",
+    "development_level_3": "low_max_abs EMA loss is below both random and dense EMA while its total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "sweeping EMA decay on this development result",
+    "selecting an intermediate EMA checkpoint",
+    "evaluating EMA only for the sparse arm",
+    "excluding EMA update cost",
+    "changing steps, decay, or evaluation after launch",
+    "launching body 7 without a development-level EMA win"
+  ]
+}
