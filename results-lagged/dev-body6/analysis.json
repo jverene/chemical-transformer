@@ -1,0 +1,80 @@
+{
+  "format": "lagged_global_low_max_abs_moonshot_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "validation": {
+    "both_new_arms_completed": true,
+    "training_budget_replay_exact": true,
+    "realized_activity_identical": true,
+    "planning_forward_passes": 0,
+    "auxiliary_operations_included": true
+  },
+  "final": {
+    "lagged_global_sparse_loss": 1.2240931991312933,
+    "random_replay_sparse_loss": 1.252675905215121,
+    "uniform_low_max_abs_sparse_loss": 1.2088117604170918,
+    "dense_fewer_loss": 1.1832916910576354,
+    "lagged_global_sparse_accuracy": 0.5828631538682223,
+    "random_replay_sparse_accuracy": 0.5589557234388448,
+    "uniform_sparse_accuracy": 0.6010328009945491,
+    "dense_fewer_accuracy": 0.6226451181027063,
+    "lagged_global_total_flops": 23225893206528.0,
+    "lagged_global_aux_ops": 4245502464.0
+  },
+  "exact_dense_fewer_cost": {
+    "total_flops": 23206664601600.0,
+    "loss": {
+      "global": 1.2240936102564308,
+      "replay": 1.2526748850672211,
+      "uniform": 1.2088250688965312,
+      "dense": 1.1832916910576354
+    }
+  },
+  "comparisons": {
+    "lagged_minus_uniform": 0.015281438714201512,
+    "lagged_minus_dense_fewer": 0.0408015080736579,
+    "lagged_minus_random_replay": -0.028582706083827736,
+    "exact_cost_lagged_minus_dense_fewer": 0.04080191919879539
+  },
+  "layer_fraction_analysis": {
+    "mean_by_layer": [
+      0.9974732008473627,
+      0.8927929432227694,
+      0.45059113692620706,
+      0.8158954936882545,
+      0.9570515864881975,
+      0.3857124513978588
+    ],
+    "final_by_layer": [
+      0.996079683303833,
+      0.8723139762878418,
+      0.5010256767272949,
+      0.7802848815917969,
+      0.9433416724205017,
+      0.4092860221862793
+    ],
+    "minimum_by_layer": [
+      0.9946771860122681,
+      0.8698503971099854,
+      0.3752502202987671,
+      0.6814185976982117,
+      0.9318885803222656,
+      0.12313003093004227
+    ],
+    "maximum_by_layer": [
+      1.0,
+      0.9783477783203125,
+      0.7165889143943787,
+      0.8713359832763672,
+      0.9982335567474365,
+      0.4528619050979614
+    ]
+  },
+  "decision": {
+    "kill_lagged_global": true,
+    "body_7_replication_launched": false,
+    "level_3": false,
+    "reason": "lagged global loses to uniform low_max_abs and dense-fewer despite beating exact budget replay"
+  }
+}

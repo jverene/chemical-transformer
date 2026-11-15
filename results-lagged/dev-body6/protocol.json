@@ -1,0 +1,44 @@
+{
+  "format": "lagged_global_low_max_abs_moonshot_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "body_seed": 6,
+  "budget": 0.75,
+  "steps": 116,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "rule": {
+    "token_score": "raw frozen -max_abs(current pre-FFN activation)",
+    "layer_budget": "one batch-averaged vector from previous-step global raw-score Top-B",
+    "initialization": "uniform 75% budgets for the first step",
+    "current_execution": "current on-policy token scores with precomputed layer budgets",
+    "rounding": "largest remainder with exact integer active-row total per sequence",
+    "planning_forward_passes": 0,
+    "normalization_or_EMA": "none"
+  },
+  "random_control": "random current token assignment replaying the exact low_max_abs per-layer budget sequence for training and evaluation",
+  "existing_references": {
+    "uniform_low_max_abs": "results-program/level3-75/body6/low_max_abs_seed9406.json; sparse loss 1.2088117604170918",
+    "dense_fewer": "results-program/level3-75/body6/dense-fewer_seed9406.json; loss 1.1832916910576354",
+    "uniform_random": "results-program/level3-75/body6/random_seed9406.json"
+  },
+  "eval_every": 29,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "primary_endpoint": "final sparse held-out loss versus uniform low_max_abs and dense-fewer at measured total cost",
+  "secondary_endpoints": [
+    "sparse accuracy and full trajectory",
+    "comparison against exact-budget-sequence random replay",
+    "layer-budget trajectory, realized activity, auxiliary operations, dense evaluation, and wall clock"
+  ],
+  "decision_rules": {
+    "kill": "if lagged global loses to uniform low_max_abs, stop with no normalization, EMA, or threshold follow-up",
+    "improved_but_not_level_3": "if it beats uniform but not dense-fewer, report improved allocation only and do not run body 7",
+    "development_level_3": "lagged global must beat dense-fewer at final and exact interpolated cost and beat random replay",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "scope_caution": "lagged global budgets are executable in real transformers, but raw cross-layer max-activation comparability is untested outside this tagged-arithmetic setting"
+}

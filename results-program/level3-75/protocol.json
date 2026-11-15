@@ -1,0 +1,43 @@
+{
+  "format": "frozen_low_max_abs_75_percent_level3_protocol_v1",
+  "status": "frozen_before_runs",
+  "time_constraint": "single remaining Level 3 shot; no alternative budgets or post-hoc schedule tuning",
+  "first_body_seed": 6,
+  "replication_body_seed_if_first_wins": 7,
+  "freshness": "bodies 6 and 7 were not used for low_max_abs discovery or selection; both have finite verified checkpoints",
+  "held_out_seed": 54321,
+  "held_out_freshness": "newly generated held-out sequences distinct from the prior default set; identical for every arm",
+  "budget": 0.75,
+  "low_max_abs_steps": 116,
+  "random_steps": 116,
+  "dense_fewer_steps": 100,
+  "step_count_basis": "measured 200-step low_max_abs cost at 75% is approximately 40.04T across prior bodies; 116 steps is the closest integer match to 23.207T and must be within 0.2% after measured accounting",
+  "low_max_abs_eval_every": 29,
+  "dense_fewer_eval_every": 25,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "online_seed_rule": "9400 + body_seed",
+  "arms": ["low_max_abs", "random", "dense-fewer"],
+  "primary_endpoint": "final sparse held-out loss of low_max_abs versus dense-fewer at measured near-identical total cost and at exact interpolated dense-fewer cost",
+  "secondary_endpoints": [
+    "sparse accuracy and full evaluation trajectory",
+    "low_max_abs versus exact-budget random",
+    "dense-body evaluation reported separately",
+    "realized activity, auxiliary operations, measured FLOPs, and wall clock"
+  ],
+  "decision_rules": {
+    "first_shot_win": "low_max_abs final sparse loss is below dense-fewer, remains below after exact-cost interpolation, and is below random",
+    "replication": "only a first_shot_win launches the identical body-7 comparison",
+    "preliminary_level_3": "the same win must replicate on body 7 without any changes",
+    "failure": "if body 6 loses, do not run body 7, try another activity budget, or claim Level 3"
+  },
+  "prohibited": [
+    "early stopping based on intermediate losses",
+    "changing activity, step counts, seeds, or evaluation data after launch",
+    "using dense-body quality as the primary endpoint",
+    "claiming broad hard Level 3 across sizes or budgets from this single operating point"
+  ]
+}

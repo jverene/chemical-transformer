@@ -1,0 +1,44 @@
+{
+  "format": "frozen_low_max_abs_75_percent_level3_analysis_v1",
+  "split": "fresh_body_and_new_held_out_confirmation",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "validation": {
+    "all_three_arms_completed": true,
+    "fresh_held_out_identity_confirmed": true,
+    "final_steps_and_auxiliary_accounting_checked": true
+  },
+  "final": {
+    "low_max_abs_sparse_loss": 1.2088117604170918,
+    "random_sparse_loss": 1.2396559395803244,
+    "dense_fewer_loss": 1.1832916910576354,
+    "low_max_abs_sparse_accuracy": 0.6010328009945491,
+    "random_sparse_accuracy": 0.5719613655924262,
+    "dense_fewer_accuracy": 0.6226451181027063,
+    "low_max_abs_dense_loss": 1.2069876676412412,
+    "low_max_abs_total_flops": 23225892795036.0,
+    "random_total_flops": 23221653405696.0,
+    "dense_fewer_total_flops": 23206664601600.0,
+    "low_max_abs_aux_ops": 4245090972.0,
+    "low_max_abs_active_fraction": 0.7499157825819386
+  },
+  "exact_dense_fewer_cost": {
+    "total_flops": 23206664601600.0,
+    "low_max_abs_sparse_loss": 1.2088250688965312,
+    "random_sparse_loss": 1.2396792454569607,
+    "dense_fewer_loss": 1.1832916910576354
+  },
+  "comparisons": {
+    "final_low_max_abs_minus_dense_fewer": 0.025520069359456388,
+    "exact_cost_low_max_abs_minus_dense_fewer": 0.025533377838895754,
+    "final_low_max_abs_minus_random": -0.030844179163232566,
+    "exact_cost_low_max_abs_minus_random": -0.030854176560429547,
+    "low_max_abs_cost_excess_fraction": 0.0008285634220212024
+  },
+  "decision": {
+    "first_shot_win": false,
+    "body_7_replication_launched": false,
+    "preliminary_level_3": false,
+    "reason": "low_max_abs beats random but loses to dense-fewer at final and exact matched cost"
+  }
+}

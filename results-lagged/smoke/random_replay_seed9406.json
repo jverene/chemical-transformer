@@ -1,0 +1,624 @@
+{
+  "format": "lagged_global_low_max_abs_v1",
+  "split": "development",
+  "completed": true,
+  "arm": "random_replay",
+  "body_seed": 6,
+  "online_seed": 9406,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed6.pt",
+  "execution": "previous-step global raw-score layer budgets; current on-policy low-max-abs token selection; exact largest-remainder integer counts; one forward and one ordinary backward",
+  "causality": "uniform budgets on the first step; thereafter one batch-averaged layer-budget vector from the just-completed step; no planning pass and no additional gradient computation",
+  "accounting": "executed model FLOPs plus separately estimated score, global selection, replay, and integer-rounding operations",
+  "config": {
+    "mode": "run",
+    "ckpt_template": "results-inverse-ckpt/tagged/predictor_stage1_seed{seed}.pt",
+    "outdir": "results-lagged/smoke",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "task": "tagged",
+    "body_seed": 6,
+    "budget": 0.75,
+    "steps": 2,
+    "batch_size": 32,
+    "body_lr": 0.0003,
+    "weight_decay": 0.01,
+    "dropout": 0.1,
+    "eval_every": 1,
+    "eval_batches": 1,
+    "seed": 9400,
+    "held_out_seed": 54321,
+    "split": "development",
+    "replay_path": "results-lagged/smoke/lagged_global_low_max_abs_seed9406.json"
+  },
+  "budget": 0.75,
+  "replay_path": "results-lagged/smoke/lagged_global_low_max_abs_seed9406.json",
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.1830543279647827,
+      "heldout_acc": 0.6265384615384615,
+      "sparse_heldout_loss": 2.1748812198638916,
+      "sparse_heldout_acc": 0.32461538461538464,
+      "cum_train_flops": 0.0,
+      "cum_aux_ops": 0.0,
+      "cum_total_flops_with_aux_estimate": 0.0,
+      "cum_eval_flops": 355129098240.0,
+      "cum_eval_aux_ops": 144492.0,
+      "wallclock_s": 1.0988538265228271,
+      "mean_active_fraction": null
+    },
+    {
+      "step": 1,
+      "heldout_loss": 3.8373987674713135,
+      "heldout_acc": 0.2826923076923077,
+      "sparse_heldout_loss": 3.168706178665161,
+      "sparse_heldout_acc": 0.22538461538461538,
+      "cum_train_flops": 200527577088.0,
+      "cum_aux_ops": 144624.0,
+      "cum_total_flops_with_aux_estimate": 200527721712.0,
+      "cum_eval_flops": 710258196480.0,
+      "cum_eval_aux_ops": 288984.0,
+      "wallclock_s": 3.8640928268432617,
+      "mean_active_fraction": 0.7496229260935143
+    },
+    {
+      "step": 2,
+      "heldout_loss": 1.8250199556350708,
+      "heldout_acc": 0.35884615384615387,
+      "sparse_heldout_loss": 1.9023271799087524,
+      "sparse_heldout_acc": 0.32769230769230767,
+      "cum_train_flops": 400941907968.0,
+      "cum_aux_ops": 289116.0,
+      "cum_total_flops_with_aux_estimate": 400942197084.0,
+      "cum_eval_flops": 1065387294720.0,
+      "cum_eval_aux_ops": 433476.0,
+      "wallclock_s": 6.3541340827941895,
+      "mean_active_fraction": 0.7496383982261152
+    }
+  ],
+  "active_history": [
+    0.7496229260935143,
+    0.7496538703587162
+  ],
+  "budget_history": [
+    {
+      "step": 1,
+      "counts": [
+        [
+          189,
+          189,
+          189,
+          189,
+          189,
+          189
+        ],
+        [
+          184,
+          184,
+          184,
+          184,
+          184,
+          184
+        ],
+        [
+          191,
+          191,
+          191,
+          191,
+          191,
+          191
+        ],
+        [
+          191,
+          191,
+          191,
+          191,
+          191,
+          191
+        ],
+        [
+          184,
+          184,
+          184,
+          184,
+          184,
+          184
+        ],
+        [
+          188,
+          188,
+          188,
+          188,
+          188,
+          188
+        ],
+        [
+          178,
+          178,
+          178,
+          178,
+          178,
+          178
+        ],
+        [
+          188,
+          188,
+          188,
+          188,
+          188,
+          188
+        ],
+        [
+          188,
+          188,
+          188,
+          188,
+          188,
+          188
+        ],
+        [
+          178,
+          178,
+          178,
+          178,
+          178,
+          178
+        ],
+        [
+          190,
+          190,
+          190,
+          190,
+          190,
+          190
+        ],
+        [
+          190,
+          190,
+          190,
+          190,
+          190,
+          190
+        ],
+        [
+          184,
+          184,
+          184,
+          184,
+          184,
+          184
+        ],
+        [
+          185,
+          185,
+          185,
+          185,
+          185,
+          185
+        ],
+        [
+          185,
+          185,
+          185,
+          185,
+          185,
+          185
+        ],
+        [
+          186,
+          186,
+          186,
+          186,
+          186,
+          186
+        ],
+        [
+          189,
+          189,
+          189,
+          189,
+          189,
+          189
+        ],
+        [
+          189,
+          189,
+          189,
+          189,
+          189,
+          189
+        ],
+        [
+          191,
+          191,
+          191,
+          191,
+          191,
+          191
+        ],
+        [
+          190,
+          190,
+          190,
+          190,
+          190,
+          190
+        ],
+        [
+          185,
+          185,
+          185,
+          185,
+          185,
+          185
+        ],
+        [
+          180,
+          180,
+          180,
+          180,
+          180,
+          180
+        ],
+        [
+          177,
+          177,
+          177,
+          177,
+          177,
+          177
+        ],
+        [
+          188,
+          188,
+          188,
+          188,
+          188,
+          188
+        ],
+        [
+          187,
+          187,
+          187,
+          187,
+          187,
+          187
+        ],
+        [
+          185,
+          185,
+          185,
+          185,
+          185,
+          185
+        ],
+        [
+          188,
+          188,
+          188,
+          188,
+          188,
+          188
+        ],
+        [
+          190,
+          190,
+          190,
+          190,
+          190,
+          190
+        ],
+        [
+          190,
+          190,
+          190,
+          190,
+          190,
+          190
+        ],
+        [
+          189,
+          189,
+          189,
+          189,
+          189,
+          189
+        ],
+        [
+          184,
+          184,
+          184,
+          184,
+          184,
+          184
+        ],
+        [
+          183,
+          183,
+          183,
+          183,
+          183,
+          183
+        ]
+      ]
+    },
+    {
+      "step": 2,
+      "counts": [
+        [
+          247,
+          242,
+          177,
+          168,
+          246,
+          30
+        ],
+        [
+          252,
+          246,
+          181,
+          172,
+          252,
+          31
+        ],
+        [
+          247,
+          242,
+          177,
+          168,
+          246,
+          30
+        ],
+        [
+          255,
+          249,
+          183,
+          174,
+          254,
+          31
+        ],
+        [
+          238,
+          232,
+          170,
+          162,
+          237,
+          29
+        ],
+        [
+          255,
+          249,
+          183,
+          174,
+          254,
+          31
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          247,
+          242,
+          177,
+          168,
+          246,
+          30
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          249,
+          244,
+          179,
+          170,
+          249,
+          31
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          255,
+          249,
+          183,
+          174,
+          254,
+          31
+        ],
+        [
+          240,
+          235,
+          172,
+          164,
+          240,
+          29
+        ],
+        [
+          249,
+          244,
+          179,
+          170,
+          249,
+          31
+        ],
+        [
+          239,
+          234,
+          171,
+          163,
+          238,
+          29
+        ],
+        [
+          240,
+          235,
+          172,
+          164,
+          240,
+          29
+        ],
+        [
+          250,
+          246,
+          180,
+          171,
+          250,
+          31
+        ],
+        [
+          237,
+          233,
+          170,
+          162,
+          237,
+          29
+        ],
+        [
+          249,
+          244,
+          179,
+          170,
+          249,
+          31
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          238,
+          232,
+          170,
+          162,
+          237,
+          29
+        ],
+        [
+          248,
+          243,
+          178,
+          169,
+          248,
+          30
+        ],
+        [
+          247,
+          242,
+          177,
+          168,
+          246,
+          30
+        ],
+        [
+          251,
+          245,
+          180,
+          171,
+          250,
+          31
+        ],
+        [
+          252,
+          246,
+          181,
+          172,
+          252,
+          31
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          252,
+          246,
+          181,
+          172,
+          252,
+          31
+        ],
+        [
+          245,
+          240,
+          176,
+          168,
+          245,
+          30
+        ],
+        [
+          243,
+          238,
+          174,
+          165,
+          242,
+          30
+        ],
+        [
+          253,
+          248,
+          182,
+          173,
+          253,
+          31
+        ],
+        [
+          245,
+          240,
+          176,
+          168,
+          245,
+          30
+        ]
+      ]
+    }
+  ],
+  "eval_budget_history": [],
+  "fraction_history": [],
+  "final": {
+    "step": 2,
+    "heldout_loss": 1.8250199556350708,
+    "heldout_acc": 0.35884615384615387,
+    "sparse_heldout_loss": 1.9023271799087524,
+    "sparse_heldout_acc": 0.32769230769230767,
+    "cum_train_flops": 400941907968.0,
+    "cum_aux_ops": 289116.0,
+    "cum_total_flops_with_aux_estimate": 400942197084.0,
+    "cum_eval_flops": 1065387294720.0,
+    "cum_eval_aux_ops": 433476.0,
+    "wallclock_s": 6.3541340827941895,
+    "mean_active_fraction": 0.7496383982261152
+  }
+}
