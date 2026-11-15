@@ -1,0 +1,86 @@
+{
+  "format": "dense_forward_sparse_backward_program_v1",
+  "split": "development",
+  "completed": true,
+  "arm": "random_update",
+  "program": null,
+  "body_seed": 6,
+  "online_seed": 9406,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed6.pt",
+  "execution": "ordinary dense FFN forward; custom active-row-only FFN backward matmuls with zero inactive FFN-path input gradients and intact residual gradients",
+  "deployment": "ordinary dense inference without masks or custom execution",
+  "accounting": "measured dense-forward/active-backward matmul FLOPs plus separately estimated scoring and gather/scatter operations; no dense-backward gradient masking",
+  "config": {
+    "mode": "run",
+    "ckpt_template": "results-inverse-ckpt/tagged/predictor_stage1_seed{seed}.pt",
+    "outdir": "results-update/smoke",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "task": "tagged",
+    "body_seed": 6,
+    "budget": 0.5,
+    "arm": "random",
+    "steps": 2,
+    "batch_size": 32,
+    "body_lr": 0.0003,
+    "weight_decay": 0.01,
+    "dropout": 0.1,
+    "eval_every": 1,
+    "eval_batches": 1,
+    "seed": 9400,
+    "held_out_seed": 54321,
+    "split": "development"
+  },
+  "budget": 0.5,
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.1830543279647827,
+      "heldout_acc": 0.6265384615384615,
+      "cum_train_flops": 0.0,
+      "cum_aux_ops": 0.0,
+      "cum_total_flops_with_aux_estimate": 0.0,
+      "cum_eval_flops": 193411940352.0,
+      "wallclock_s": 0.5387089252471924,
+      "mean_active_fraction": null
+    },
+    {
+      "step": 1,
+      "heldout_loss": 2.1342806816101074,
+      "heldout_acc": 0.29730769230769233,
+      "cum_train_flops": 344746622976.0,
+      "cum_aux_ops": 183447552.0,
+      "cum_total_flops_with_aux_estimate": 344930070528.0,
+      "cum_eval_flops": 386823880704.0,
+      "wallclock_s": 3.101724863052368,
+      "mean_active_fraction": 0.5002513826043238
+    },
+    {
+      "step": 2,
+      "heldout_loss": 1.8611704111099243,
+      "heldout_acc": 0.3669230769230769,
+      "cum_train_flops": 689295065088.0,
+      "cum_aux_ops": 366572544.0,
+      "cum_total_flops_with_aux_estimate": 689661637632.0,
+      "cum_eval_flops": 580235821056.0,
+      "wallclock_s": 6.236846208572388,
+      "mean_active_fraction": 0.5001571576331877
+    }
+  ],
+  "active_history": [
+    0.5002513826043238,
+    0.5000629326620516
+  ],
+  "final": {
+    "step": 2,
+    "heldout_loss": 1.8611704111099243,
+    "heldout_acc": 0.3669230769230769,
+    "cum_train_flops": 689295065088.0,
+    "cum_aux_ops": 366572544.0,
+    "cum_total_flops_with_aux_estimate": 689661637632.0,
+    "cum_eval_flops": 580235821056.0,
+    "wallclock_s": 6.236846208572388,
+    "mean_active_fraction": 0.5001571576331877
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "format": "dense_forward_sparse_backward_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_full_runs",
+  "body_seed": 6,
+  "budget": 0.5,
+  "steps": 127,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "arms": ["low_max_abs_update", "random_update"],
+  "execution": {
+    "forward": "ordinary dense FFN for every token",
+    "backward": "custom active-row-only FFN matrix multiplications; inactive FFN-path input gradients exactly zero; residual-path gradients intact",
+    "deployment": "ordinary dense inference without masks or custom execution",
+    "allocation": "frozen low_max_abs versus exact-budget random"
+  },
+  "validation": {
+    "dense_output_error": 0.0,
+    "selected_gradient_errors": [0.0, 0.0, 0.0, 0.0, 0.0],
+    "inactive_input_gradients_zero": true,
+    "standalone_sparse_flops_match_exact_active_row_formula": true,
+    "dropout_finite_and_inactive_gradients_zero": true,
+    "initial_gelu_derivative_bug_caught_and_corrected_before_training": true
+  },
+  "full_cost_accounting": {
+    "reason": "MPS FlopCounterMode misses standard backward FLOPs, including all standard FFN backward in an isolated dense FFN test; custom and dense paths therefore cannot be compared using MPS counters alone",
+    "custom_cpu_probe_flops_for_batch4": 57269551104,
+    "dense_cpu_probe_flops_for_batch4": 72529477632,
+    "custom_full_step_flops_batch32": 458156408832,
+    "dense_full_step_flops_batch32": 580235821056,
+    "dense_fewer_steps": 100,
+    "dense_fewer_total_flops": 58023582105600.0,
+    "custom_steps": 127,
+    "custom_predicted_total_flops": 58185863921664.0,
+    "auxiliary_operations": "reported separately and included in matched-cost interpolation",
+    "mps_visible_counters": "retained as diagnostics only, never as full training costs"
+  },
+  "dense_fewer_quality_reference": "results-program/level3-75/body6/dense-fewer_seed9406.json; held-out loss 1.1832916910576354 on the same newly generated data; only quality is reused, not its undercounted MPS cost",
+  "primary_endpoint": "ordinary dense held-out loss of low_max_abs_update versus random_update and dense-fewer at full CPU-calibrated matched total cost",
+  "secondary_endpoints": [
+    "dense accuracy and full trajectory",
+    "realized backward activity",
+    "auxiliary operations and wall clock",
+    "MPS-visible versus full CPU-calibrated cost diagnostics"
+  ],
+  "decision_rules": {
+    "allocation_failure": "low_max_abs_update loses to random_update; stop",
+    "no_level_3": "low_max_abs_update beats random_update but not dense-fewer",
+    "development_level_3": "low_max_abs_update beats dense-fewer at final and exact interpolated full cost and beats random_update",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "computing dense backward and merely masking its gradients",
+    "using sparse-deployment loss as the primary endpoint",
+    "using earlier MPS-only totals as full costs",
+    "changing the custom backward, activity, steps, or evaluation after launch"
+  ]
+}

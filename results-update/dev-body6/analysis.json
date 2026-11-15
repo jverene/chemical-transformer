@@ -1,0 +1,52 @@
+{
+  "format": "dense_forward_sparse_backward_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "validation": {
+    "both_custom_backward_arms_completed": true,
+    "realized_backward_activity": 0.500072984528591,
+    "dense_forward_gradient_identity_error": 0.0,
+    "selected_backward_gradient_errors": [
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "standalone_active_row_flops_exact": true,
+    "full_cpu_calibrated_costs_used": true
+  },
+  "final": {
+    "low_max_abs_dense_loss": 1.1939005186861373,
+    "random_dense_loss": 1.214034038579478,
+    "dense_fewer_loss": 1.1832916910576354,
+    "low_max_abs_dense_accuracy": 0.6061011762455771,
+    "random_dense_accuracy": 0.595199387969781,
+    "dense_fewer_accuracy": 0.6226451181027063,
+    "low_max_abs_full_cost_flops": 58213687584546.0,
+    "random_full_cost_flops": 58209046883328.0,
+    "dense_fewer_full_cost_flops": 58023582105600,
+    "low_max_abs_mps_visible_train_flops": 43712240418816.0,
+    "low_max_abs_aux_ops": 27823662882.0
+  },
+  "exact_dense_fewer_cost": {
+    "total_flops": 58023582105600,
+    "low_max_abs_dense_loss": 1.1944096212510378,
+    "random_dense_loss": 1.2137550155371502,
+    "dense_fewer_loss": 1.1832916910576354
+  },
+  "comparisons": {
+    "low_max_abs_minus_random": -0.020133519893340557,
+    "low_max_abs_minus_dense_fewer": 0.010608827628501905,
+    "exact_cost_low_max_abs_minus_dense_fewer": 0.011117930193402348,
+    "low_max_abs_accuracy_minus_random": 0.010901788275796132,
+    "low_max_abs_accuracy_minus_dense_fewer": -0.016543941857129152
+  },
+  "decision": {
+    "allocation_signal_transfers_to_update_sparsity": true,
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "reason": "dense-forward low_max_abs backward beats random backward but remains behind dense-fewer at corrected matched full cost"
+  }
+}

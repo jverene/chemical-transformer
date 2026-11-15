@@ -21,6 +21,7 @@ import torch.nn as nn
 from ..flops import FLOPsCounter
 from .common import (make_causal_mask, manual_attention, sdpa_attention,
                      rope_cos_sin, normalized_entropy)
+from .sparse_update import sparse_update_ffn, sparse_update_linear
 
 MODES = ("full", "off", "random", "fixed", "tag", "predictor", "predictor-supervised")
 
@@ -106,7 +107,23 @@ class ChemicalLayer(nn.Module):
             for p in self.tag_emb.parameters():
                 p.requires_grad = False
 
-    def _attention(self, x, causal_mask, cos, sin):
+    def _attention(self, x, causal_mask, cos, sin, late_mask=None):
+        if late_mask is not None:
+            def projection(module):
+                return lambda value: sparse_update_linear(
+                    value, module.weight, module.bias, late_mask)
+
+            q_proj = projection(self.q_proj)
+            k_proj = projection(self.k_proj)
+            v_proj = projection(self.v_proj)
+            o_proj = projection(self.o_proj)
+            if self.use_sdpa:
+                return sdpa_attention(
+                    x, q_proj, k_proj, v_proj, o_proj, self.n_heads,
+                    causal_mask, cos=cos, sin=sin), None
+            return manual_attention(
+                x, q_proj, k_proj, v_proj, o_proj, self.n_heads,
+                causal_mask, cos=cos, sin=sin)
         if self.use_sdpa:
             return sdpa_attention(x, self.q_proj, self.k_proj, self.v_proj,
                                   self.o_proj, self.n_heads, causal_mask,
@@ -119,8 +136,12 @@ class ChemicalLayer(nn.Module):
                 cos=None, sin=None, oracle_gate=None):
         B, S, D = x.shape
 
-        attn_out, weights = self._attention(x, causal_mask, cos, sin)
+        sparse_all = meta is not None and meta.get("dense_forward_sparse_all_backward")
+        late_mask = {"active": None} if sparse_all else None
+        attn_out, weights = self._attention(x, causal_mask, cos, sin, late_mask)
         x2 = self.norm1(x + attn_out)
+        if meta is not None and "pre_ffn_sink" in meta:
+            meta["pre_ffn_sink"].append(x2)
 
         entropy = None
         score = None
@@ -179,18 +200,47 @@ class ChemicalLayer(nn.Module):
                                    device=x.device, dtype=x.dtype)
 
         if oracle_gate is not None:
-            # Gate-gradient oracle: g supplied as a leaf tensor with
-            # requires_grad so one backward yields dL/dg per token/layer.
-            g = oracle_gate
+            g = oracle_gate(x2) if callable(oracle_gate) else oracle_gate
+        if late_mask is not None:
+            late_mask["active"] = g.reshape(-1)
 
-        ffn_out = self.ffn(x2) * g.unsqueeze(-1)
+        sparse_update = sparse_all or (
+            meta is not None and meta.get("dense_forward_sparse_backward"))
+        sparse_wgrad = meta is not None and meta.get("dense_forward_sparse_wgrad")
+        null_ffn = meta is not None and meta.get("null_ffn")
+        gradient_scale = (meta.get("sparse_backward_scale", 1.0)
+                          if meta is not None else 1.0)
+        if sparse_update or sparse_wgrad:
+            ffn_out = sparse_update_ffn(
+                x2, g, self.ffn, self.training,
+                dense_input_gradient=sparse_wgrad,
+                gradient_scale=gradient_scale)
+        elif null_ffn or (meta is not None and meta.get("gather_ffn")):
+            flat_x = x2.reshape(B * S, D)
+            active = g.reshape(-1).nonzero(as_tuple=False).squeeze(-1)
+            if null_ffn and active.numel() < flat_x.shape[0]:
+                null_output = self.ffn(flat_x.new_zeros((1, D)))
+                flat_out = null_output.expand(flat_x.shape[0], -1).clone()
+            else:
+                flat_out = torch.zeros_like(flat_x)
+            if active.numel() > 0:
+                flat_out[active] = self.ffn(flat_x.index_select(0, active))
+            ffn_out = flat_out.view(B, S, D)
+        else:
+            ffn_out = self.ffn(x2) * g.unsqueeze(-1)
         x3 = self.norm2(x2 + ffn_out)
 
         # Billing is pure accounting, never differentiable: keep it off the
         # autograd graph so cumulative trackers don't pin per-step history.
         g_real = g[pad_mask] if pad_mask is not None else g.flatten()
-        processed = (g_real.sum() if g_real.numel() > 0
-                     else torch.zeros((), device=x.device)).detach()
+        if sparse_update or sparse_wgrad:
+            processed = x2.new_tensor(B * S)
+        elif null_ffn:
+            null_row = (g.sum() < g.numel()).to(x2.dtype)
+            processed = (g_real.sum() + null_row).detach()
+        else:
+            processed = (g_real.sum() if g_real.numel() > 0
+                         else torch.zeros((), device=x.device)).detach()
         flops = FLOPsCounter.attention(B, S, D, self.n_heads) + \
             FLOPsCounter.ffn_per_token(D, self.ffn[0].out_features) * processed
 
@@ -225,7 +275,7 @@ class ChemicalTransformer(nn.Module):
 
     def forward(self, x, pad_mask: Optional[torch.Tensor] = None,
                 meta: Optional[dict] = None, collect_chemical: bool = False,
-                oracle_gates: Optional[List[torch.Tensor]] = None):
+                oracle_gates: Optional[list] = None):
         B, S = x.shape
         if self.pos_type == "rope":
             x = self.dropout(self.token_emb(x))
@@ -239,6 +289,9 @@ class ChemicalTransformer(nn.Module):
         if self.grad_checkpoint:
             assert not collect_chemical, \
                 "grad_checkpoint is incompatible with collect_chemical"
+        if oracle_gates is not None and any(callable(g) for g in oracle_gates):
+            meta = dict(meta) if meta is not None else {}
+            meta.setdefault("gather_ffn", True)
 
         chemical = None
         total_flops = 0.0
