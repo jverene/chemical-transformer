@@ -1,0 +1,59 @@
+{
+  "format": "uniform_tail_sparse_backward_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "batch_size": 32,
+  "backward_activity": 0.875,
+  "backward_scale": 1.0,
+  "tail_average": 20,
+  "arms": [
+    {
+      "name": "low_max_abs_tail20",
+      "steps": 105
+    },
+    {
+      "name": "random_tail20",
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_tail20",
+      "steps": 100
+    }
+  ],
+  "averaging": {
+    "method": "uniform arithmetic mean of the final 20 parameter states",
+    "snapshots": "one full parameter snapshot after every optimizer step; retain only the rolling final 20",
+    "evaluation": "evaluate only the final mean, with no intermediate checkpoint selection and no decay hyperparameter",
+    "equal_opportunity": "identical snapshot and averaging rule for low, random, and dense",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "validation": {
+    "three_state_uniform_average_exact": true,
+    "ema_decay_disabled_for_this_experiment": true,
+    "backward_execution_unchanged": true
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated 87.5% FFN sparse-backward formula; dense pays full cost",
+    "snapshot_aux": "one parameter-copy operation per model parameter per step for every arm",
+    "final_average_aux": "twenty parameter-reduction operations per model parameter, included in final total",
+    "evaluation": "identical held-out batches, reported separately from training-plus-averaging cost"
+  },
+  "primary_endpoint": "final uniform-tail ordinary dense held-out loss at training-plus-averaging cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs tail-average loss is not below random despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs beats random but not dense tail-average; stop",
+    "development_level_3": "low_max_abs tail-average loss is below random and dense while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "using EMA in any arm of this experiment",
+    "changing tail length, activity, steps, or evaluation after launch",
+    "selecting an intermediate snapshot",
+    "excluding snapshot or final reduction overhead",
+    "launching body 7 without a development-level win"
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "format": "median_tail_sparse_backward_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "batch_size": 32,
+  "backward_activity": 0.875,
+  "backward_scale": 1.0,
+  "tail_average": 20,
+  "tail_method": "median",
+  "arms": [
+    {
+      "name": "low_max_abs_median20",
+      "steps": 105
+    },
+    {
+      "name": "random_median20",
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_median20",
+      "steps": 100
+    }
+  ],
+  "aggregation": {
+    "method": "componentwise median of the final 20 parameter states",
+    "motivation": "robust aggregation against large late trajectory spikes that can dominate a mean",
+    "evaluation": "evaluate only the final median with no intermediate checkpoint selection and no decay hyperparameter",
+    "equal_opportunity": "identical snapshot and median rule for low, random, and dense",
+    "deployment": "ordinary dense inference with aggregated weights"
+  },
+  "validation": {
+    "outlier_three_state_median_exact": true,
+    "backward_execution_unchanged": true,
+    "ema_and_dense_schedules_disabled": true
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated 87.5% FFN sparse-backward formula; dense pays full cost",
+    "snapshot_aux": "one parameter-copy operation per model parameter per step for every arm",
+    "median_aux": "five estimated comparison operations per parameter per retained state, included in final total",
+    "evaluation": "identical held-out batches, reported separately"
+  },
+  "primary_endpoint": "final componentwise-median dense held-out loss at training-plus-aggregation cost",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs median-tail loss is not below random despite random receiving more steps and cost; stop",
+    "no_level_3": "low_max_abs beats random but not dense median-tail; stop",
+    "development_level_3": "low_max_abs median-tail loss is below random and dense while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "changing tail length, aggregation method, activity, steps, or evaluation after launch",
+    "selecting an intermediate snapshot",
+    "excluding snapshot or median-reduction overhead",
+    "launching body 7 without a development-level win"
+  ]
+}

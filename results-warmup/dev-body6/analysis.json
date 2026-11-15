@@ -1,0 +1,28 @@
+{
+  "format": "dense_warmup_tail_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-warmup/dev-body6/protocol.json",
+  "final_tail": {
+    "low_max_abs_loss": 1.178489093971488,
+    "random_loss": 1.1799265697864272,
+    "dense_tail_reference_loss": 1.177501944862411,
+    "low_max_abs_accuracy": 0.6329731280481974,
+    "random_accuracy": 0.6343119441522426,
+    "dense_tail_reference_accuracy": 0.6292435689012145,
+    "low_max_abs_total_flops": 57556669433606.0,
+    "random_total_flops": 58098149428284.0,
+    "dense_tail_reference_total_flops": 58024912600560.0,
+    "low_minus_random_loss": -0.0014374758149392002,
+    "low_minus_dense_tail_loss": 0.000987149109077006,
+    "low_minus_random_accuracy": -0.0013388161040452349,
+    "low_minus_dense_tail_accuracy": 0.003729559146982909
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "dense_schedule_branches_closed": true,
+    "reason": "dense warmup did not close the dense-tail gap; periodic, terminal, and warmup schedules are all closed",
+    "next_shot": "componentwise median aggregation of the final 20 states for every arm"
+  }
+}

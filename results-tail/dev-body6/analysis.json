@@ -1,0 +1,27 @@
+{
+  "format": "uniform_tail_sparse_backward_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-tail/dev-body6/protocol.json",
+  "final_tail": {
+    "low_max_abs_loss": 1.1782502964918484,
+    "random_loss": 1.1814468543772227,
+    "dense_loss": 1.177501944862411,
+    "low_max_abs_accuracy": 0.6355551305345701,
+    "random_accuracy": 0.6309649038921297,
+    "dense_accuracy": 0.6292435689012145,
+    "low_max_abs_total_flops": 57207900540050.0,
+    "random_total_flops": 57749014063164.0,
+    "dense_total_flops": 58024912600560.0,
+    "low_minus_random_loss": -0.003196557885374307,
+    "low_minus_dense_loss": 0.0007483516294373605,
+    "low_minus_random_accuracy": 0.004590226642440378,
+    "low_minus_dense_accuracy": 0.006311561633355617
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "reason": "uniform-tail low_max_abs beat random but remained behind dense on the primary loss despite a substantial accuracy advantage",
+    "next_shot": "equal-opportunity temperature calibration of the final tail-averaged models on separate calibration data"
+  }
+}

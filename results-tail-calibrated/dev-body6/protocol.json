@@ -1,0 +1,61 @@
+{
+  "format": "calibrated_uniform_tail_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "calibration_seed": 24680,
+  "calibration_batches": 8,
+  "online_seed": 9406,
+  "batch_size": 32,
+  "backward_activity": 0.875,
+  "tail_average": 20,
+  "arms": [
+    {
+      "name": "low_max_abs_tail20_calibrated",
+      "steps": 105
+    },
+    {
+      "name": "random_tail20_calibrated",
+      "steps": 106,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_tail20_calibrated",
+      "steps": 100
+    }
+  ],
+  "method": {
+    "training": "same unscaled 87.5% dense-forward sparse-backward or ordinary dense training",
+    "averaging": "uniform mean of the final 20 parameter states for every arm",
+    "calibration": "after installing the average, fit one scalar temperature per arm with identical separate calibration data and LBFGS rule",
+    "final_holdout": "used only for final evaluation, never temperature fitting",
+    "deployment": "ordinary dense inference with averaged weights and fitted scalar temperature"
+  },
+  "validation": {
+    "uniform_tail_average_exact": true,
+    "temperature_calibration_smoke_previously_passed": true,
+    "no_raw_trajectory_reproduction_gate": "calibrated-tail is a new development method; raw trajectories are secondary and cannot replace the frozen calibrated-tail endpoint"
+  },
+  "cost_accounting": {
+    "training": "same realized-row CPU-calibrated 87.5% formula; dense pays full cost",
+    "averaging_aux": "one parameter copy per step plus twenty final parameter reductions per arm",
+    "calibration_forward": "eight forward-only calibration batches per arm",
+    "calibration_aux": "ten estimated operations per calibration logit per LBFGS closure evaluation",
+    "final_evaluation": "reported separately from training-plus-averaging-plus-calibration cost"
+  },
+  "primary_endpoint": "temperature-calibrated final uniform-tail dense held-out loss at full training-plus-averaging-plus-calibration cost",
+  "decision_rules": {
+    "allocation_failure": "calibrated low_max_abs does not beat calibrated random despite random receiving more steps and cost; stop",
+    "no_level_3": "calibrated low_max_abs beats random but not calibrated dense; stop",
+    "development_level_3": "calibrated low_max_abs loss is below random and dense while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "fitting temperature on the final held-out set",
+    "calibrating only the sparse arm",
+    "changing tail length, calibration data, steps, or fitting rule after launch",
+    "excluding averaging or calibration overhead",
+    "launching body 7 without a development-level calibrated win"
+  ]
+}

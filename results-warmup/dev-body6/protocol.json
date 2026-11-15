@@ -1,0 +1,60 @@
+{
+  "format": "dense_warmup_tail_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_training_runs",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "batch_size": 32,
+  "backward_activity": 0.875,
+  "backward_scale": 1.0,
+  "dense_warmup": 10,
+  "tail_average": 20,
+  "arms": [
+    {
+      "name": "low_max_abs_warmup10_tail20",
+      "steps": 105,
+      "warmup_dense_steps": 10
+    },
+    {
+      "name": "random_warmup10_tail20",
+      "steps": 106,
+      "warmup_dense_steps": 10,
+      "purpose": "conservative allocation control receives one additional step and greater cost"
+    },
+    {
+      "name": "dense_tail20",
+      "steps": 100,
+      "reuse_quality_reference": "results-tail/dev-body6/dense_tail20_seed9406.json"
+    }
+  ],
+  "execution": {
+    "warmup": "the first 10 updates use native dense forward and backward with no masks or sparse auxiliary operations",
+    "remaining_steps": "dense forward with gathered unscaled 87.5% FFN backward",
+    "averaging": "uniform mean of the final 20 sparse-update parameter states",
+    "dense_reference": "unchanged ordinary dense training with the same uniform final-20 averaging",
+    "deployment": "ordinary dense inference with averaged weights"
+  },
+  "cost_accounting": {
+    "dense_steps": "10 full native dense forward/backward steps per sparse arm",
+    "sparse_steps": "realized-row CPU-calibrated 87.5% FFN sparse-backward formula plus scoring and gather/scatter",
+    "predicted_low_total_flops": 57561661359620,
+    "dense_tail20_total_flops": 58024912600560,
+    "remaining_headroom_flops": 463251240940,
+    "averaging_aux": "one parameter copy per step plus twenty final parameter reductions per arm",
+    "evaluation": "identical held-out batches, reported separately"
+  },
+  "primary_endpoint": "final uniform-tail dense held-out loss at training-plus-warmup-plus-averaging cost",
+  "decision_rules": {
+    "allocation_failure": "warmup low_max_abs does not beat warmup random despite random receiving more steps and cost; stop",
+    "no_level_3": "warmup low_max_abs beats random but not the unchanged dense-tail reference; stop",
+    "development_level_3": "low_max_abs tail loss is below random and dense-tail while total cost is no greater than either",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "changing warmup length, activity, steps, or tail length after launch",
+    "adding terminal dense steps, periodic anchors, scaling, or calibration",
+    "excluding warmup or averaging costs",
+    "launching body 7 without a development-level win"
+  ]
+}

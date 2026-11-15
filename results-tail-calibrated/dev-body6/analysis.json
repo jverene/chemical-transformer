@@ -1,0 +1,31 @@
+{
+  "format": "calibrated_uniform_tail_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "protocol": "results-tail-calibrated/dev-body6/protocol.json",
+  "calibrated_tail": {
+    "low_temperature": 1.385123610496521,
+    "random_temperature": 1.3922419548034668,
+    "dense_temperature": 1.3422443866729736,
+    "low_calibrated_loss": 1.1876037120819092,
+    "random_calibrated_loss": 1.1899265050888062,
+    "dense_calibrated_loss": 1.1856111288070679,
+    "low_uncalibrated_loss": 1.1779874563217163,
+    "random_uncalibrated_loss": 1.1803666353225708,
+    "dense_uncalibrated_loss": 1.1775119304656982,
+    "low_minus_random_calibrated_loss": -0.0023227930068969727,
+    "low_minus_dense_calibrated_loss": 0.0019925832748413263,
+    "low_total_with_calibration_flops": 58755354659986.0,
+    "random_total_with_calibration_flops": 59296468183100.0,
+    "dense_total_with_calibration_flops": 59572366720496.0,
+    "low_calibration_loss_increase": 0.009616255760192871,
+    "random_calibration_loss_increase": 0.009559869766235352,
+    "dense_calibration_loss_increase": 0.008099198341369629
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "temperature_branch_closed": true,
+    "reason": "temperature fitting improved calibration loss but degraded final held-out loss for every arm; calibrated low remained behind calibrated dense"
+  }
+}
