@@ -1,0 +1,52 @@
+{
+  "format": "lagged_gradient_program_comparison_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "body_seeds": [4, 8],
+  "budgets": [0.375, 0.5],
+  "online_seed_rule": "9400 + body_seed",
+  "new_arms": [
+    "gradient_high",
+    "gradient_low",
+    "shuffled_low_max_abs"
+  ],
+  "gradient_rule": {
+    "statistic": "per-layer, per-token-type EMA of pre-FFN activation-gradient L2 norm",
+    "source": "completed ordinary backward passes only",
+    "beta": 0.2,
+    "timing": "strictly one-step lagged; no current-step gradient or dense pre-pass",
+    "initialization": "exact-budget random on the first step; unseen token types thereafter use the observed layer mean",
+    "high": "Top-B of gradient EMA",
+    "low": "Top-B of negative gradient EMA"
+  },
+  "shuffled_control": "permute valid low-max-abs scores within each sequence and layer; preserve score distribution, exact active count, execution path, and budget",
+  "reused_references": "uniform low_max_abs, random, dense, and dense-fewer from results-program/dev-long with identical body and online seeds",
+  "steps": 200,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "primary_endpoints": [
+    "each gradient sign minus uniform low_max_abs sparse loss at steps 50, 100, 150, and 200",
+    "each gradient sign minus random and shuffled low_max_abs sparse loss",
+    "low_max_abs minus shuffled low_max_abs as the assignment diagnostic",
+    "dense-fewer comparison at matched total cost including auxiliary operations",
+    "dense evaluation, realized activity, gradient-state coverage, and zero extra gradient forward passes"
+  ],
+  "decision_rules": {
+    "gradient_beats_program": "one sign must beat uniform low_max_abs, random, and shuffled low_max_abs at step 200 in all four regimes",
+    "selection": "if both signs qualify, select the smaller mean final loss difference from uniform low_max_abs",
+    "fresh_confirmation": "a qualifying gradient sign earns unchanged fresh-to-gradient replication on bodies 9 and 10",
+    "development_level_3_signal": "the selected gradient rule must also beat dense-fewer at matched total cost in all four regimes",
+    "keep_program": "if neither gradient sign qualifies, stop lagged-gradient development and retain the frozen low_max_abs program"
+  },
+  "prohibited": [
+    "using current-batch gradients for routing",
+    "adding a dense gradient pre-pass or omitting auxiliary costs",
+    "treating shuffling as the proposed method rather than a control",
+    "claiming Level 3 from wins over random or shuffling alone",
+    "tuning beta, sign, initialization, or budget semantics on confirmation bodies"
+  ]
+}

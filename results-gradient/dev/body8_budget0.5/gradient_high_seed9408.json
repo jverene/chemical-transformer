@@ -1,0 +1,2021 @@
+{
+  "format": "lagged_gradient_program_v1",
+  "split": "development",
+  "completed": true,
+  "arm": "gradient_high",
+  "body_seed": 8,
+  "online_seed": 9408,
+  "checkpoint": "results-inverse-ckpt/tagged/predictor_stage1_seed8.pt",
+  "execution": "previous ordinary-backprop token-conditional gradient EMA or shuffled low-max-abs; exact per-layer Top-B; gather/scatter",
+  "causality": "current-step routing never consumes current-step gradients; first gradient step is exact-budget random; unseen types use the observed layer mean",
+  "accounting": "executed matmul/attention FLOPs plus separately estimated lookup, gradient-statistic, permutation, and selection operations; zero extra gradient forward passes",
+  "config": {
+    "mode": "run",
+    "ckpt_template": "results-inverse-ckpt/tagged/predictor_stage1_seed{seed}.pt",
+    "outdir": "results-gradient/dev/body8_budget0.5",
+    "device": "mps",
+    "size": "small",
+    "seq_len": 256,
+    "task": "tagged",
+    "body_seeds": "4,8",
+    "budgets": "0.375,0.5",
+    "arms": "gradient_high,gradient_low,shuffled_low_max_abs",
+    "steps": 200,
+    "batch_size": 32,
+    "body_lr": 0.0003,
+    "weight_decay": 0.01,
+    "dropout": 0.1,
+    "gradient_beta": 0.2,
+    "eval_every": 50,
+    "eval_batches": 4,
+    "seed": 9400,
+    "split": "development"
+  },
+  "budget": 0.5,
+  "history": [
+    {
+      "step": 0,
+      "heldout_loss": 1.2498188940488502,
+      "heldout_acc": 0.5491858560554966,
+      "sparse_heldout_loss": 3.442809807331302,
+      "sparse_heldout_acc": 0.14057230947104732,
+      "cum_train_flops": 0.0,
+      "cum_aux_ops": 0.0,
+      "cum_total_flops_with_aux_estimate": 0.0,
+      "cum_eval_flops": 1307086159872.0,
+      "cum_eval_aux_ops": 196608.0,
+      "wallclock_s": 12.155791282653809,
+      "mean_active_fraction": null
+    },
+    {
+      "step": 50,
+      "heldout_loss": 1.5254873620768161,
+      "heldout_acc": 0.43154446478466135,
+      "sparse_heldout_loss": 1.3775867371273622,
+      "sparse_heldout_acc": 0.4429135754889681,
+      "cum_train_flops": 8608479707136.0,
+      "cum_aux_ops": 929113704.0,
+      "cum_total_flops_with_aux_estimate": 8609408820840.0,
+      "cum_eval_flops": 2614172319744.0,
+      "cum_eval_aux_ops": 772320.0,
+      "wallclock_s": 105.87561225891113,
+      "mean_active_fraction": 0.5000440980693587
+    },
+    {
+      "step": 100,
+      "heldout_loss": 1.3855849832046314,
+      "heldout_acc": 0.4861740052028134,
+      "sparse_heldout_loss": 1.329687272190684,
+      "sparse_heldout_acc": 0.4696984295211485,
+      "cum_train_flops": 17217992785920.0,
+      "cum_aux_ops": 1858606224.0,
+      "cum_total_flops_with_aux_estimate": 17219851392144.0,
+      "cum_eval_flops": 3921258479616.0,
+      "cum_eval_aux_ops": 1348032.0,
+      "wallclock_s": 193.76822113990784,
+      "mean_active_fraction": 0.5000598399015174
+    },
+    {
+      "step": 150,
+      "heldout_loss": 1.319608120428161,
+      "heldout_acc": 0.49050968301377784,
+      "sparse_heldout_loss": 1.3031045044314125,
+      "sparse_heldout_acc": 0.48761923113980155,
+      "cum_train_flops": 25824504840192.0,
+      "cum_aux_ops": 2787020004.0,
+      "cum_total_flops_with_aux_estimate": 25827291860196.0,
+      "cum_eval_flops": 5228344639488.0,
+      "cum_eval_aux_ops": 1923744.0,
+      "wallclock_s": 269.67219519615173,
+      "mean_active_fraction": 0.5000807839040026
+    },
+    {
+      "step": 200,
+      "heldout_loss": 1.358918777512831,
+      "heldout_acc": 0.4721071394161287,
+      "sparse_heldout_loss": 1.2971714729348,
+      "sparse_heldout_acc": 0.5082377878408324,
+      "cum_train_flops": 34431965331456.0,
+      "cum_aux_ops": 3715948584.0,
+      "cum_total_flops_with_aux_estimate": 34435681280040.0,
+      "cum_eval_flops": 6535430799360.0,
+      "cum_eval_aux_ops": 2499456.0,
+      "wallclock_s": 363.027131319046,
+      "mean_active_fraction": 0.5000640620690376
+    }
+  ],
+  "active_history": [
+    0.5003135582591245,
+    0.5005665365730833,
+    0.49993657237092476,
+    0.500126454223571,
+    0.4996854950308215,
+    0.5000631074088098,
+    0.49974677133451506,
+    0.4996204453441296,
+    0.5,
+    0.5001273885350318,
+    0.5003161755406602,
+    0.5001894657067071,
+    0.5003132439543917,
+    0.5000632991517914,
+    0.5003777386048854,
+    0.499809958190802,
+    0.5002525252525253,
+    0.5003151392915669,
+    0.49936948297604034,
+    0.5005699810006333,
+    0.49974931060416145,
+    0.49962006079027355,
+    0.500253807106599,
+    0.49987411883182276,
+    0.49993657237092476,
+    0.4999364433710436,
+    0.5,
+    0.4998098618329319,
+    0.4995558939220911,
+    0.4998738965952081,
+    0.4998733215100076,
+    0.5001252191334836,
+    0.5001255965837729,
+    0.5,
+    0.500253036437247,
+    0.5001890359168242,
+    0.499937209594374,
+    0.5001263583522871,
+    0.5004434308881287,
+    0.500063235108132,
+    0.49993689259119023,
+    0.49968517818914493,
+    0.4999370673379484,
+    0.5002521432173475,
+    0.5000631711939356,
+    0.5000632191174611,
+    0.5001890835749401,
+    0.5003164957589569,
+    0.5003147425406018,
+    0.49993716224707807,
+    0.5001883712168781,
+    0.5002508780732564,
+    0.5002535496957403,
+    0.4998731930002536,
+    0.5,
+    0.4997475385003787,
+    0.500252780586451,
+    0.49993687665698777,
+    0.5003790750568613,
+    0.5004443315983242,
+    0.5,
+    0.5,
+    0.5003775484520514,
+    0.5001259445843829,
+    0.4998734817813765,
+    0.5004410838059231,
+    0.4997458057956279,
+    0.5005033979360685,
+    0.5001894657067071,
+    0.5001906214258482,
+    0.5003783102143758,
+    0.5003792667509481,
+    0.4995564567228488,
+    0.4998730964467005,
+    0.5003142677561282,
+    0.5,
+    0.5001256913021619,
+    0.5003164957589569,
+    0.49987290289781394,
+    0.5001255020080321,
+    0.5,
+    0.4998104864181933,
+    0.5001889882827265,
+    0.49980971711277433,
+    0.4996195790007608,
+    0.4999370673379484,
+    0.5003797468354431,
+    0.5005652556211532,
+    0.5001268391679351,
+    0.49968581123539024,
+    0.5001259445843829,
+    0.4998730964467005,
+    0.4994955863808323,
+    0.5000632031348755,
+    0.5000627588803815,
+    0.5005037783375315,
+    0.49981072555205047,
+    0.499560687837329,
+    0.5,
+    0.5004438807863031,
+    0.5005060728744939,
+    0.5002545176889794,
+    0.4998738329548322,
+    0.5005044136191678,
+    0.5001898974553741,
+    0.4999369085173502,
+    0.5002535496957403,
+    0.500126454223571,
+    0.500314663310258,
+    0.5004415289516841,
+    0.5001885132587659,
+    0.5,
+    0.5001262307498107,
+    0.5,
+    0.49993668481701914,
+    0.5004432062808661,
+    0.5003792667509481,
+    0.5005074854097945,
+    0.5,
+    0.5,
+    0.49987376925018934,
+    0.49962387161484456,
+    0.5003161755406602,
+    0.49993657237092476,
+    0.4996842238221549,
+    0.5,
+    0.49993697214168664,
+    0.4997468995191091,
+    0.4998102466793169,
+    0.5003161755406602,
+    0.4999367168712821,
+    0.5000629802242096,
+    0.5001258178158027,
+    0.49981043851889295,
+    0.500126422250316,
+    0.500190379489783,
+    0.5002545176889794,
+    0.4997474747474748,
+    0.500633392449962,
+    0.5,
+    0.5003145049691785,
+    0.5003785966683493,
+    0.5001897533206832,
+    0.5003783102143758,
+    0.499873031995937,
+    0.5003153778226315,
+    0.5001265502404455,
+    0.5001894657067071,
+    0.5001886080724255,
+    0.5000631233430123,
+    0.5000628851716765,
+    0.4995576898774169,
+    0.5002532286654849,
+    0.500439312162671,
+    0.5003763171098846,
+    0.5002529724260055,
+    0.5001266143327424,
+    0.5000629802242096,
+    0.5003163355687713,
+    0.5002548419979612,
+    0.5002528445006321,
+    0.49987344975955456,
+    0.49987328940699444,
+    0.49924204143506823,
+    0.4999367808825389,
+    0.5001256913021619,
+    0.5,
+    0.4997458703939009,
+    0.49968612680477087,
+    0.500697350069735,
+    0.500125786163522,
+    0.5,
+    0.49961851475076297,
+    0.4998740236835475,
+    0.4999368607147367,
+    0.5001260080645161,
+    0.4999366206109773,
+    0.5002540650406504,
+    0.5003775484520514,
+    0.49981115447563895,
+    0.49987380111055024,
+    0.4996857322438718,
+    0.500315537044049,
+    0.499937035637829,
+    0.500063235108132,
+    0.500062964362171,
+    0.5001899455489426,
+    0.499873031995937,
+    0.49993634627625716,
+    0.49993657237092476,
+    0.4998740236835475,
+    0.5,
+    0.5006298815822625,
+    0.500189561481107,
+    0.5000632191174611,
+    0.5000627904056261,
+    0.4998113919275745,
+    0.49974785678265254,
+    0.4996240601503759,
+    0.4996206373292868
+  ],
+  "gradient_history": [
+    {
+      "step_update": 1,
+      "mean_gradient_norm": 0.00021816645433621792,
+      "newly_seen_token_types": 126,
+      "seen_token_types": 126,
+      "aux_ops": 18561648
+    },
+    {
+      "step_update": 2,
+      "mean_gradient_norm": 0.00019915781983096773,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18491808
+    },
+    {
+      "step_update": 3,
+      "mean_gradient_norm": 0.00016047150954060876,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18352128
+    },
+    {
+      "step_update": 4,
+      "mean_gradient_norm": 0.0002448398615039575,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18410328
+    },
+    {
+      "step_update": 5,
+      "mean_gradient_norm": 0.00013890574215717302,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18505776
+    },
+    {
+      "step_update": 6,
+      "mean_gradient_norm": 0.00014242308194904277,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18445248
+    },
+    {
+      "step_update": 7,
+      "mean_gradient_norm": 0.00012119159206728607,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18387048
+    },
+    {
+      "step_update": 8,
+      "mean_gradient_norm": 0.0001248459545119355,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 9,
+      "mean_gradient_norm": 0.000110830082121538,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18470856
+    },
+    {
+      "step_update": 10,
+      "mean_gradient_norm": 0.0001037728798110038,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18275304
+    },
+    {
+      "step_update": 11,
+      "mean_gradient_norm": 0.00010797504971075493,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18408000
+    },
+    {
+      "step_update": 12,
+      "mean_gradient_norm": 8.613964322042496e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18431280
+    },
+    {
+      "step_update": 13,
+      "mean_gradient_norm": 7.396259085605077e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18580272
+    },
+    {
+      "step_update": 14,
+      "mean_gradient_norm": 7.341736454691272e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18389376
+    },
+    {
+      "step_update": 15,
+      "mean_gradient_norm": 7.198417248825233e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18489480
+    },
+    {
+      "step_update": 16,
+      "mean_gradient_norm": 7.251888200698886e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18375408
+    },
+    {
+      "step_update": 17,
+      "mean_gradient_norm": 7.149722296162508e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18438264
+    },
+    {
+      "step_update": 18,
+      "mean_gradient_norm": 7.656291442496392e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18468528
+    },
+    {
+      "step_update": 19,
+      "mean_gradient_norm": 7.880628072598483e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 20,
+      "mean_gradient_norm": 7.456238927261438e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18380064
+    },
+    {
+      "step_update": 21,
+      "mean_gradient_norm": 0.00010459829112126802,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18573288
+    },
+    {
+      "step_update": 22,
+      "mean_gradient_norm": 7.982477958042485e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18382392
+    },
+    {
+      "step_update": 23,
+      "mean_gradient_norm": 5.673766675802957e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18345144
+    },
+    {
+      "step_update": 24,
+      "mean_gradient_norm": 7.494813386680714e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18494136
+    },
+    {
+      "step_update": 25,
+      "mean_gradient_norm": 7.769957179940927e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18352128
+    },
+    {
+      "step_update": 26,
+      "mean_gradient_norm": 6.138784374343231e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18314880
+    },
+    {
+      "step_update": 27,
+      "mean_gradient_norm": 5.6572303037683014e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18377736
+    },
+    {
+      "step_update": 28,
+      "mean_gradient_norm": 5.233697568958936e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18366096
+    },
+    {
+      "step_update": 29,
+      "mean_gradient_norm": 6.46712815068895e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18347472
+    },
+    {
+      "step_update": 30,
+      "mean_gradient_norm": 8.240495844802354e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 31,
+      "mean_gradient_norm": 0.0001093061388625453,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18377736
+    },
+    {
+      "step_update": 32,
+      "mean_gradient_norm": 0.00010904058096154283,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18591912
+    },
+    {
+      "step_update": 33,
+      "mean_gradient_norm": 8.454798929354486e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18536040
+    },
+    {
+      "step_update": 34,
+      "mean_gradient_norm": 6.682089103075366e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18526728
+    },
+    {
+      "step_update": 35,
+      "mean_gradient_norm": 8.07797872160639e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 36,
+      "mean_gradient_norm": 6.45686868665507e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18473184
+    },
+    {
+      "step_update": 37,
+      "mean_gradient_norm": 6.43358938153445e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18538368
+    },
+    {
+      "step_update": 38,
+      "mean_gradient_norm": 6.083476121906036e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18424296
+    },
+    {
+      "step_update": 39,
+      "mean_gradient_norm": 0.00010195797707031791,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18375408
+    },
+    {
+      "step_update": 40,
+      "mean_gradient_norm": 6.545270844071638e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18408000
+    },
+    {
+      "step_update": 41,
+      "mean_gradient_norm": 6.926069302911249e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18445248
+    },
+    {
+      "step_update": 42,
+      "mean_gradient_norm": 5.751585467805853e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18487152
+    },
+    {
+      "step_update": 43,
+      "mean_gradient_norm": 6.441494830748222e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18496464
+    },
+    {
+      "step_update": 44,
+      "mean_gradient_norm": 6.539617546271377e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18466200
+    },
+    {
+      "step_update": 45,
+      "mean_gradient_norm": 5.0663236834225245e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18426624
+    },
+    {
+      "step_update": 46,
+      "mean_gradient_norm": 7.35484730588117e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18412656
+    },
+    {
+      "step_update": 47,
+      "mean_gradient_norm": 6.465636518745062e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18468528
+    },
+    {
+      "step_update": 48,
+      "mean_gradient_norm": 6.175819210814855e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18389376
+    },
+    {
+      "step_update": 49,
+      "mean_gradient_norm": 6.609008960367646e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18491808
+    },
+    {
+      "step_update": 50,
+      "mean_gradient_norm": 5.709163148518807e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18524400
+    },
+    {
+      "step_update": 51,
+      "mean_gradient_norm": 5.717230548422473e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18538368
+    },
+    {
+      "step_update": 52,
+      "mean_gradient_norm": 7.174140531181668e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18559320
+    },
+    {
+      "step_update": 53,
+      "mean_gradient_norm": 5.120535570313223e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18363768
+    },
+    {
+      "step_update": 54,
+      "mean_gradient_norm": 4.893389268545434e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18359112
+    },
+    {
+      "step_update": 55,
+      "mean_gradient_norm": 6.0652589430295244e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18512760
+    },
+    {
+      "step_update": 56,
+      "mean_gradient_norm": 6.061262138246093e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18442920
+    },
+    {
+      "step_update": 57,
+      "mean_gradient_norm": 4.741346310765948e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18419640
+    },
+    {
+      "step_update": 58,
+      "mean_gradient_norm": 6.24004248190128e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18440592
+    },
+    {
+      "step_update": 59,
+      "mean_gradient_norm": 5.131706438987749e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18424296
+    },
+    {
+      "step_update": 60,
+      "mean_gradient_norm": 6.543311428686138e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18338160
+    },
+    {
+      "step_update": 61,
+      "mean_gradient_norm": 4.612713231229767e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18545352
+    },
+    {
+      "step_update": 62,
+      "mean_gradient_norm": 5.299315701752979e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 63,
+      "mean_gradient_norm": 6.20846782718824e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18498792
+    },
+    {
+      "step_update": 64,
+      "mean_gradient_norm": 5.2762247226686064e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18484824
+    },
+    {
+      "step_update": 65,
+      "mean_gradient_norm": 5.6952995388807416e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 66,
+      "mean_gradient_norm": 4.907571686392961e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18473184
+    },
+    {
+      "step_update": 67,
+      "mean_gradient_norm": 5.358078912346779e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18317208
+    },
+    {
+      "step_update": 68,
+      "mean_gradient_norm": 5.0807801926566754e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18498792
+    },
+    {
+      "step_update": 69,
+      "mean_gradient_norm": 5.23096584098918e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18431280
+    },
+    {
+      "step_update": 70,
+      "mean_gradient_norm": 5.517333192983642e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18319536
+    },
+    {
+      "step_update": 71,
+      "mean_gradient_norm": 4.545260526356287e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 72,
+      "mean_gradient_norm": 4.5354262207789965e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18414984
+    },
+    {
+      "step_update": 73,
+      "mean_gradient_norm": 4.64682898382307e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18370752
+    },
+    {
+      "step_update": 74,
+      "mean_gradient_norm": 6.472091202643544e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18345144
+    },
+    {
+      "step_update": 75,
+      "mean_gradient_norm": 6.19856785609348e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18519744
+    },
+    {
+      "step_update": 76,
+      "mean_gradient_norm": 6.511861283797771e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18573288
+    },
+    {
+      "step_update": 77,
+      "mean_gradient_norm": 7.123013165255543e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18522072
+    },
+    {
+      "step_update": 78,
+      "mean_gradient_norm": 5.1485236326698214e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18389376
+    },
+    {
+      "step_update": 79,
+      "mean_gradient_norm": 5.198888417605e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18317208
+    },
+    {
+      "step_update": 80,
+      "mean_gradient_norm": 4.905859168502502e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18550008
+    },
+    {
+      "step_update": 81,
+      "mean_gradient_norm": 4.049933462132079e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18573288
+    },
+    {
+      "step_update": 82,
+      "mean_gradient_norm": 6.092160098584524e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18426624
+    },
+    {
+      "step_update": 83,
+      "mean_gradient_norm": 4.6705174099770375e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18477840
+    },
+    {
+      "step_update": 84,
+      "mean_gradient_norm": 5.722821697418112e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18352128
+    },
+    {
+      "step_update": 85,
+      "mean_gradient_norm": 5.00857916752769e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18359112
+    },
+    {
+      "step_update": 86,
+      "mean_gradient_norm": 5.1075807580976594e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18496464
+    },
+    {
+      "step_update": 87,
+      "mean_gradient_norm": 5.1924064791819546e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18391704
+    },
+    {
+      "step_update": 88,
+      "mean_gradient_norm": 5.272690608156457e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18533712
+    },
+    {
+      "step_update": 89,
+      "mean_gradient_norm": 5.7060659855778795e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18354456
+    },
+    {
+      "step_update": 90,
+      "mean_gradient_norm": 4.744771407179845e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18524400
+    },
+    {
+      "step_update": 91,
+      "mean_gradient_norm": 4.326147063693497e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18484824
+    },
+    {
+      "step_update": 92,
+      "mean_gradient_norm": 4.682217816783426e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18345144
+    },
+    {
+      "step_update": 93,
+      "mean_gradient_norm": 4.658624645041224e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 94,
+      "mean_gradient_norm": 5.006408567472439e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18417312
+    },
+    {
+      "step_update": 95,
+      "mean_gradient_norm": 4.527863438852364e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18547680
+    },
+    {
+      "step_update": 96,
+      "mean_gradient_norm": 6.136758202046622e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18484824
+    },
+    {
+      "step_update": 97,
+      "mean_gradient_norm": 4.69709181440218e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18449904
+    },
+    {
+      "step_update": 98,
+      "mean_gradient_norm": 4.441860922573445e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18547680
+    },
+    {
+      "step_update": 99,
+      "mean_gradient_norm": 5.849976393316562e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 100,
+      "mean_gradient_norm": 4.1482191591057926e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18356784
+    },
+    {
+      "step_update": 101,
+      "mean_gradient_norm": 6.093971902979926e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 102,
+      "mean_gradient_norm": 5.476465927737687e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18293928
+    },
+    {
+      "step_update": 103,
+      "mean_gradient_norm": 5.0294325774302706e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18452232
+    },
+    {
+      "step_update": 104,
+      "mean_gradient_norm": 6.30495678706211e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 105,
+      "mean_gradient_norm": 4.667908221260101e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18389376
+    },
+    {
+      "step_update": 106,
+      "mean_gradient_norm": 4.739083396998467e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18449904
+    },
+    {
+      "step_update": 107,
+      "mean_gradient_norm": 5.4613741970873285e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18363768
+    },
+    {
+      "step_update": 108,
+      "mean_gradient_norm": 4.625511610356625e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18410328
+    },
+    {
+      "step_update": 109,
+      "mean_gradient_norm": 5.118804407781378e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18496464
+    },
+    {
+      "step_update": 110,
+      "mean_gradient_norm": 4.593906578520546e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18454560
+    },
+    {
+      "step_update": 111,
+      "mean_gradient_norm": 4.0982630101401206e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18524400
+    },
+    {
+      "step_update": 112,
+      "mean_gradient_norm": 5.042240021187657e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18508104
+    },
+    {
+      "step_update": 113,
+      "mean_gradient_norm": 4.0484436491775945e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18442920
+    },
+    {
+      "step_update": 114,
+      "mean_gradient_norm": 5.050024689505032e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18359112
+    },
+    {
+      "step_update": 115,
+      "mean_gradient_norm": 4.5250664394795116e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18384720
+    },
+    {
+      "step_update": 116,
+      "mean_gradient_norm": 4.4489369429356884e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18384720
+    },
+    {
+      "step_update": 117,
+      "mean_gradient_norm": 4.395952813259404e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18414984
+    },
+    {
+      "step_update": 118,
+      "mean_gradient_norm": 4.635902678273851e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18349800
+    },
+    {
+      "step_update": 119,
+      "mean_gradient_norm": 4.368241540457044e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18475512
+    },
+    {
+      "step_update": 120,
+      "mean_gradient_norm": 5.182173269228466e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18428952
+    },
+    {
+      "step_update": 121,
+      "mean_gradient_norm": 4.783437604298039e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18442920
+    },
+    {
+      "step_update": 122,
+      "mean_gradient_norm": 4.322429807264901e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18568632
+    },
+    {
+      "step_update": 123,
+      "mean_gradient_norm": 4.4429225757388245e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18408000
+    },
+    {
+      "step_update": 124,
+      "mean_gradient_norm": 4.6936117541918065e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18352128
+    },
+    {
+      "step_update": 125,
+      "mean_gradient_norm": 5.325224204473974e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18431280
+    },
+    {
+      "step_update": 126,
+      "mean_gradient_norm": 4.244217749752958e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18414984
+    },
+    {
+      "step_update": 127,
+      "mean_gradient_norm": 4.107432960154256e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18468528
+    },
+    {
+      "step_update": 128,
+      "mean_gradient_norm": 4.275168824581973e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18396360
+    },
+    {
+      "step_update": 129,
+      "mean_gradient_norm": 3.998467263954808e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18403344
+    },
+    {
+      "step_update": 130,
+      "mean_gradient_norm": 4.611194071912905e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18408000
+    },
+    {
+      "step_update": 131,
+      "mean_gradient_norm": 4.408262217718099e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18394032
+    },
+    {
+      "step_update": 132,
+      "mean_gradient_norm": 3.9210434200261567e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18482496
+    },
+    {
+      "step_update": 133,
+      "mean_gradient_norm": 4.269999287013585e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18503448
+    },
+    {
+      "step_update": 134,
+      "mean_gradient_norm": 4.6495212094062786e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18421968
+    },
+    {
+      "step_update": 135,
+      "mean_gradient_norm": 4.279808854334988e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18414984
+    },
+    {
+      "step_update": 136,
+      "mean_gradient_norm": 3.849730501315207e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18342816
+    },
+    {
+      "step_update": 137,
+      "mean_gradient_norm": 4.284191466770911e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18293928
+    },
+    {
+      "step_update": 138,
+      "mean_gradient_norm": 4.721557858526163e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18438264
+    },
+    {
+      "step_update": 139,
+      "mean_gradient_norm": 4.2674404843031276e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18377736
+    },
+    {
+      "step_update": 140,
+      "mean_gradient_norm": 4.365998726522472e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18405672
+    },
+    {
+      "step_update": 141,
+      "mean_gradient_norm": 4.273595095583005e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18505776
+    },
+    {
+      "step_update": 142,
+      "mean_gradient_norm": 4.3409966565377545e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18447576
+    },
+    {
+      "step_update": 143,
+      "mean_gradient_norm": 4.382767656352371e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18403344
+    },
+    {
+      "step_update": 144,
+      "mean_gradient_norm": 4.4734270280362885e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18461544
+    },
+    {
+      "step_update": 145,
+      "mean_gradient_norm": 4.1283247204167615e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18335832
+    },
+    {
+      "step_update": 146,
+      "mean_gradient_norm": 4.6405540463941484e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18454560
+    },
+    {
+      "step_update": 147,
+      "mean_gradient_norm": 4.7470131600372646e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18396360
+    },
+    {
+      "step_update": 148,
+      "mean_gradient_norm": 4.233870822645258e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18431280
+    },
+    {
+      "step_update": 149,
+      "mean_gradient_norm": 4.444882567137635e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18515088
+    },
+    {
+      "step_update": 150,
+      "mean_gradient_norm": 4.1832133016820684e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18440592
+    },
+    {
+      "step_update": 151,
+      "mean_gradient_norm": 4.114048169867601e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18510432
+    },
+    {
+      "step_update": 152,
+      "mean_gradient_norm": 4.818452089239145e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18421968
+    },
+    {
+      "step_update": 153,
+      "mean_gradient_norm": 4.381409144116333e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18387048
+    },
+    {
+      "step_update": 154,
+      "mean_gradient_norm": 4.059362102755889e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18547680
+    },
+    {
+      "step_update": 155,
+      "mean_gradient_norm": 4.657301451516105e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18559320
+    },
+    {
+      "step_update": 156,
+      "mean_gradient_norm": 4.898399614224521e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18405672
+    },
+    {
+      "step_update": 157,
+      "mean_gradient_norm": 4.263954603326662e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18387048
+    },
+    {
+      "step_update": 158,
+      "mean_gradient_norm": 4.8657841034582816e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18482496
+    },
+    {
+      "step_update": 159,
+      "mean_gradient_norm": 4.5787602478715904e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18398688
+    },
+    {
+      "step_update": 160,
+      "mean_gradient_norm": 4.6586118817989096e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18270648
+    },
+    {
+      "step_update": 161,
+      "mean_gradient_norm": 4.488566870956371e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18414984
+    },
+    {
+      "step_update": 162,
+      "mean_gradient_norm": 4.869587670934076e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18396360
+    },
+    {
+      "step_update": 163,
+      "mean_gradient_norm": 4.423382142704213e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18373080
+    },
+    {
+      "step_update": 164,
+      "mean_gradient_norm": 4.5898203400914404e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18428952
+    },
+    {
+      "step_update": 165,
+      "mean_gradient_norm": 4.4364827469204705e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18412656
+    },
+    {
+      "step_update": 166,
+      "mean_gradient_norm": 5.050744402979035e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18522072
+    },
+    {
+      "step_update": 167,
+      "mean_gradient_norm": 4.071531293448061e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18359112
+    },
+    {
+      "step_update": 168,
+      "mean_gradient_norm": 4.255696057953173e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18321864
+    },
+    {
+      "step_update": 169,
+      "mean_gradient_norm": 3.961660786444554e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18543024
+    },
+    {
+      "step_update": 170,
+      "mean_gradient_norm": 4.3955995048842546e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18361440
+    },
+    {
+      "step_update": 171,
+      "mean_gradient_norm": 4.2990927492307186e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18508104
+    },
+    {
+      "step_update": 172,
+      "mean_gradient_norm": 4.001715069534839e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18401016
+    },
+    {
+      "step_update": 173,
+      "mean_gradient_norm": 4.163386438449379e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18307896
+    },
+    {
+      "step_update": 174,
+      "mean_gradient_norm": 4.404417813930195e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18480168
+    },
+    {
+      "step_update": 175,
+      "mean_gradient_norm": 4.347546049151182e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18435936
+    },
+    {
+      "step_update": 176,
+      "mean_gradient_norm": 4.3590909323635664e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18475512
+    },
+    {
+      "step_update": 177,
+      "mean_gradient_norm": 4.123473202829094e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18366096
+    },
+    {
+      "step_update": 178,
+      "mean_gradient_norm": 4.118195192859275e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18326520
+    },
+    {
+      "step_update": 179,
+      "mean_gradient_norm": 4.2345336017509304e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18498792
+    },
+    {
+      "step_update": 180,
+      "mean_gradient_norm": 5.571774696970048e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18491808
+    },
+    {
+      "step_update": 181,
+      "mean_gradient_norm": 4.0739669808923885e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18447576
+    },
+    {
+      "step_update": 182,
+      "mean_gradient_norm": 5.169172163732583e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18519744
+    },
+    {
+      "step_update": 183,
+      "mean_gradient_norm": 5.473926375998417e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18445248
+    },
+    {
+      "step_update": 184,
+      "mean_gradient_norm": 5.487684241719156e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18487152
+    },
+    {
+      "step_update": 185,
+      "mean_gradient_norm": 5.652420319772015e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18408000
+    },
+    {
+      "step_update": 186,
+      "mean_gradient_norm": 5.08549189059219e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18487152
+    },
+    {
+      "step_update": 187,
+      "mean_gradient_norm": 5.636600720511827e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18384720
+    },
+    {
+      "step_update": 188,
+      "mean_gradient_norm": 4.542962687992258e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18335832
+    },
+    {
+      "step_update": 189,
+      "mean_gradient_norm": 4.919133334624348e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18286944
+    },
+    {
+      "step_update": 190,
+      "mean_gradient_norm": 5.240658902039286e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18352128
+    },
+    {
+      "step_update": 191,
+      "mean_gradient_norm": 4.688484659709502e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18480168
+    },
+    {
+      "step_update": 192,
+      "mean_gradient_norm": 4.962563586256389e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18466200
+    },
+    {
+      "step_update": 193,
+      "mean_gradient_norm": 4.8391320281856075e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18480168
+    },
+    {
+      "step_update": 194,
+      "mean_gradient_norm": 6.292462815811935e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18421968
+    },
+    {
+      "step_update": 195,
+      "mean_gradient_norm": 5.1495378405282587e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18412656
+    },
+    {
+      "step_update": 196,
+      "mean_gradient_norm": 5.773389572520197e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18538368
+    },
+    {
+      "step_update": 197,
+      "mean_gradient_norm": 5.647958672246508e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18515088
+    },
+    {
+      "step_update": 198,
+      "mean_gradient_norm": 5.7820501751848496e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18466200
+    },
+    {
+      "step_update": 199,
+      "mean_gradient_norm": 5.02457442053128e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18577944
+    },
+    {
+      "step_update": 200,
+      "mean_gradient_norm": 6.159626961258861e-05,
+      "newly_seen_token_types": 0,
+      "seen_token_types": 126,
+      "aux_ops": 18410328
+    }
+  ],
+  "gradient_state": {
+    "updates": 200,
+    "seen_token_types": 126,
+    "ema": [
+      [
+        2.2671812985208817e-05,
+        2.1339670638553798e-05,
+        2.253969978482928e-05,
+        2.2664080461254343e-05,
+        2.113595837727189e-05,
+        2.2912465283297934e-05,
+        2.2280635675997473e-05,
+        2.132065492332913e-05,
+        2.284188121848274e-05,
+        2.1957530407235026e-05,
+        2.7709005735232495e-05,
+        2.3117714590625837e-05,
+        4.494361928664148e-05,
+        2.257932283100672e-05,
+        2.2225784050533548e-05,
+        2.3158438125392422e-05,
+        2.299171501363162e-05,
+        4.036563041154295e-05,
+        5.232539842836559e-05,
+        0.0,
+        2.2112795704742894e-05,
+        6.811043567722663e-05
+      ],
+      [
+        3.902620301232673e-05,
+        3.7868565414100885e-05,
+        3.7691312172682956e-05,
+        3.9518756238976493e-05,
+        3.7993180740159005e-05,
+        3.939105954486877e-05,
+        3.735692735062912e-05,
+        3.8585432776017115e-05,
+        3.9500479033449665e-05,
+        3.813586226897314e-05,
+        5.713184145861305e-05,
+        4.5494747610064223e-05,
+        7.17864531907253e-05,
+        4.2169238440692425e-05,
+        3.600011768867262e-05,
+        3.107144948444329e-05,
+        3.869296415359713e-05,
+        7.341786113101989e-05,
+        8.38063278933987e-05,
+        0.0,
+        3.636250403360464e-05,
+        6.892847886774689e-05
+      ],
+      [
+        8.291010453831404e-05,
+        9.027433407027274e-05,
+        9.000076533993706e-05,
+        9.562983177602291e-05,
+        9.327098086941987e-05,
+        9.836736717261374e-05,
+        9.345468424726278e-05,
+        9.765138383954763e-05,
+        9.72445122897625e-05,
+        9.503402543487027e-05,
+        0.00013247907918412238,
+        0.0001164017230621539,
+        0.00018348408048041165,
+        0.00013372502871789038,
+        4.552784957922995e-05,
+        7.287833432201296e-05,
+        3.0289780625025742e-05,
+        0.00010436791490064934,
+        0.0001328485959675163,
+        0.0,
+        5.506749948835932e-05,
+        0.00012139618775108829
+      ],
+      [
+        7.044673839118332e-05,
+        7.607950828969479e-05,
+        6.865437899250537e-05,
+        7.758347783237696e-05,
+        7.608535815961659e-05,
+        8.333342702826485e-05,
+        7.926505350042135e-05,
+        8.29209602670744e-05,
+        8.4088314906694e-05,
+        8.175414404831827e-05,
+        7.622787961736321e-05,
+        7.62661948101595e-05,
+        0.00012307627184782177,
+        0.00012846849858760834,
+        4.127571446588263e-05,
+        5.43203204870224e-05,
+        2.8455964638851583e-05,
+        6.698764627799392e-05,
+        8.918673847801983e-05,
+        0.0,
+        3.8747399230487645e-05,
+        7.658854156034067e-05
+      ],
+      [
+        4.155329224886373e-05,
+        4.7826739319134504e-05,
+        4.0914295823313296e-05,
+        4.351304596639238e-05,
+        4.006927338195965e-05,
+        4.2783954995684326e-05,
+        3.9587677747476846e-05,
+        4.0181781514547765e-05,
+        4.168730811215937e-05,
+        4.237721077515744e-05,
+        2.8565638785948977e-05,
+        6.061179010430351e-05,
+        4.111034286324866e-05,
+        9.501156455371529e-05,
+        4.218706089886837e-05,
+        3.110877878498286e-05,
+        5.058644092059694e-06,
+        2.891677650040947e-05,
+        3.828818807960488e-05,
+        0.0,
+        1.570440326759126e-05,
+        7.669227488804609e-05
+      ],
+      [
+        6.614009180339053e-05,
+        6.718820804962888e-05,
+        6.622715591220185e-05,
+        7.122952956706285e-05,
+        6.372190546244383e-05,
+        6.505806959467009e-05,
+        6.808241596445441e-05,
+        6.592402496607974e-05,
+        6.42657614662312e-05,
+        7.045194070087746e-05,
+        6.922169268364087e-05,
+        6.953346019145101e-05,
+        6.98329386068508e-05,
+        5.482278356794268e-05,
+        6.920266605447978e-05,
+        6.854960520286113e-05,
+        1.992987392895884e-07,
+        3.584383634347432e-08,
+        2.35459552300199e-07,
+        0.0,
+        2.8862078949032366e-08,
+        7.362111773545621e-07
+      ]
+    ],
+    "observations": [
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ],
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ],
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ],
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ],
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ],
+      [
+        71325.0,
+        120921.0,
+        99624.0,
+        94088.0,
+        95577.0,
+        92294.0,
+        91852.0,
+        86790.0,
+        88370.0,
+        83978.0,
+        37322.0,
+        55283.0,
+        31050.0,
+        105787.0,
+        105787.0,
+        105787.0,
+        32324.0,
+        42413.0,
+        31050.0,
+        0.0,
+        105787.0,
+        6400.0
+      ]
+    ]
+  },
+  "final": {
+    "step": 200,
+    "heldout_loss": 1.358918777512831,
+    "heldout_acc": 0.4721071394161287,
+    "sparse_heldout_loss": 1.2971714729348,
+    "sparse_heldout_acc": 0.5082377878408324,
+    "cum_train_flops": 34431965331456.0,
+    "cum_aux_ops": 3715948584.0,
+    "cum_total_flops_with_aux_estimate": 34435681280040.0,
+    "cum_eval_flops": 6535430799360.0,
+    "cum_eval_aux_ops": 2499456.0,
+    "wallclock_s": 363.027131319046,
+    "mean_active_fraction": 0.5000640620690376
+  }
+}
