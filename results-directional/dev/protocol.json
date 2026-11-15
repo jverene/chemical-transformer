@@ -1,0 +1,46 @@
+{
+  "format": "sampled_adam_directional_program_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_runs",
+  "purpose": "test whether directional Adam-preconditioned utility improves on raw gradient magnitude and the frozen activation rule without expensive second-order credit",
+  "body_seeds": [4, 8],
+  "budgets": [0.375, 0.5],
+  "new_arm": "adam_alignment",
+  "rule": {
+    "score": "per-token cosine between sampled FFN-weight gradient contributions and reconstructed realized Adam update direction, aggregated by layer and token type with EMA beta 0.2",
+    "parameter_samples": "128 fixed uniformly sampled entries per FFN weight matrix, 256 per layer",
+    "timing": "strictly one-step lagged after the real optimizer step; first step exact-budget random; unseen types use observed layer mean",
+    "scope": "FFN weights only; no biases, attention, weight decay, Hessian, current-batch gradients, or full per-token parameter gradients"
+  },
+  "verification": "full-parameter special case matched direct factorized gradient/Adam cosine with zero numerical error in the CPU self-test; MPS smoke passed",
+  "reused_references": {
+    "low_max_abs_random_dense": "results-program/dev-long",
+    "raw_gradients_and_shuffled": "results-gradient/dev"
+  },
+  "steps": 200,
+  "eval_every": 50,
+  "eval_batches": 4,
+  "batch_size": 32,
+  "body_lr": 0.0003,
+  "weight_decay": 0.01,
+  "dropout": 0.1,
+  "primary_endpoints": [
+    "adam_alignment minus raw gradient-high sparse loss at every evaluation",
+    "adam_alignment minus low_max_abs sparse loss at every evaluation",
+    "adam_alignment minus random and shuffled low_max_abs sparse loss",
+    "dense-fewer comparison at matched total cost including auxiliary operations",
+    "dense evaluation, realized activity, token-type coverage, and sampled alignment statistics"
+  ],
+  "decision_rules": {
+    "advance": "adam_alignment must beat gradient-high and low_max_abs at step 200 in all four regimes",
+    "stop": "if it only lands between raw gradients and low_max_abs, stop directional-gradient development",
+    "fresh_confirmation": "only a rule satisfying advance earns unchanged replication on bodies 9 and 10",
+    "development_level_3_signal": "the qualifying rule must also beat dense-fewer at matched total cost in all four regimes"
+  },
+  "prohibited": [
+    "increasing the parameter sample or changing beta after seeing results",
+    "claiming an exact full-gradient or Hessian method",
+    "using current-step gradients or an additional forward pass",
+    "claiming practical efficiency from wins over random or raw gradients alone"
+  ]
+}
