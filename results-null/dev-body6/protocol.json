@@ -1,0 +1,71 @@
+{
+  "format": "shared_null_state_ffn_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_full_runs",
+  "body_seed": 6,
+  "budget": 0.5,
+  "steps": 142,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "arms": [
+    "low_max_abs_null",
+    "random_null"
+  ],
+  "mechanism": {
+    "active_tokens": "ordinary gathered FFN forward and backward",
+    "inactive_tokens": "one shared FFN(0) per layer, broadcast without per-token FFN matmuls",
+    "null_learning": "ordinary autograd through the shared null output aggregates inactive-token gradients into its FFN parameters",
+    "allocation": "frozen low_max_abs versus exact-budget random with the identical null-state mechanism",
+    "deployment": "sparse active-token FFN plus shared null-state output at inference",
+    "dropout": "active rows use ordinary per-row dropout; the single null row uses one shared dropout mask per layer during training and no dropout during evaluation"
+  },
+  "validation": {
+    "full_layer_output_error": 0.0,
+    "full_layer_input_gradient_error": 0.0,
+    "all_layer_parameter_gradient_errors": 0.0,
+    "reference": "explicit gathered active FFN plus shared null FFN with ordinary autograd, non-square batch and sequence dimensions, padding, zero dropout",
+    "null_output_nonzero": true,
+    "full_body_cpu_batch4_flops": 50524323840,
+    "full_body_cpu_batch4_expected": 50524323840,
+    "mps_batch32_step_finite": true,
+    "mps_batch32_step_loss": 3.3123857975006104
+  },
+  "full_cost_accounting": {
+    "dense_cpu_probe_batch4_forward_backward": 72529477632,
+    "dense_batch32_forward_backward_per_step": 580235821056,
+    "per_step_formula": "dense_batch32_step - 12*sum(realized_inactive_rows_per_layer)*d_model*d_ff + 10*number_of_null_layers*d_model*d_ff",
+    "null_cost_explanation": "four forward and six backward matrix-multiply equivalents for the single null row; its input requires no gradient",
+    "nominal50_null_batch32_forward_backward_per_step": 406325035008,
+    "nominal50_steps142_base_flops": 57698154971136,
+    "dense_fewer_steps": 100,
+    "dense_fewer_total_flops": 58023582105600,
+    "base_budget_remaining_for_aux": 325427134464,
+    "auxiliary_operations": "realized scoring, gather/scatter, null output broadcast, and inactive-gradient reduction estimates added separately",
+    "evaluation": "retained separately from training cost for every arm",
+    "mps_visible_counters": "diagnostics only; standard backward is undercounted on MPS"
+  },
+  "dense_fewer_quality_reference": "results-program/level3-75/body6/dense-fewer_seed9406.json; identical body, online data stream, and newly generated held-out data; quality only, with cost recomputed from the CPU-calibrated dense step",
+  "primary_endpoint": "sparse null-state held-out loss of low_max_abs_null versus random_null and ordinary dense-fewer at matched full training cost",
+  "exact_cost_rule": "use the lower of the two final costs; keep the lower-cost arm at its final evaluation and linearly interpolate the other arm between its bracketing evaluations; also report both unadjusted final endpoints",
+  "secondary_endpoints": [
+    "ordinary dense-body held-out loss and accuracy",
+    "sparse null-state accuracy and full trajectory",
+    "realized active fraction",
+    "auxiliary operations and wall clock",
+    "MPS-visible versus CPU-calibrated cost diagnostics"
+  ],
+  "decision_rules": {
+    "allocation_failure": "low_max_abs_null loses to random_null; stop",
+    "no_level_3": "low_max_abs_null beats random_null but not dense-fewer; stop",
+    "development_level_3": "low_max_abs_null beats random_null and dense-fewer at exact matched cost",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "using ordinary dense-body loss as the primary sparse-deployment endpoint",
+    "computing per-token FFN matmuls for inactive tokens",
+    "omitting null forward/backward or auxiliary costs",
+    "using MPS-only totals as full costs",
+    "changing the mechanism, activity, steps, or evaluation after launch",
+    "launching body 7 without a development-level dense-fewer win"
+  ]
+}

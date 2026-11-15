@@ -1,0 +1,70 @@
+{
+  "format": "dense_forward_dense_dgrad_sparse_wgrad_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "protocol": "results-update-wgrad/dev-body6/protocol.json",
+  "validation": {
+    "both_arms_completed": true,
+    "identical_online_data_and_realized_active_counts": true,
+    "mean_wgrad_activity": 0.5000624690398511,
+    "dense_output_and_input_gradient_identity_error": 0.0,
+    "parameter_gradients_match_gathered_active_row_autograd_to_float64_tolerance": true,
+    "isolated_active_row_flops_exact": true,
+    "full_body_cpu_cost_formula_verified": true,
+    "mps_training_step_finite": true
+  },
+  "final": {
+    "low_max_abs_dense_loss": 1.1887319108340788,
+    "random_dense_loss": 1.1876768311870736,
+    "dense_fewer_dense_loss": 1.1832916910576354,
+    "low_max_abs_dense_accuracy": 0.6229320072678588,
+    "random_dense_accuracy": 0.6200631156163335,
+    "dense_fewer_dense_accuracy": 0.6226451181027063,
+    "low_max_abs_full_cost_flops": 57781981913532.0,
+    "random_full_cost_flops": 57777925386240.0,
+    "dense_fewer_full_cost_flops": 58023582105600,
+    "low_max_abs_minus_random_loss": 0.0010550796470052415,
+    "low_max_abs_minus_dense_fewer_loss": 0.005440219776443378,
+    "low_max_abs_minus_random_accuracy": 0.0028688916515252627,
+    "low_max_abs_minus_dense_fewer_accuracy": 0.00028688916515251517,
+    "low_max_abs_mps_visible_train_flops": 44854916677632.0,
+    "low_max_abs_aux_ops": 24320778684.0,
+    "low_max_abs_wallclock_s": 291.53156089782715,
+    "random_wallclock_s": 207.2592649459839
+  },
+  "exact_cost_low_max_abs_vs_random": {
+    "cost_flops": 57777925386240.0,
+    "low_max_abs_interpolated_step": 110.99220781179834,
+    "low_max_abs_dense_loss": 1.1887306283592607,
+    "random_dense_loss": 1.1876768311870736,
+    "low_max_abs_minus_random_loss": 0.0010537971721871209,
+    "low_max_abs_minus_random_accuracy": 0.0028673335796931543
+  },
+  "exact_cost_low_max_abs_vs_dense_fewer": {
+    "cost_flops": 57781981913532.0,
+    "low_max_abs_step": 111,
+    "dense_fewer_interpolated_step": 99.58361724095506,
+    "dense_fewer_bracketing_steps": [75, 100],
+    "low_max_abs_dense_loss": 1.1887319108340788,
+    "dense_fewer_dense_loss": 1.183415137143633,
+    "low_max_abs_minus_dense_fewer_loss": 0.0053167736904458085,
+    "low_max_abs_minus_dense_fewer_accuracy": 0.00044457069195924515
+  },
+  "previous_sparse_backward_descriptive_comparison": {
+    "note": "Different step counts and operating costs; descriptive only, not a confirmatory ablation.",
+    "previous_low_max_abs_dense_loss_at_127_steps": 1.1939005186861373,
+    "new_low_max_abs_dense_loss_at_111_steps": 1.1887319108340788,
+    "low_max_abs_loss_reduction": 0.005168607852058527,
+    "previous_random_dense_loss_at_127_steps": 1.214034038579478,
+    "new_random_dense_loss_at_111_steps": 1.1876768311870736,
+    "random_loss_reduction": 0.0263572073924044
+  },
+  "decision": {
+    "allocation_signal_transfers_to_wgrad_only_sparsity": false,
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "stop_rule_applied": true,
+    "reason": "low_max_abs loses to random wgrad on final and exact-cost dense held-out loss and remains behind dense-fewer; the small accuracy advantage does not change the frozen primary-loss decision"
+  }
+}

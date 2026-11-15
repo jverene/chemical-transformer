@@ -1,0 +1,80 @@
+{
+  "format": "dense_forward_dense_dgrad_sparse_wgrad_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_full_runs",
+  "body_seed": 6,
+  "budget": 0.5,
+  "steps": 111,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "arms": [
+    "low_max_abs_wgrad",
+    "random_wgrad"
+  ],
+  "execution": {
+    "forward": "ordinary dense FFN for every token",
+    "dgrad": "ordinary dense FFN input-gradient matmuls for every token, including inactive tokens",
+    "wgrad": "gathered active-row-only parameter-gradient matmuls for both FFN matrices; biases summed over active rows only",
+    "deployment": "ordinary dense inference without masks or custom execution",
+    "allocation": "frozen low_max_abs versus exact-budget random"
+  },
+  "validation": {
+    "dropout_probabilities": [0.0, 0.2],
+    "output_and_dense_input_gradient_max_error": 0.0,
+    "parameter_gradient_max_errors": [2.220446049250313e-16, 1.1102230246251565e-16, 2.220446049250313e-16, 0.0],
+    "parameter_gradient_tolerance": "rtol=1e-12, atol=1e-12 in float64 against autograd on the gathered active-row reference",
+    "inactive_token_input_gradients_nonzero": true,
+    "isolated_flops": {
+      "n": 7,
+      "d": 3,
+      "h": 5,
+      "active": 3,
+      "measured": 1020,
+      "formula": "8*N*D*H + 4*K*D*H",
+      "expected": 1020
+    },
+    "full_body_cpu_batch4_nominal50_flops": 65281720320,
+    "full_body_cpu_batch4_nominal50_expected": 65281720320,
+    "mps_batch32_step_finite": true,
+    "mps_batch32_step_loss": 1.2102322578430176,
+    "old_sparse_backward_path_preserved": true
+  },
+  "full_cost_accounting": {
+    "dense_cpu_probe_batch4_forward_backward": 72529477632,
+    "dense_batch32_forward_backward_per_step": 580235821056,
+    "nominal50_wgrad_batch32_forward_backward_per_step": 522253762560,
+    "per_step_formula": "dense_batch32_step - 4 * (batch_tokens*n_layers - realized_active_rows) * d_model * d_ff",
+    "per_step_formula_cpu_verified_on_real_padded_batch": true,
+    "auxiliary_operations": "realized scoring and gather/scatter estimates added separately",
+    "evaluation": "retained separately from training cost for every arm",
+    "mps_visible_counters": "diagnostics only; standard backward is undercounted on MPS",
+    "dense_fewer_steps": 100,
+    "dense_fewer_total_flops": 58023582105600,
+    "sparse_steps": 111,
+    "sparse_nominal50_base_flops": 57970167644160,
+    "base_budget_remaining_for_aux": 53414461440
+  },
+  "dense_fewer_quality_reference": "results-program/level3-75/body6/dense-fewer_seed9406.json; identical body, online data stream, and newly generated held-out data; quality only, with cost recomputed from the CPU-calibrated dense step",
+  "primary_endpoint": "ordinary dense held-out loss of low_max_abs_wgrad versus random_wgrad and dense-fewer at matched full training cost",
+  "exact_cost_rule": "use the lower of the two final costs; keep the lower-cost arm at its final evaluation and linearly interpolate the other arm between its bracketing evaluations; also report both unadjusted final endpoints",
+  "secondary_endpoints": [
+    "dense accuracy and full trajectory",
+    "realized wgrad activity",
+    "auxiliary operations and wall clock",
+    "MPS-visible versus CPU-calibrated cost diagnostics"
+  ],
+  "decision_rules": {
+    "allocation_failure": "low_max_abs_wgrad loses to random_wgrad; stop",
+    "no_level_3": "low_max_abs_wgrad beats random_wgrad but not dense-fewer; stop",
+    "development_level_3": "low_max_abs_wgrad beats random_wgrad and dense-fewer at exact matched cost",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "computing dense wgrad and merely masking its gradients",
+    "zeroing or subsampling dense dgrad",
+    "using sparse-deployment loss as the primary endpoint",
+    "using MPS-only totals as full costs",
+    "changing the custom backward, activity, steps, or evaluation after launch",
+    "launching body 7 without a development-level dense-fewer win"
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "format": "shared_null_state_ffn_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "protocol": "results-null/dev-body6/protocol.json",
+  "validation": {
+    "both_arms_completed": true,
+    "identical_online_data_and_realized_active_counts": true,
+    "mean_active_fraction": 0.5000666090622914,
+    "full_layer_output_and_all_gradient_errors": 0.0,
+    "full_body_cpu_cost_formula_verified": true,
+    "mps_training_step_finite": true
+  },
+  "final": {
+    "low_max_abs_sparse_loss": 1.2371025369827642,
+    "random_sparse_loss": 1.2824797244440758,
+    "dense_fewer_loss": 1.1832916910576354,
+    "low_max_abs_sparse_accuracy": 0.5707181792100985,
+    "random_sparse_accuracy": 0.5231902075164961,
+    "dense_fewer_accuracy": 0.6226451181027063,
+    "low_max_abs_dense_body_loss": 1.2425206345579047,
+    "random_dense_body_loss": 1.2390529232474472,
+    "low_max_abs_full_cost_flops": 56910669141984.0,
+    "random_full_cost_flops": 56905481012736.0,
+    "dense_fewer_full_cost_flops": 58023582105600,
+    "low_max_abs_minus_random_sparse_loss": -0.045377187461311586,
+    "low_max_abs_minus_dense_fewer_loss": 0.05381084592512875,
+    "low_max_abs_minus_random_sparse_accuracy": 0.047527971693602344,
+    "low_max_abs_minus_dense_fewer_accuracy": -0.0519269388926078,
+    "low_max_abs_mps_visible_train_flops": 24448234684416.0,
+    "low_max_abs_aux_ops": 33874761696.0,
+    "low_max_abs_wallclock_s": 315.5434730052948,
+    "random_wallclock_s": 340.4307827949524,
+    "dense_fewer_wallclock_s": 233.3652789592743
+  },
+  "exact_cost_low_max_abs_vs_random": {
+    "cost_flops": 56905481012736.0,
+    "low_max_abs_interpolated_step": 141.98705037152556,
+    "low_max_abs_sparse_loss": 1.2371533169954139,
+    "random_sparse_loss": 1.2824797244440758,
+    "low_max_abs_minus_random_loss": -0.0453264074486619,
+    "low_max_abs_minus_random_accuracy": 0.047456765454979344
+  },
+  "exact_cost_low_max_abs_vs_dense_fewer": {
+    "cost_flops": 56910669141984.0,
+    "low_max_abs_step": 142,
+    "dense_fewer_interpolated_step": 98.0819643958028,
+    "dense_fewer_bracketing_steps": [75, 100],
+    "low_max_abs_sparse_loss": 1.2371025369827642,
+    "dense_fewer_loss": 1.1838603360915583,
+    "low_max_abs_minus_dense_fewer_loss": 0.053242200891205904,
+    "low_max_abs_minus_dense_fewer_accuracy": -0.051200590896756104
+  },
+  "decision": {
+    "allocation_signal_present_with_null_state": true,
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "stop_rule_applied": true,
+    "reason": "low_max_abs_null substantially beats random_null at final and exact matched cost, but sparse null-state quality remains far behind dense-fewer on loss and accuracy; the shared zero-input response does not close the practical quality gap"
+  }
+}
