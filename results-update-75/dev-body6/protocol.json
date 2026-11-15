@@ -1,0 +1,62 @@
+{
+  "format": "dense_forward_sparse_backward75_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_full_runs",
+  "body_seed": 6,
+  "budget": 0.75,
+  "steps": 111,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "arms": [
+    "low_max_abs_update",
+    "random_update"
+  ],
+  "execution": {
+    "forward": "ordinary dense FFN for every token",
+    "backward": "custom gathered active-row-only FFN dgrad and wgrad at 75% activity; inactive FFN-path input gradients exactly zero; residual gradients intact",
+    "deployment": "ordinary dense inference without masks or custom execution",
+    "allocation": "frozen low_max_abs versus exact-budget random"
+  },
+  "validation": {
+    "custom_backward_output_and_selected_gradient_identity_previously_verified": true,
+    "full_body_cpu_batch4_at75_flops": 64913670144,
+    "full_body_cpu_batch4_at75_expected": 64913670144,
+    "realized_active_rows_per_layer_in_cpu_probe": 755,
+    "custom_execution_unchanged": true
+  },
+  "full_cost_accounting": {
+    "dense_cpu_probe_batch4_forward_backward": 72529477632,
+    "dense_batch32_forward_backward_per_step": 580235821056,
+    "per_step_formula": "dense_batch32_step - 8*(batch_tokens*n_layers - realized_active_rows)*d_model*d_ff",
+    "nominal75_batch32_forward_backward_per_step": 522253762560,
+    "nominal75_steps111_base_flops": 57970167644160,
+    "dense_fewer_steps": 100,
+    "dense_fewer_total_flops": 58023582105600,
+    "base_budget_remaining_for_aux": 53414461440,
+    "auxiliary_operations": "realized scoring and gather/scatter estimates added separately",
+    "evaluation": "retained separately from training cost for every arm",
+    "mps_visible_counters": "diagnostics only; standard backward is undercounted on MPS"
+  },
+  "dense_fewer_quality_reference": "results-program/level3-75/body6/dense-fewer_seed9406.json; identical body, online data stream, and newly generated held-out data; quality only, with cost recomputed from the CPU-calibrated dense step",
+  "primary_endpoint": "ordinary dense held-out loss of low_max_abs_update versus random_update and dense-fewer at matched full training cost",
+  "exact_cost_rule": "use the lower of the two final costs; keep the lower-cost arm at its final evaluation and linearly interpolate the other arm between its bracketing evaluations; also report both unadjusted final endpoints",
+  "secondary_endpoints": [
+    "dense accuracy and full trajectory",
+    "realized backward activity",
+    "auxiliary operations and wall clock",
+    "MPS-visible versus CPU-calibrated cost diagnostics"
+  ],
+  "decision_rules": {
+    "allocation_failure": "low_max_abs_update loses to random_update; stop",
+    "no_level_3": "low_max_abs_update beats random_update but not dense-fewer; stop",
+    "development_level_3": "low_max_abs_update beats random_update and dense-fewer at exact matched cost",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "computing dense backward and merely masking its gradients",
+    "using sparse-deployment loss as the primary endpoint",
+    "using MPS-only totals as full costs",
+    "changing the custom backward, activity, steps, or evaluation after launch",
+    "launching body 7 without a development-level dense-fewer win"
+  ]
+}

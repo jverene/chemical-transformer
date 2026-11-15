@@ -1,0 +1,54 @@
+{
+  "format": "dense_forward_sparse_backward75_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "protocol": "results-update-75/dev-body6/protocol.json",
+  "validation": {
+    "both_arms_completed": true,
+    "identical_online_data_and_realized_active_counts": true,
+    "mean_backward_activity": 0.7499119750059188,
+    "full_body_cpu_cost_formula_verified_at75": true
+  },
+  "final": {
+    "low_max_abs_dense_loss": 1.1896635658187047,
+    "random_dense_loss": 1.20277572492506,
+    "dense_fewer_dense_loss": 1.1832916910576354,
+    "low_max_abs_dense_accuracy": 0.620350004781486,
+    "random_dense_accuracy": 0.6019890982117242,
+    "dense_fewer_dense_accuracy": 0.6226451181027063,
+    "low_max_abs_full_cost_flops": 57362561071548.0,
+    "random_full_cost_flops": 57358504544256.0,
+    "dense_fewer_full_cost_flops": 58023582105600,
+    "low_max_abs_minus_random_loss": -0.013112159106355215,
+    "low_max_abs_minus_dense_fewer_loss": 0.006371874761069263,
+    "low_max_abs_minus_random_accuracy": 0.01836090656976186,
+    "low_max_abs_minus_dense_fewer_accuracy": -0.0022951133212202324,
+    "low_max_abs_wallclock_s": 209.55304193496704,
+    "random_wallclock_s": 229.95323610305786
+  },
+  "exact_cost_low_max_abs_vs_random": {
+    "cost_flops": 57358504544256.0,
+    "low_max_abs_interpolated_step": 110.99215133048723,
+    "low_max_abs_dense_loss": 1.1896643334162367,
+    "random_dense_loss": 1.20277572492506,
+    "low_max_abs_minus_random_loss": -0.013111391508823234,
+    "low_max_abs_minus_random_accuracy": 0.01835722197263523
+  },
+  "exact_cost_low_max_abs_vs_dense_fewer": {
+    "cost_flops": 57362561071548.0,
+    "low_max_abs_step": 111,
+    "dense_fewer_interpolated_step": 98.86077175854297,
+    "dense_fewer_bracketing_steps": [75, 100],
+    "low_max_abs_dense_loss": 1.1896635658187047,
+    "dense_fewer_dense_loss": 1.1836294410350559,
+    "low_max_abs_minus_dense_fewer_loss": 0.006034124783648842,
+    "low_max_abs_minus_dense_fewer_accuracy": -0.0018636947655953362
+  },
+  "decision": {
+    "allocation_signal_present": true,
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "reason": "75% dense-forward sparse backward beats random but remains behind dense-fewer; the improved 50-to-75 trend motivates one predeclared 87.5% development point rather than a confirmation claim"
+  }
+}

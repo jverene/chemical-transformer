@@ -1,0 +1,53 @@
+{
+  "format": "dense_forward_sparse_backward875_level3_protocol_v1",
+  "split": "development",
+  "status": "frozen_before_full_runs_after_50_and_75_results",
+  "body_seed": 6,
+  "budget": 0.875,
+  "steps": 105,
+  "held_out_seed": 54321,
+  "online_seed": 9406,
+  "arms": [
+    "low_max_abs_update",
+    "random_update"
+  ],
+  "motivation": "The corrected dense-fewer gap decreased from 0.011118 at 50% backward activity to 0.006034 at 75%; this is one predeclared near-dense development point, not a fresh-body confirmation or a post-win replication",
+  "execution": {
+    "forward": "ordinary dense FFN for every token",
+    "backward": "custom gathered active-row-only FFN dgrad and wgrad at 87.5% activity; inactive FFN-path input gradients exactly zero; residual gradients intact",
+    "deployment": "ordinary dense inference without masks or custom execution",
+    "allocation": "frozen low_max_abs versus exact-budget random"
+  },
+  "validation": {
+    "custom_backward_output_and_gradient_identity_previously_verified": true,
+    "realized_row_cost_formula_cpu_verified_at50_and75": true,
+    "custom_execution_unchanged": true
+  },
+  "full_cost_accounting": {
+    "dense_batch32_forward_backward_per_step": 580235821056,
+    "per_step_formula": "dense_batch32_step - 8*(batch_tokens*n_layers - realized_active_rows)*d_model*d_ff",
+    "nominal875_batch32_forward_backward_per_step": 551244791808,
+    "nominal875_steps105_base_flops": 57880703139840,
+    "dense_fewer_steps": 100,
+    "dense_fewer_total_flops": 58023582105600,
+    "base_budget_remaining_for_aux": 142878965760,
+    "auxiliary_operations": "realized scoring and gather/scatter estimates added separately",
+    "evaluation": "retained separately from training cost for every arm",
+    "mps_visible_counters": "diagnostics only"
+  },
+  "dense_fewer_quality_reference": "results-program/level3-75/body6/dense-fewer_seed9406.json; quality only, with CPU-calibrated dense cost",
+  "primary_endpoint": "ordinary dense held-out loss of low_max_abs_update versus random_update and dense-fewer at matched full training cost",
+  "exact_cost_rule": "use the lower of the two final costs; keep the lower-cost arm at its final evaluation and linearly interpolate the other arm between its bracketing evaluations; also report both unadjusted final endpoints",
+  "decision_rules": {
+    "allocation_failure": "low_max_abs_update loses to random_update; stop",
+    "no_level_3": "low_max_abs_update beats random_update but not dense-fewer; stop",
+    "development_level_3": "low_max_abs_update beats random_update and dense-fewer at exact matched cost",
+    "confirmation": "only development_level_3 launches the identical body-7 comparison"
+  },
+  "prohibited": [
+    "changing the custom backward, activity, steps, or evaluation after launch",
+    "using MPS-only totals as full costs",
+    "presenting this development operating-point search as independent confirmation",
+    "launching body 7 without a development-level dense-fewer win"
+  ]
+}

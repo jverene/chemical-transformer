@@ -1,0 +1,53 @@
+{
+  "format": "dense_forward_sparse_backward875_level3_analysis_v1",
+  "split": "development",
+  "body_seed": 6,
+  "held_out_seed": 54321,
+  "protocol": "results-update-875/dev-body6/protocol.json",
+  "validation": {
+    "both_arms_completed": true,
+    "identical_online_data_and_realized_active_counts": true,
+    "mean_backward_activity": 0.8748239882819844
+  },
+  "final": {
+    "low_max_abs_dense_loss": 1.1889014892306777,
+    "random_dense_loss": 1.192636522608132,
+    "dense_fewer_dense_loss": 1.1832916910576354,
+    "low_max_abs_dense_accuracy": 0.6237926747633165,
+    "random_dense_accuracy": 0.6160466673041981,
+    "dense_fewer_dense_accuracy": 0.6226451181027063,
+    "low_max_abs_full_cost_flops": 57206514607800.0,
+    "random_full_cost_flops": 57202677586944.0,
+    "dense_fewer_full_cost_flops": 58023582105600,
+    "low_max_abs_minus_random_loss": -0.0037350333774541777,
+    "low_max_abs_minus_dense_fewer_loss": 0.005609798173042302,
+    "low_max_abs_minus_random_accuracy": 0.007746007459118354,
+    "low_max_abs_minus_dense_fewer_accuracy": 0.0011475566606101717,
+    "low_max_abs_wallclock_s": 201.69558596611023,
+    "random_wallclock_s": 194.897301197052
+  },
+  "exact_cost_low_max_abs_vs_random": {
+    "cost_flops": 57202677586944.0,
+    "low_max_abs_interpolated_step": 104.99295693906654,
+    "low_max_abs_dense_loss": 1.1889012107363213,
+    "random_dense_loss": 1.192636522608132,
+    "low_max_abs_minus_random_loss": -0.0037353118718106426,
+    "low_max_abs_minus_random_accuracy": 0.007739272199547287
+  },
+  "exact_cost_low_max_abs_vs_dense_fewer": {
+    "cost_flops": 57206514607800.0,
+    "low_max_abs_step": 105,
+    "dense_fewer_interpolated_step": 98.59183547766324,
+    "dense_fewer_bracketing_steps": [75, 100],
+    "low_max_abs_dense_loss": 1.1889014892306777,
+    "dense_fewer_dense_loss": 1.1837091732778928,
+    "low_max_abs_minus_dense_fewer_loss": 0.005192315952784909,
+    "low_max_abs_minus_dense_fewer_accuracy": 0.0016808196909681161
+  },
+  "decision": {
+    "development_level_3": false,
+    "body_7_replication_launched": false,
+    "near_dense_budget_search_stopped": true,
+    "reason": "87.5% did not improve the 75% dense-fewer gap; no 93.75% point is justified. The higher-accuracy but worse-loss profile motivates a separate, equally applied temperature-calibration diagnostic"
+  }
+}
