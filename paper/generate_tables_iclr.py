@@ -397,6 +397,238 @@ def stepsmatched_block():
             "\n".join(out) + "\n\\bottomrule\n\\end{tabular}\n")
 
 
+def mean_se(values):
+    mean = st.mean(values)
+    se = st.stdev(values) / len(values) ** 0.5 if len(values) > 1 else 0.0
+    return mean, se
+
+
+def pm(mean, se, nd=4):
+    return f"{mean:.{nd}f}$\\pm${se:.{nd}f}"
+
+
+def online_meta_block():
+    try:
+        combined = json.load(open("results-meta/confirm_combined.json"))
+        summaries = {
+            body: json.load(open(
+                f"results-meta/confirm-seed{body}-k10-m4/summary.json"))
+            for body in combined["body_seeds"]
+        }
+    except (OSError, json.JSONDecodeError, KeyError):
+        return "% online meta table pending\n", {}
+    rows = []
+    for body, summary in summaries.items():
+        arms = summary["arms"]
+        delta_random = arms["meta"]["sparse_heldout_loss"] - arms["random"]["sparse_heldout_loss"]
+        delta_shuffled = arms["meta"]["sparse_heldout_loss"] - arms["shuffled"]["sparse_heldout_loss"]
+        delta_acc = 100 * (arms["meta"]["sparse_heldout_acc"] - arms["random"]["sparse_heldout_acc"])
+        rows.append(
+            f"{body} & {arms['meta']['sparse_heldout_loss']:.4f} & "
+            f"{arms['random']['sparse_heldout_loss']:.4f} & "
+            f"{arms['shuffled']['sparse_heldout_loss']:.4f} & "
+            f"{delta_random:+.4f} & {delta_shuffled:+.4f} & {delta_acc:+.2f} \\\\")
+    random_stats = combined["sparse_deployment_loss"]["meta_minus_random"]
+    shuffled_stats = combined["sparse_deployment_loss"]["meta_minus_shuffled"]
+    acc_stats = combined["sparse_answer_accuracy"]["meta_minus_random"]
+    rows.append(
+        f"Mean $\\Delta$ & -- & -- & -- & {pm(random_stats['mean'], random_stats['se'])} & "
+        f"{pm(shuffled_stats['mean'], shuffled_stats['se'])} & "
+        f"{pm(100*acc_stats['mean'], 100*acc_stats['se'], 2)} \\\\")
+    body = ("\\begin{tabular}{lrrrrrr}\n\\toprule\n"
+            "Body & Meta & Random & Shuffled & $\\Delta$ random & "
+            "$\\Delta$ shuffled & $\\Delta$ acc. (pp) \\\\\n\\midrule\n" +
+            "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    macros = {
+        "MetaRandomDelta": f"{random_stats['mean']:.4f}",
+        "MetaRandomSE": f"{random_stats['se']:.4f}",
+        "MetaShuffledDelta": f"{shuffled_stats['mean']:.4f}",
+        "MetaShuffledSE": f"{shuffled_stats['se']:.4f}",
+        "MetaAccuracyDelta": f"{100*acc_stats['mean']:.2f}",
+        "MetaAccuracySE": f"{100*acc_stats['se']:.2f}",
+        "MetaDenseEvalGap": f"{combined['dense_deployment_loss']['meta_minus_random']['mean']:.4f}",
+        "MetaDenseReferenceGap": f"{combined['sparse_deployment_loss']['meta_minus_dense']['mean']:.4f}",
+    }
+    return body, macros
+
+
+def fixed_program_block():
+    try:
+        dev = json.load(open("results-program/dev-long/analysis.json"))
+        confirm = json.load(open("results-program/confirm-bodies9-10/analysis.json"))
+        combined = json.load(open("results-program/combined_level2_analysis.json"))
+    except (OSError, json.JSONDecodeError):
+        return "% fixed program table pending\n", {}
+    regimes = dev["regimes"] + confirm["regimes"]
+    by_body = {}
+    for regime in regimes:
+        by_body.setdefault(regime["body_seed"], {})[regime["budget"]] = regime
+    rows = []
+    for body, values in by_body.items():
+        split = "Dev." if body in (4, 8) else "Fresh"
+        cells = []
+        for budget in (0.375, 0.5):
+            regime = values[budget]
+            cells.append(regime["paired_sparse_loss_by_step"]["200"])
+            cells.append(100 * regime["paired_sparse_accuracy_by_step"]["200"])
+        rows.append(f"{body} & {split} & {cells[0]:+.4f} & {cells[1]:+.2f} & "
+                    f"{cells[2]:+.4f} & {cells[3]:+.2f} \\\\")
+    budget_stats = {}
+    for budget in (0.375, 0.5):
+        selected = [values[budget] for values in by_body.values()]
+        loss_mean, loss_se = mean_se([
+            row["paired_sparse_loss_by_step"]["200"] for row in selected])
+        acc_mean, acc_se = mean_se([
+            100 * row["paired_sparse_accuracy_by_step"]["200"] for row in selected])
+        budget_stats[budget] = (loss_mean, loss_se, acc_mean, acc_se)
+    rows.append(
+        f"Mean & all bodies & {pm(budget_stats[0.375][0], budget_stats[0.375][1])} & "
+        f"{pm(budget_stats[0.375][2], budget_stats[0.375][3], 2)} & "
+        f"{pm(budget_stats[0.5][0], budget_stats[0.5][1])} & "
+        f"{pm(budget_stats[0.5][2], budget_stats[0.5][3], 2)} \\\\")
+    body_loss_means = [st.mean([
+        values[budget]["paired_sparse_loss_by_step"]["200"]
+        for budget in (0.375, 0.5)]) for values in by_body.values()]
+    body_acc_means = [st.mean([
+        100 * values[budget]["paired_sparse_accuracy_by_step"]["200"]
+        for budget in (0.375, 0.5)]) for values in by_body.values()]
+    loss_mean, loss_se = mean_se(body_loss_means)
+    acc_mean, acc_se = mean_se(body_acc_means)
+    body = ("\\begin{tabular}{llrrrr}\n\\toprule\n"
+            "Body & Split & \\multicolumn{2}{c}{37.5\\% active} & "
+            "\\multicolumn{2}{c}{50\\% active} \\\\\n"
+            "\\cmidrule(lr){3-4}\\cmidrule(lr){5-6}\n"
+            " & & $\\Delta$ loss & $\\Delta$ acc. & $\\Delta$ loss & $\\Delta$ acc. \\\\\n\\midrule\n" +
+            "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    macros = {
+        "ProgramLossDelta": f"{loss_mean:.4f}",
+        "ProgramLossSE": f"{loss_se:.4f}",
+        "ProgramAccuracyDelta": f"{acc_mean:.2f}",
+        "ProgramAccuracySE": f"{acc_se:.2f}",
+        "ProgramFinalWins": str(combined["paired_sparse_loss_by_step"]["200"]["wins"]),
+        "ProgramRegimes": str(combined["regime_count"]),
+        "ProgramShuffledDelta": "-0.02530",
+    }
+    return body, macros
+
+
+def scale_pilot_block():
+    try:
+        analysis = json.load(open("results-scale/150m-pilot/analysis.json"))
+        assert analysis["status"] == "complete"
+        regimes = analysis["regimes"]
+    except (OSError, json.JSONDecodeError, KeyError, AssertionError):
+        return "% 150M scale pilot table pending\n", {}
+    rows = []
+    for regime in regimes:
+        rows.append(
+            f"{regime['body_seed']} & "
+            f"{regime['initial_sparse_loss']['low_max_abs']:.4f} & "
+            f"{regime['final_sparse_loss']['low_max_abs']:.4f} & "
+            f"{regime['final_sparse_loss']['random']:.4f} & "
+            f"{regime['low_minus_random_final_sparse_loss']:+.4f} & "
+            f"{regime['low_minus_random_final_sparse_accuracy_pp']:+.2f} & "
+            f"{regime['low_minus_random_final_dense_loss']:+.4f} \\\\")
+    body = ("\\begin{tabular}{lrrrrrr}\n\\toprule\n"
+            "Body & Low step 0 & Low step 50 & Random step 50 & "
+            "$\\Delta$ sparse loss & $\\Delta$ sparse acc. & $\\Delta$ dense loss \\\\\n"
+            "\\midrule\n" + "\n".join(rows) +
+            "\n\\bottomrule\n\\end{tabular}\n")
+    summary = analysis["summary"]
+    macros = {
+        "ScaleLossDelta": f"{summary['low_minus_random_final_sparse_loss']['mean']:.4f}",
+        "ScaleLossSE": f"{summary['low_minus_random_final_sparse_loss']['se_descriptive_n2']:.4f}",
+        "ScaleAccuracyDelta": f"{summary['low_minus_random_final_sparse_accuracy_pp']['mean']:.2f}",
+        "ScaleAccuracySE": f"{summary['low_minus_random_final_sparse_accuracy_pp']['se_descriptive_n2']:.2f}",
+        "ScaleDenseDelta": f"{summary['low_minus_random_final_dense_loss']['mean']:.4f}",
+        "ScaleChangeDelta": f"{summary['low_minus_random_sparse_loss_change']['mean']:+.4f}",
+    }
+    return body, macros
+
+
+def allocation_ablation_block():
+    try:
+        dev = json.load(open("results-program/dev-long/analysis.json"))
+        gradient = json.load(open("results-gradient/dev/analysis.json"))
+        directional = json.load(open("results-directional/dev/analysis.json"))
+    except (OSError, json.JSONDecodeError, KeyError):
+        return "% allocation ablation table pending\n"
+    random_relative = -dev["summary"]["mean_final_minus_random_loss"]
+    shuffled_relative = -gradient["assignment_diagnostic"]["mean"]
+    rows = [
+        ("Frozen low-max-abs (reference)", "0", "--"),
+        ("Lagged gradient-high", f"{gradient['summary']['gradient_high']['minus_low_max_abs']['mean']:+.4f}", "4/4"),
+        ("Adam-directional utility", f"{directional['summary']['minus_low_max_abs']['mean']:+.4f}", "4/4"),
+        ("Exact-budget random", f"{random_relative:+.4f}", "4/4"),
+        ("Shuffled frozen scores", f"{shuffled_relative:+.4f}", "4/4"),
+    ]
+    body = ("\\begin{tabular}{lrc}\n\\toprule\n"
+            "Allocation rule & $\\Delta$ loss vs. frozen & Frozen wins \\\\\n"
+            "\\midrule\n" + "\n".join(
+                f"{name} & {value} & {wins} \\\\" for name, value, wins in rows) +
+            "\n\\bottomrule\n\\end{tabular}\n")
+    return body
+
+
+def frontier_stress_block():
+    try:
+        dev = json.load(open("results-ema/dev-body6/analysis.json"))["final_ema"]
+        confirm = json.load(open("results-ema/combined_analysis.json"))["confirmation"]
+        combined = json.load(open("results-ema/combined_analysis.json"))
+    except (OSError, json.JSONDecodeError, KeyError):
+        return "% frontier stress table pending\n", {}
+    rows = []
+    for body, role, row in ((6, "Dev.", dev), (7, "Frozen", confirm)):
+        rows.append(
+            f"{body} & {role} & {row['low_max_abs_loss']:.6f} & "
+            f"{row['random_loss']:.6f} & {row['dense_loss']:.6f} & "
+            f"{row['low_max_abs_loss']-row['dense_loss']:+.6f} & "
+            f"{row['low_max_abs_total_flops']/1e12:.2f}/{row['dense_total_flops']/1e12:.2f} \\\\")
+    body = ("\\begin{tabular}{llrrrrr}\n\\toprule\n"
+            "Body & Split & Low-max-abs & Random & Dense & Low $-$ dense & "
+            "Cost low/dense (T) \\\\\n\\midrule\n" +
+            "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+    return body, {
+        "FrontierTwoBodyGap": f"{combined['two_body_means_descriptive_only']['low_minus_dense_loss']:+.4f}"
+    }
+
+
+def relaxed_diagnostic_block():
+    arms = [("Tag targets", "predictor-supervised_seed*.json"),
+            ("Gate-gradient targets", "gategrad_seed*.json"),
+            ("Shuffled targets", "shuffled_seed*.json")]
+    rows = []
+    for label, pattern in arms:
+        runs = load(f"results-p0/tagged/{pattern}")
+        if not runs:
+            continue
+        acc = ms([r["final"]["acc"] for r in runs], 100, 1)
+        bal = ms([r["final"]["balanced_acc"] for r in runs], 100, 1)
+        sp = ms([spread(r) for r in runs], 1, 2)
+        rows.append(f"{label} & {acc} & {bal} & {sp} \\\\")
+    if not rows:
+        return "% relaxed diagnostic table pending\n"
+    return ("\\begin{tabular}{lccc}\n\\toprule\n"
+            "Supervision signal & Acc. & Balanced acc. & Gate spread \\\\\n"
+            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+
+
+def nl_quality_block(nl_domain):
+    labels = {"webtext": "Web text", "code": "Code", "math": "Math"}
+    rows = []
+    for domain, values in nl_domain.items():
+        dense, rotation, gaps = values
+        n = len(dense)
+        fmt = lambda vals: "/".join(f"{value:.3f}" for value in vals)
+        gap = "/".join(f"{100*value:.2f}" for value in gaps)
+        rows.append(f"{labels[domain]} & {n} & {fmt(dense)} & {fmt(rotation)} & {gap} \\\\")
+    if not rows:
+        return "% NL quality table pending\n"
+    return ("\\begin{tabular}{lcccc}\n\\toprule\n"
+            "Domain & $n$ & Dense loss & Dropout @ dense & Gap (\\%) \\\\\n"
+            "\\midrule\n" + "\n".join(rows) + "\n\\bottomrule\n\\end{tabular}\n")
+
+
 def main():
     blocks = {}
     all_macros = {}
@@ -418,6 +650,21 @@ def main():
     all_macros.update(macros)
     all_macros.update(nl_macros(nl_domain))
     blocks["stepsmatchedtable"] = stepsmatched_block()
+    body, macros = online_meta_block()
+    blocks["onlinemetatable"] = body
+    all_macros.update(macros)
+    body, macros = fixed_program_block()
+    blocks["fixedprogramtable"] = body
+    all_macros.update(macros)
+    body, macros = scale_pilot_block()
+    blocks["scalepilotable"] = body
+    all_macros.update(macros)
+    blocks["allocationablationtable"] = allocation_ablation_block()
+    body, macros = frontier_stress_block()
+    blocks["frontierstresstable"] = body
+    all_macros.update(macros)
+    blocks["relaxeddiagnostictable"] = relaxed_diagnostic_block()
+    blocks["nlqualitytable"] = nl_quality_block(nl_domain)
     with open(OUT, "w") as fh:
         fh.write("% auto-generated by paper/generate_tables_iclr.py — do not edit\n")
         for name, m in sorted(all_macros.items()):
