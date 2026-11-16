@@ -1,0 +1,186 @@
+PLAIN-TEXT OPENREVIEW RESPONSES: THREE-PART VERSIONS
+
+Copy only the text between BEGIN and END. No global comment is planned. Reviewer 32DR and dmAa are pending drafts. Reviewer rfcv's sections preserve the three comments already posted and should not be edited here as though they were still pending.
+
+===== REVIEWER 32DR: COMMENT 1 OF 3 =====
+BEGIN
+
+Response 1 of 3: practical applicability relative to dense-fewer-steps.
+
+Thank you for the direct questions. We acknowledge all three concerns: the new methods had not been tested at a second model size, the paper did not justify the practical value of a recipe that loses to dense-fewer-steps, and the broad headline about allocation failure conflicted with successful adaptive-computation methods. We have narrowed the claims, removed the affected comparisons, and added positive allocation experiments.
+
+The direct answer to the practical question is no: we have not demonstrated a replicated setting in which our recipe is better than training a dense model for fewer steps at matched total cost.
+
+The closest result came from a variant that kept the FFN forward pass dense but skipped some FFN backward computation. It also used an exponential moving average of the model weights. On model 6, which was used during development, this variant gave a 0.000366 loss advantage over dense-fewer-steps. When we applied the unchanged protocol to model 7, however, it lost by 0.003133. The average across the two models was +0.0014 loss relative to dense. We report this failed replication rather than calling the first result a practical win.
+
+Random token-level FFN dropout is therefore retained as a diagnostic training intervention, not recommended as a generally superior recipe. The 1.35x result is now described only as a short kernel-level timing test, not as end-to-end acceleration of the original training driver. Wins over random or shuffled masks are used only as evidence that token selection matters. Dense-fewer-steps is the main practical baseline, and the abstract and discussion explicitly state that practical superiority remains undemonstrated.
+
+We agree that a dominated dropout recipe alone would have weak practical motivation. The revised paper instead studies the boundary between three findings: simple local allocation rules fail; better-designed rules can make useful token selections; and neither has yet beaten dense-fewer-steps in a replicated total-cost comparison.
+
+END
+
+
+===== REVIEWER 32DR: COMMENT 2 OF 3 =====
+BEGIN
+
+Response 2 of 3: MoD and the new positive allocation results.
+
+We agree that MoD's published success contradicts a universal claim that token-adaptive computation cannot work. It does not contradict the narrower observation that the particular signals and training rules we tested failed. Our original headline improperly combined those two statements.
+
+We also found an implementation error affecting the intended causal computation in our MoD baseline. We have therefore withdrawn its numerical comparison and do not use it to argue either for or against the published method. The revision discusses MoD, Mixture-of-Recursions, and related recurrent models as positive evidence for adaptive computation.
+
+More importantly, we tested whether better designs could succeed in our own setting. One router learns from the loss after the actual AdamW update caused by its token mask. It improves final loss, measured with the same FFN skipping used during training, over random by -0.0366 and -0.0636 on two confirmation models. It also beats shuffled-score controls throughout training.
+
+A second method is a fixed rule that executes tokens with the smallest maximum absolute activations entering each FFN. After the rule was selected, we left it unchanged and compared it with random masks executing the same number of token rows. It won all eight comparisons across four models and two activity budgets. Its mean loss improvement was -0.0319 +/- 0.0062, and its accuracy improvement was +3.37 +/- 0.65 percentage points.
+
+These results change our conclusion from "allocation is not learnable" to "the original local procedures fail, but useful allocation can be learned under these specified alternatives." They still do not establish an advantage over dense-fewer-steps.
+
+END
+
+
+===== REVIEWER 32DR: COMMENT 3 OF 3 =====
+BEGIN
+
+Response 3 of 3: experimental support, starved-150M, and scale.
+
+The router experiment includes two confirmation models that were not used to develop that router. The fixed-rule experiment includes four models at two activity budgets, including models that were not used to select the rule. We separately report evaluation with FFN skipping and evaluation of the full dense model, including the unfavorable dense-evaluation results.
+
+These are new 11M continuation experiments. We do not describe the 1.4B three-thousand-step fine-tune as pretraining or claim that it validates the new methods.
+
+For the original starved-150M arm, our audit found that the experiment driver ignored the --size argument. The claimed replication was therefore unsupported. We have withdrawn it rather than arguing about whether its gaps would remain after adding noise estimates. None of the revised positive claims relies on that experiment.
+
+For the new fixed rule, we have now completed a frozen 150M pilot using two existing 4,000-step checkpoints, 50 continuation steps, 50% FFN activity, paired random controls, and a newly generated held-out set with 128 sequences per evaluation mode. On model 0, final sparse loss is 1.5095 for low-max-abs versus 1.5502 for random, a difference of -0.04068. On model 1, it is 1.4284 versus 1.4724, a difference of -0.04405. Sparse accuracy is higher by 2.98 and 5.10 percentage points. Dense-evaluation loss differences are -0.01359 and -0.00126, although all four runs have higher dense loss than at step 0.
+
+Both low-max-abs runs improve their own sparse loss from step 0. However, low-max-abs already starts with lower sparse loss, and its final advantage is smaller than its initial advantage on both models. Random therefore shows the larger sparse-loss reduction during these 50 steps. We report this as a short-continuation final-quality signal at a second scale, not as faster learning, a 200-step replication, or a practical win. It is also separate from the withdrawn starved causal arm.
+
+We hope the withdrawn claims, new confirmation experiments, and explicit dense-fewer-steps boundary address the original concerns. We would particularly appreciate your assessment of whether the revised contribution is now sound under its narrower claims, even though practical superiority remains undemonstrated.
+
+END
+
+
+===== REVIEWER dmAa: COMMENT 1 OF 3 =====
+BEGIN
+
+Response 1 of 3: writing and organization.
+
+Thank you for quoting the exact passages and for separating the writing, computation, and deployment concerns. We acknowledge each of them. The two quoted contribution paragraphs have been removed. The dense-inference tables no longer claim inference efficiency. The invalid numerical MoD comparison has been withdrawn. The recurrent adaptive-computation papers you cited are now discussed. The universal non-learnability wording has also been removed. The next two comments give details on computation and the new positive experiments.
+
+We agree that the original contribution statement was too compressed to be useful, even to a careful reader familiar with the area. We have rewritten the title, abstract, introduction, contributions, methods, results, and limitations rather than only editing the two quoted bullets.
+
+The revised paper is organized around three separate questions. First, do the tested local signals produce useful token allocation? Second, can a different learning objective or a fixed rule make better token selections under a hard execution budget? Third, does any benefit survive a total-cost comparison with dense-fewer-steps?
+
+This replaces the previous mixture of workshop history, accounting terminology, and scale claims in the contribution paragraphs. The method section now explains soft-gate diagnostics, binary execution masks, and the shared training protocol before presenting results. The revised title is "When Is Token-Level Compute Allocation Learnable? Realized Updates, Frozen Rules, and the Dense-Training Boundary."
+
+END
+
+
+===== REVIEWER dmAa: COMMENT 2 OF 3 =====
+BEGIN
+
+Response 2 of 3: Eq. (1), continuous gates, and actual FLOPs.
+
+You are correct: as written, Eq. (1) and the accompanying billing sentence do not support a realized-savings claim. Fractional output multiplication still requires the FFN computation. Our original text failed to distinguish a mathematical relaxation from executed computation.
+
+For x3 = LN(x2 + g * FFN(x2)), with g in [0,1], any nonzero fractional g still requires the FFN forward and backward computation. Multiplying the output by 0.5 does not reduce the matrix-multiplication cost by 50%. The soft-gate results are now retained only as diagnostics of gate ordering and target content.
+
+The new allocation experiments work differently. In each layer, a score selects a fixed number of token rows, B. A binary on/off mask then selects exactly those rows. The implementation gathers the selected rows, runs the FFN only on them, and places their outputs back into the full sequence. Other rows receive no FFN contribution. Padding tokens are excluded, and attention remains dense.
+
+Thus 50% activity means that half of the valid token-layer FFN rows execute. It does not mean that total training FLOPs fall by 50%. We make no executable-savings claim from a fractional gate value. The fixed-rule training and ordinary router-training steps use this actual row-skipping path. The periodic router-learning updates are described and counted separately. The revised execution claims depend on binary masks and actual row skipping.
+
+END
+
+
+===== REVIEWER dmAa: COMMENT 3 OF 3 =====
+BEGIN
+
+Response 3 of 3: new positive experiments, dense inference, and related work.
+
+We agree that the original results might be specific to the architecture and learning design. A gate gradient with the model held fixed estimates only the effect of an extremely small gate change. It does not predict the effect of turning an FFN off, changing the mask by a finite amount, or continuing to train the model and allocator together. We removed the oracle and upper-bound language and no longer infer general non-learnability from that procedure.
+
+We ran two positive tests of the alternative you suggested. The first trains a router and model together for 200 continuation steps. Every ten steps, we measure the model weight update caused by the router's mask and evaluate the updated model on the next four ordinary training batches. The router learns by differentiating through that weight update. In other words, it learns from the observed consequence of its token selections rather than from a gate-gradient target.
+
+Here, "sparse loss" means loss measured with the same 50% FFN execution used during training. On model 8, final sparse losses are 1.2600 for the learned router, 1.2967 for random masks, and 1.2982 for shuffled scores. The learned-router-minus-random difference is -0.0366. On model 9, the corresponding losses are 1.2343, 1.2979, and 1.3000, giving -0.0636. These confirmation models were not used to develop the router.
+
+Averaged across the two models, learned-router-minus-random is -0.0501 +/- 0.0135 standard error. Learned-router-minus-shuffled is -0.0519 +/- 0.0138 standard error. The learned router is ahead of both controls at steps 50, 100, 150, and 200 in both models.
+
+The second test uses a fixed rule. For each token, it measures the largest absolute activation value entering the FFN; tokens with the smallest such values execute. After development selection, we left the rule unchanged. It beats random masks executing the same number of rows in all eight model-budget combinations and at all 32 evaluations across four models and two activity budgets. Averaging first within each model, it improves final sparse loss by -0.0319 +/- 0.0062 and answer accuracy by +3.37 +/- 0.65 percentage points. Shuffling scores among tokens, while keeping the same number of rows active, worsens loss by 0.02530 on average. Thus the relationship between scores and particular tokens matters.
+
+These results do not establish practical superiority over dense-fewer-steps. They show that the original design-dependent failures should not have been generalized into a non-learnability claim.
+
+For dense inference, the original experiments asked whether intermittently skipping FFN updates during training could act as a regularizer while restoring the full network at inference. That is a training-time question, not an adaptive-inference method. We now label those tables as same-step quality comparisons and make no inference-savings claim. For the new experiments, evaluation with FFN skipping and dense evaluation are separate. The learned router's sparse improvement does not translate into a better dense model: dense evaluation is worse than random by 0.0499 loss on average.
+
+Our numerical MoD baseline was withdrawn after we found its causality error. We do not use it to argue against published MoD. The revision discusses MoD and Mixture-of-Recursions as positive evidence for adaptive computation. It also discusses Moosa et al.: their finding that an interpretable allocation pattern need not improve algorithmic generalization matches our distinction between producing an allocation pattern and obtaining a useful model outcome.
+
+Does the binary-mask description in comment 2 resolve the FLOP concern, and does the experiment through actual model updates address your hypothesis that a better learning design can make allocation useful? If the revised presentation remains unclear, a pointer to the first ambiguous passage would be especially useful.
+
+END
+
+
+===== REVIEWER rfcv: COMMENT 1 OF 3 =====
+BEGIN
+
+Response 1 of 3: the first-order limitation and direct test through actual model updates.
+
+Thank you for identifying the exact gaps between the original experiments and its claims. We acknowledge all three questions directly. There is no formal nonlinear bound from the first-order procedure. The old starved-150M claim was unsupported and has been withdrawn. The original efficiency comparisons did not consistently combine total cost, actual execution, and training behavior. The next two comments cover the fixed-rule result, accounting, implementation checks, and practical boundary.
+
+There is no formal argument that sorting gate gradients bounds nonlinear allocation or learning performance. The target -sum_l dL/dg_{t,l}, evaluated at g=1, measures how sensitive the loss is to a very small gate change with the model held fixed. Sorting this quantity is optimal only for that small-change linear approximation. It does not bound the loss after turning FFNs on or off, choosing a different allocation rule, training the model and router together, or retraining. We removed "oracle" and "upper bound" for this procedure and narrowed the conclusion to the tested approximation and update rule.
+
+We agree that adding seeds to the same 100-step allocator would only measure its failure more precisely. We therefore changed both the allocation method and the replication structure.
+
+The new router and model train together for 200 updates from a shared mid-training checkpoint. All allocation arms receive the same pregenerated training batches and execute the same number of FFN token rows. The router reads the current activations immediately before each FFN and selects exactly 50% of valid token rows.
+
+Every ten steps, we compute the model weight update caused by that mask and evaluate the updated model on the next four ordinary training batches. The router learns by differentiating through this weight update and reducing the observed post-update loss. Those four batches are subsequently used for ordinary model training, so the method does not introduce extra training examples. Their additional evaluations and the backward computation needed to train the router through the weight update are counted as additional computation. The updated model weights and optimizer state become the actual next training state.
+
+This addresses three specific gaps: the model now adapts together with the router; masks are refreshed during training rather than every 100 steps; and the learning signal comes from the actual finite weight update rather than a small gate change with the model held fixed.
+
+Here, "sparse loss" means evaluation with the same 50% FFN execution used during training. On model 8, final sparse losses are 1.2600 for the learned router, 1.2967 for random masks, and 1.2982 for shuffled scores. Learned-router-minus-random is -0.0366, and learned-router-minus-shuffled is -0.0382. On model 9, the losses are 1.2343, 1.2979, and 1.3000, giving differences of -0.0636 and -0.0657. These confirmation models were not used to develop the router.
+
+Across the two models, mean learned-router-minus-random is -0.0501 +/- 0.0135 standard error. Mean learned-router-minus-shuffled is -0.0519 +/- 0.0138 standard error. The learned router is ahead of both controls at steps 50, 100, 150, and 200 in each model. We interpret this as a limited positive counterexample to the original broad interpretation, not as evidence that all allocation methods work.
+
+END
+
+
+===== REVIEWER rfcv: COMMENT 2 OF 3 =====
+BEGIN
+
+Response 2 of 3: the fixed allocation rule and separation of quality from total cost.
+
+We also tested whether a simple rule based on current token activations already contains useful allocation structure. For each token, the selected rule takes the largest absolute activation value entering the FFN. Tokens with the smallest such values execute, up to an exact per-layer budget. The rule needs no learned router, future reward evaluation, gradient estimate, or additional dense FFN pass.
+
+The rule was selected on development models and then left unchanged. Across four models and activity budgets of 37.5% and 50%, it wins all eight final comparisons against random masks executing the same number of rows. It also wins all 32 evaluations at steps 50, 100, 150, and 200. Averaging first within each model, the final loss difference is -0.0319 +/- 0.0062 and the answer-accuracy difference is +3.37 +/- 0.65 percentage points. Models 9 and 10 were not used to select the rule, although they had appeared in earlier unrelated experiments.
+
+The shuffled control keeps the same scores and active-row count within each layer but assigns those scores to different tokens. It is worse than the fixed rule by 0.02530 loss on average. Rules based on previous-step gradients or on Adam-adjusted gradient direction also outperform random, but remain behind the fixed activation rule in all four development settings. These controls show that assigning computation to particular tokens matters, rather than merely executing a fixed fraction of them.
+
+We now separate three claims.
+
+First, token selection under a fixed execution budget. The comparisons above use equal training updates and equal numbers of executed FFN rows. They test whether the choice of tokens matters; they are not total-cost victories.
+
+Second, quality of the full dense model. The learned router's benefit is specific to evaluation with FFN skipping. When the resulting models are evaluated densely, the learned-router model is worse than random by 0.0499 loss on average. Even its sparse loss remains 0.0240 above a model trained densely for the same number of updates. We therefore do not claim that the router learns a better dense model.
+
+Third, practical total cost. The original 1.4B counter counted attention once rather than once per layer, so we withdrew that total-FLOP interpretation. We also found that PyTorch's counter on Apple MPS omitted ordinary backward-pass work. Old MPS-only totals are therefore not used for practical claims. Revised practical comparisons use operation counts checked against CPU execution, including forward and backward computation in every layer and additional work such as routing, reward evaluations, router updates, or weight averaging where applicable.
+
+END
+
+
+===== REVIEWER rfcv: COMMENT 3 OF 3 =====
+BEGIN
+
+Response 3 of 3: row-skipping validation, dense-fewer-steps, and scale.
+
+We agree that the original text connected two paths that should have been distinguished: the original training driver, which multiplied outputs by masks, and a separate timing benchmark, which actually skipped rows.
+
+The revised validation checks that binary masking and row skipping produce equivalent forward outputs, that selected row counts are exact and exclude padding, and that the differentiable weight-update implementation matches ordinary AdamW including optimizer moments. We also checked gradients through the router-learning update against finite differences, and checked the outputs, input gradients, and parameter gradients of the sparse-update operations against autograd.
+
+The fixed-rule training and ordinary router-training steps use actual row skipping. The periodic router-learning step uses a differentiable approximation around the binary mask; it is distinguished from ordinary execution and its additional work is counted.
+
+These checks establish numerical properties of the operations used in the new experiments. We do not claim that they establish end-to-end equivalence of the original masked training driver and the separate timing benchmark. The 1.35x figure is now described only as a short kernel-level benchmark, not as end-to-end training acceleration.
+
+We have not established a replicated setting in which any proposed recipe outperforms shorter dense training at matched actual cost. Under the corrected accounting, a variant with dense forward computation and partial backward computation gave a 0.000366 loss advantage on one development model. The unchanged protocol lost by 0.003133 on the second model. The two-model mean difference is +0.0014 loss relative to dense. We report both outcomes and make no practical-superiority claim.
+
+For scale, the original starved-150M causal claim remains withdrawn because its experiment driver ignored --size. Separately, we completed a frozen 150M pilot for the fixed rule: two existing 4,000-step checkpoints, 50 continuation steps, 50% activity, paired random controls, and 128 newly generated held-out sequences per evaluation mode. Final sparse-loss differences are -0.04068 on model 0 and -0.04405 on model 1; sparse accuracy differences are +2.98 and +5.10 percentage points. Dense-loss differences are -0.01359 and -0.00126, although dense loss worsens from step 0 in all runs.
+
+Both fixed-rule runs improve their own sparse loss, but random has the larger reduction during continuation on both models because the fixed rule already starts with lower sparse loss. The final advantage is smaller than the initial advantage. We therefore call this a 50-step final-quality signal at a second scale, not faster learning, a 200-step replication, or a practical-efficiency result.
+
+Does the new evidence from actual mask-dependent weight updates address your concern about learnability, independently of practical efficiency? If a soundness concern remains, would it be more useful to discuss the difference between sparse and dense evaluation, or the total-cost comparison, first?
+
+END
