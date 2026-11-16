@@ -1,0 +1,90 @@
+{
+  "format": "frozen_low_max_abs_150m_scale_pilot_protocol_v1",
+  "status": "frozen_before_50_step_runs",
+  "split": "development_scale_pilot",
+  "scientific_scope": "150M short-continuation allocation signal, not a 200-step replication, practical-efficiency result, or dense-fewer victory",
+  "model": {
+    "size": "150m",
+    "d_model": 1024,
+    "n_layers": 12,
+    "d_ff": 4096,
+    "sequence_length": 512,
+    "task": "tagged-v2",
+    "checkpoint_template": "results-p3b/tagged-v2/predictor-supervised_stage1_150m_seed{seed}.pt",
+    "checkpoint_steps": 4000,
+    "body_seeds": [0, 1],
+    "freshness": "bodies were used in earlier original-paper experiments but not in low-max-abs discovery or selection"
+  },
+  "program": {
+    "name": "low_max_abs",
+    "expression": "-max_abs(pre_ffn_activation)",
+    "execution": "exact per-layer Top-B; padding excluded; current on-policy features; gather/scatter; no router learning",
+    "status": "unchanged from 11M experiments"
+  },
+  "continuation": {
+    "steps": 50,
+    "budget": 0.5,
+    "micro_batch_size": 8,
+    "gradient_accumulation": 4,
+    "effective_batch_size": 32,
+    "body_lr": 0.00001,
+    "learning_rate_basis": "end-of-cosine continuation rather than restarting at the original peak 0.0001",
+    "weight_decay": 0.1,
+    "dropout": 0.1,
+    "gradient_clip": 1.0,
+    "optimizer": "AdamW, newly initialized state because checkpoints contain body parameters only",
+    "online_seed_rule": "15000 + body_seed",
+    "online_seeds": [15000, 15001]
+  },
+  "evaluation": {
+    "held_out_seed": 20261115,
+    "held_out_status": "newly generated and not used in prior experiments",
+    "eval_steps": [0, 25, 50],
+    "eval_batches": 16,
+    "eval_batch_size": 8,
+    "eval_sequences_per_mode": 128,
+    "primary": "low_max_abs minus paired random sparse held-out loss at step 50 on each body",
+    "secondary": "sparse accuracy, dense held-out evaluation, and change from the initial sparse evaluation"
+  },
+  "arms": ["random", "low_max_abs"],
+  "execution_order": "body 0 random, body 0 low_max_abs, body 1 random, body 1 low_max_abs; sequential MPS only",
+  "decision_rules": {
+    "positive_scale_signal": "low_max_abs has lower final sparse loss than random on both bodies with no protocol change",
+    "failed_scale_pilot": "any final paired loss difference is nonnegative; no score, budget, seed, or learning-rate changes afterward",
+    "useful_continuation_check": "report whether final sparse loss improves from step 0 rather than relying only on relative allocation differences",
+    "no_level_3": "no practical or dense-fewer claim from this fixed-budget pilot"
+  },
+  "prohibited": [
+    "using the incorrect tagged-v1 smoke results as scientific evidence",
+    "treating one-step engineering smokes as scale results",
+    "optional extension to 100 or 200 steps based on observed outcomes",
+    "post-hoc learning-rate, body-seed, held-out-seed, or budget tuning",
+    "concurrent MPS jobs",
+    "using MPS-only FLOP totals for practical accounting"
+  ],
+  "engineering_validation": {
+    "checkpoint_initial_dense_loss_reproduced": true,
+    "gradient_accumulation_max_error": 1.6653345369377348e-16,
+    "memory_safe_microbatch_smoke": true,
+    "correct_task_smoke": "results-scale/150m-smoke-accum-v2",
+    "incorrect_task_smoke_excluded": "results-scale/150m-smoke-accum",
+    "batch32_oom_smoke_excluded": "results-scale/150m-smoke"
+  },
+  "engineering_restart_2026_11_15": {
+    "reason": "The background wall-clock timeout stopped the original process after laptop sleep; PID 72121 was no longer running.",
+    "completed_arm_reused": "body0_budget0.5/random_seed15000.json",
+    "interrupted_arm": "body0_budget0.5/low_max_abs_seed15000.json",
+    "interrupted_step": 25,
+    "interrupted_arm_action": "Restart from step 0 with identical settings because only metrics, not model or optimizer state, were saved. The partial arm is not scientific evidence.",
+    "remaining_arms": ["body 0 low_max_abs", "body 1 random", "body 1 low_max_abs"],
+    "scientific_settings_changed": false,
+    "resume_guard": "Reuse only completed arms with exactly matching configuration, checkpoint, arm, body seed, online seed, budget, and final step.",
+    "timeout_policy": "No background wall-clock timeout; computation still requires the Mac to be awake."
+  },
+  "compute_estimate": {
+    "measured_effective_step_seconds_range": [30, 40],
+    "estimated_minutes_per_arm": [30, 40],
+    "estimated_total_minutes": [120, 160],
+    "basis": "four 50-step arms plus three dense-and-sparse evaluations per arm"
+  }
+}

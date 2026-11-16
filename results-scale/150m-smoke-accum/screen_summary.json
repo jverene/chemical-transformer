@@ -1,0 +1,34 @@
+{
+  "format": "fixed_allocation_program_screen_summary_v1",
+  "split": "development",
+  "steps": 1,
+  "programs": {
+    "low_max_abs": {
+      "program": {
+        "name": "low_max_abs",
+        "expression": "-max_abs",
+        "terms": [
+          [
+            "max_abs",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 0,
+          "budget": 0.5,
+          "minus_random_loss": 0.3962550163269043,
+          "minus_random_accuracy": 0.0007412898443291327
+        }
+      ],
+      "wins": 0,
+      "mean_minus_random_loss": 0.3962550163269043,
+      "worst_minus_random_loss": 0.3962550163269043,
+      "eligible_all_regimes_win": false
+    }
+  },
+  "selected_for_longer_development": null,
+  "decision": "kill fixed-program route: no program beat random in every regime",
+  "note": "short development screen only; no Level 2 or Level 3 claim and no dense-fewer frontier claim"
+}

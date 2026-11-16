@@ -1,0 +1,41 @@
+{
+  "format": "fixed_allocation_program_regime_summary_v1",
+  "arms": {
+    "random": {
+      "final_sparse_loss": 1.5501897563209242,
+      "final_sparse_accuracy": 0.4263597199784599,
+      "cum_train_flops": 225124468916224.0,
+      "cum_aux_ops": 9830400.0,
+      "cum_total_flops_with_aux_estimate": 225124478746624.0,
+      "mean_active_fraction": 0.5000523130729468,
+      "paired_by_step": {
+        "25": {
+          "minus_random_loss": 0.0,
+          "minus_random_accuracy": 0.0
+        },
+        "50": {
+          "minus_random_loss": 0.0,
+          "minus_random_accuracy": 0.0
+        }
+      }
+    },
+    "low_max_abs": {
+      "final_sparse_loss": 1.5095112106579052,
+      "final_sparse_accuracy": 0.4562017591096751,
+      "cum_train_flops": 225124468916224.0,
+      "cum_aux_ops": 19738258080.0,
+      "cum_total_flops_with_aux_estimate": 225144207174304.0,
+      "mean_active_fraction": 0.5000523130729468,
+      "paired_by_step": {
+        "25": {
+          "minus_random_loss": -0.04115287691014591,
+          "minus_random_accuracy": 0.03464369054029798
+        },
+        "50": {
+          "minus_random_loss": -0.04067854566301898,
+          "minus_random_accuracy": 0.029842039131215192
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,155 @@
+{
+  "format": "frozen_low_max_abs_150m_scale_pilot_analysis_v1",
+  "status": "complete",
+  "verification": {
+    "all_four_runs_completed_at_step50": true,
+    "protocol_config_and_program_checked": true,
+    "paired_active_histories_identical": true,
+    "paired_training_flops_identical": true,
+    "effective_training_batch": 32,
+    "held_out_sequences_per_mode": 128,
+    "held_out_seed": 20261115
+  },
+  "regimes": [
+    {
+      "body_seed": 0,
+      "online_seed": 15000,
+      "budget": 0.5,
+      "steps": 50,
+      "initial_sparse_loss": {
+        "random": 3.954033264836623,
+        "low_max_abs": 3.7174382005250535
+      },
+      "final_sparse_loss": {
+        "random": 1.5501897563209242,
+        "low_max_abs": 1.5095112106579052
+      },
+      "final_sparse_accuracy": {
+        "random": 0.4263597199784599,
+        "low_max_abs": 0.4562017591096751
+      },
+      "final_dense_loss": {
+        "random": 1.4962403003467188,
+        "low_max_abs": 1.4826514432902447
+      },
+      "low_minus_random_final_sparse_loss": -0.04067854566301898,
+      "low_minus_random_final_sparse_accuracy_pp": 2.9842039131215192,
+      "low_minus_random_final_dense_loss": -0.013588857056474168,
+      "low_minus_random_initial_sparse_loss": -0.23659506431156974,
+      "sparse_loss_change_from_step0": {
+        "random": -2.403843508515699,
+        "low_max_abs": -2.2079269898671483
+      },
+      "dense_loss_change_from_step0": {
+        "random": 0.08331797630969917,
+        "low_max_abs": 0.069729119253225
+      },
+      "mean_active_fraction": {
+        "random": 0.5000523130729468,
+        "low_max_abs": 0.5000523130729468
+      },
+      "cum_train_flops_each": 225124468916224.0,
+      "cum_total_flops_with_aux_estimate": {
+        "random": 225124478746624.0,
+        "low_max_abs": 225144207174304.0
+      },
+      "low_minus_random_sparse_loss_change": 0.19591651864855075
+    },
+    {
+      "body_seed": 1,
+      "online_seed": 15001,
+      "budget": 0.5,
+      "steps": 50,
+      "initial_sparse_loss": {
+        "random": 3.382186115005499,
+        "low_max_abs": 3.0008483305852267
+      },
+      "final_sparse_loss": {
+        "random": 1.4724245281743138,
+        "low_max_abs": 1.4283748270005017
+      },
+      "final_sparse_accuracy": {
+        "random": 0.5042631484473165,
+        "low_max_abs": 0.5552863040746724
+      },
+      "final_dense_loss": {
+        "random": 1.3676179542438325,
+        "low_max_abs": 1.3663569743148474
+      },
+      "low_minus_random_final_sparse_loss": -0.04404970117381213,
+      "low_minus_random_final_sparse_accuracy_pp": 5.102315562735593,
+      "low_minus_random_final_dense_loss": -0.0012609799289851065,
+      "low_minus_random_initial_sparse_loss": -0.3813377844202721,
+      "sparse_loss_change_from_step0": {
+        "random": -1.909761586831185,
+        "low_max_abs": -1.572473503584725
+      },
+      "dense_loss_change_from_step0": {
+        "random": 0.061953401919806916,
+        "low_max_abs": 0.06069242199082181
+      },
+      "mean_active_fraction": {
+        "random": 0.4999924899970932,
+        "low_max_abs": 0.4999924899970932
+      },
+      "cum_train_flops_each": 225090042068992.0,
+      "cum_total_flops_with_aux_estimate": {
+        "random": 225090051899392.0,
+        "low_max_abs": 225109774278424.0
+      },
+      "low_minus_random_sparse_loss_change": 0.33728808324646
+    }
+  ],
+  "summary": {
+    "low_minus_random_final_sparse_loss": {
+      "mean": -0.042364123418415556,
+      "se_descriptive_n2": 0.001685577755396572,
+      "values": [
+        -0.04067854566301898,
+        -0.04404970117381213
+      ]
+    },
+    "low_minus_random_final_sparse_accuracy_pp": {
+      "mean": 4.043259737928556,
+      "se_descriptive_n2": 1.0590558248070367,
+      "values": [
+        2.9842039131215192,
+        5.102315562735593
+      ]
+    },
+    "low_minus_random_final_dense_loss": {
+      "mean": -0.0074249184927296374,
+      "se_descriptive_n2": 0.00616393856374453,
+      "values": [
+        -0.013588857056474168,
+        -0.0012609799289851065
+      ]
+    },
+    "low_minus_random_initial_sparse_loss": {
+      "mean": -0.3089664243659209,
+      "se_descriptive_n2": 0.07237136005435119,
+      "values": [
+        -0.23659506431156974,
+        -0.3813377844202721
+      ]
+    },
+    "low_minus_random_sparse_loss_change": {
+      "mean": 0.26660230094750537,
+      "se_descriptive_n2": 0.0706857822989546,
+      "values": [
+        0.19591651864855075,
+        0.33728808324646
+      ]
+    }
+  },
+  "decision": "positive_150m_short_continuation_final_sparse_loss_signal",
+  "frozen_gate": "Passed: low-max-abs has lower final sparse loss than paired random on both bodies.",
+  "interpretation": [
+    "This is a 50-step, two-body, fixed-budget development scale pilot with a newly generated held-out set.",
+    "Bodies were not used for low-max-abs discovery or selection, but were used in earlier original-paper experiments.",
+    "Both low-max-abs runs improve their own sparse loss from step 0.",
+    "The final sparse-loss advantage is smaller than the initial sparse-loss advantage on both bodies; random has the larger sparse-loss reduction during continuation. Do not describe this pilot as a larger learning-rate or learning-progress gain.",
+    "Low-max-abs has lower final dense loss than random on both bodies, but dense loss worsens from step 0 for all four runs.",
+    "No 200-step scale replication, from-initialization result, natural-language transfer, dense-fewer win, or practical-efficiency claim is established."
+  ]
+}

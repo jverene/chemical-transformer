@@ -1,0 +1,34 @@
+{
+  "format": "fixed_allocation_program_screen_summary_v1",
+  "split": "development",
+  "steps": 1,
+  "programs": {
+    "low_max_abs": {
+      "program": {
+        "name": "low_max_abs",
+        "expression": "-max_abs",
+        "terms": [
+          [
+            "max_abs",
+            -1.0
+          ]
+        ]
+      },
+      "regimes": [
+        {
+          "body_seed": 0,
+          "budget": 0.5,
+          "minus_random_loss": -0.3352241516113281,
+          "minus_random_accuracy": 0.0057887120115774245
+        }
+      ],
+      "wins": 1,
+      "mean_minus_random_loss": -0.3352241516113281,
+      "worst_minus_random_loss": -0.3352241516113281,
+      "eligible_all_regimes_win": true
+    }
+  },
+  "selected_for_longer_development": "low_max_abs",
+  "decision": "advance one frozen program to longer development",
+  "note": "short development screen only; no Level 2 or Level 3 claim and no dense-fewer frontier claim"
+}
