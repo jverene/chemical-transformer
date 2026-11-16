@@ -69,222 +69,7 @@ LaTeX Info: Redefining \cite on input line 694.
 \cv@tot=\count192
 \cv@tmpc@=\count193
 \cv@tmpc=\count194
-) (tikz.sty (pgf.sty
-(pgfrcs.sty (pgfutil-common.tex
-\pgfutil@everybye=\toks17
-\pgfutil@tempdima=\dimen144
-\pgfutil@tempdimb=\dimen145
- (pgfutil-common-lists.tex)) (pgfutil-latex.def
-\pgfutil@abb=\box52
-) (pgfrcs.code.tex (pgf.revision.tex)
-Package: pgfrcs 2021/05/15 v3.1.9a (3.1.9a)
-))
-Package: pgf 2021/05/15 v3.1.9a (3.1.9a)
- (pgfcore.sty (graphicx.sty
-Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
- (graphics.sty
-Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
-(trig.sty
-Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
-) (graphics.cfg
-File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
-)
-Package graphics Info: Driver file: xetex.def on input line 107.
-)
-\Gin@req@height=\dimen146
-\Gin@req@width=\dimen147
-) (pgfsys.sty (pgfsys.code.tex
-Package: pgfsys 2021/05/15 v3.1.9a (3.1.9a)
- (pgfkeys.code.tex
-\pgfkeys@pathtoks=\toks18
-\pgfkeys@temptoks=\toks19
-
-(pgfkeysfiltered.code.tex
-\pgfkeys@tmptoks=\toks20
-))
-\pgf@x=\dimen148
-\pgf@y=\dimen149
-\pgf@xa=\dimen150
-\pgf@ya=\dimen151
-\pgf@xb=\dimen152
-\pgf@yb=\dimen153
-\pgf@xc=\dimen154
-\pgf@yc=\dimen155
-\pgf@xd=\dimen156
-\pgf@yd=\dimen157
-\w@pgf@writea=\write3
-\r@pgf@reada=\read2
-\c@pgf@counta=\count195
-\c@pgf@countb=\count196
-\c@pgf@countc=\count197
-\c@pgf@countd=\count198
-\t@pgf@toka=\toks21
-\t@pgf@tokb=\toks22
-\t@pgf@tokc=\toks23
-\pgf@sys@id@count=\count199
- (pgf.cfg
-File: pgf.cfg 2021/05/15 v3.1.9a (3.1.9a)
-)
-Driver file for pgf: pgfsys-xetex.def
- (pgfsys-xetex.def
-File: pgfsys-xetex.def 2021/05/15 v3.1.9a (3.1.9a)
- (pgfsys-dvipdfmx.def
-File: pgfsys-dvipdfmx.def 2021/05/15 v3.1.9a (3.1.9a)
-
-(pgfsys-common-pdf.def
-File: pgfsys-common-pdf.def 2021/05/15 v3.1.9a (3.1.9a)
-)
-\pgfsys@objnum=\count266
-))) (pgfsyssoftpath.code.tex
-File: pgfsyssoftpath.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfsyssoftpath@smallbuffer@items=\count267
-\pgfsyssoftpath@bigbuffer@items=\count268
-) (pgfsysprotocol.code.tex
-File: pgfsysprotocol.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-)) (pgfcore.code.tex
-Package: pgfcore 2021/05/15 v3.1.9a (3.1.9a)
- (pgfmath.code.tex (pgfmathcalc.code.tex
-(pgfmathutil.code.tex) (pgfmathparser.code.tex
-\pgfmath@dimen=\dimen158
-\pgfmath@count=\count269
-\pgfmath@box=\box53
-\pgfmath@toks=\toks24
-\pgfmath@stack@operand=\toks25
-\pgfmath@stack@operation=\toks26
-) (pgfmathfunctions.code.tex
-(pgfmathfunctions.basic.code.tex) (pgfmathfunctions.trigonometric.code.tex)
-(pgfmathfunctions.random.code.tex) (pgfmathfunctions.comparison.code.tex)
-(pgfmathfunctions.base.code.tex) (pgfmathfunctions.round.code.tex)
-(pgfmathfunctions.misc.code.tex) (pgfmathfunctions.integerarithmetics.code.tex)
-)) (pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count270
-)) (pgfint.code.tex) (pgfcorepoints.code.tex
-File: pgfcorepoints.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@picminx=\dimen159
-\pgf@picmaxx=\dimen160
-\pgf@picminy=\dimen161
-\pgf@picmaxy=\dimen162
-\pgf@pathminx=\dimen163
-\pgf@pathmaxx=\dimen164
-\pgf@pathminy=\dimen165
-\pgf@pathmaxy=\dimen166
-\pgf@xx=\dimen167
-\pgf@xy=\dimen168
-\pgf@yx=\dimen169
-\pgf@yy=\dimen170
-\pgf@zx=\dimen171
-\pgf@zy=\dimen172
-)
-(pgfcorepathconstruct.code.tex
-File: pgfcorepathconstruct.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@path@lastx=\dimen173
-\pgf@path@lasty=\dimen174
-) (pgfcorepathusage.code.tex
-File: pgfcorepathusage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@shorten@end@additional=\dimen175
-\pgf@shorten@start@additional=\dimen176
-)
-(pgfcorescopes.code.tex
-File: pgfcorescopes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfpic=\box54
-\pgf@hbox=\box55
-\pgf@layerbox@main=\box56
-\pgf@picture@serial@count=\count271
-) (pgfcoregraphicstate.code.tex
-File: pgfcoregraphicstate.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgflinewidth=\dimen177
-)
-(pgfcoretransformations.code.tex
-File: pgfcoretransformations.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@pt@x=\dimen178
-\pgf@pt@y=\dimen179
-\pgf@pt@temp=\dimen180
-) (pgfcorequick.code.tex
-File: pgfcorequick.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-)
-(pgfcoreobjects.code.tex
-File: pgfcoreobjects.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-) (pgfcorepathprocessing.code.tex
-File: pgfcorepathprocessing.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-)
-(pgfcorearrows.code.tex
-File: pgfcorearrows.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfarrowsep=\dimen181
-) (pgfcoreshade.code.tex
-File: pgfcoreshade.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@max=\dimen182
-\pgf@sys@shading@range@num=\count272
-\pgf@shadingcount=\count273
-) (pgfcoreimage.code.tex
-File: pgfcoreimage.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-
-(pgfcoreexternal.code.tex
-File: pgfcoreexternal.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfexternal@startupbox=\box57
-)) (pgfcorelayers.code.tex
-File: pgfcorelayers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-)
-(pgfcoretransparency.code.tex
-File: pgfcoretransparency.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-) (pgfcorepatterns.code.tex
-File: pgfcorepatterns.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-) (pgfcorerdf.code.tex
-File: pgfcorerdf.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-))) (pgfmoduleshapes.code.tex
-File: pgfmoduleshapes.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfnodeparttextbox=\box58
-) (pgfmoduleplot.code.tex
-File: pgfmoduleplot.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-)
-(pgfcomp-version-0-65.sty
-Package: pgfcomp-version-0-65 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@nodesepstart=\dimen183
-\pgf@nodesepend=\dimen184
-) (pgfcomp-version-1-18.sty
-Package: pgfcomp-version-1-18 2021/05/15 v3.1.9a (3.1.9a)
-)) (pgffor.sty (pgfkeys.sty (pgfkeys.code.tex)) (pgfmath.sty (pgfmath.code.tex)
-) (pgffor.code.tex
-Package: pgffor 2021/05/15 v3.1.9a (3.1.9a)
-
-(pgfmath.code.tex)
-\pgffor@iter=\dimen185
-\pgffor@skip=\dimen186
-\pgffor@stack=\toks27
-\pgffor@toks=\toks28
-)) (tikz.code.tex
-Package: tikz 2021/05/15 v3.1.9a (3.1.9a)
- (pgflibraryplothandlers.code.tex
-File: pgflibraryplothandlers.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgf@plot@mark@count=\count274
-\pgfplotmarksize=\dimen187
-)
-\tikz@lastx=\dimen188
-\tikz@lasty=\dimen189
-\tikz@lastxsaved=\dimen190
-\tikz@lastysaved=\dimen191
-\tikz@lastmovetox=\dimen192
-\tikz@lastmovetoy=\dimen193
-\tikzleveldistance=\dimen194
-\tikzsiblingdistance=\dimen195
-\tikz@figbox=\box59
-\tikz@figbox@bg=\box60
-\tikz@tempbox=\box61
-\tikz@tempbox@bg=\box62
-\tikztreelevel=\count275
-\tikznumberofchildren=\count276
-\tikznumberofcurrentchild=\count277
-\tikz@fig@count=\count278
-
-(pgfmodulematrix.code.tex
-File: pgfmodulematrix.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-\pgfmatrixcurrentrow=\count279
-\pgfmatrixcurrentcolumn=\count280
-\pgf@matrix@numberofcolumns=\count281
-)
-\tikz@expandcount=\count282
- (tikzlibrarytopaths.code.tex
-File: tikzlibrarytopaths.code.tex 2021/05/15 v3.1.9a (3.1.9a)
-))) (amsmath.sty
+) (amsmath.sty
 Package: amsmath 2021/10/15 v2.17l AMS math features
 \@mathmargin=\skip60
 
@@ -293,49 +78,49 @@ For additional information on amsmath, use the `?' option.
 Package: amstext 2021/08/26 v2.01 AMS text
  (amsgen.sty
 File: amsgen.sty 1999/11/30 v2.0 generic functions
-\@emptytoks=\toks29
-\ex@=\dimen196
+\@emptytoks=\toks17
+\ex@=\dimen144
 )) (amsbsy.sty
 Package: amsbsy 1999/11/29 v1.2d Bold Symbols
-\pmbraise@=\dimen197
+\pmbraise@=\dimen145
 ) (amsopn.sty
 Package: amsopn 2021/08/26 v2.02 operator names
 )
-\inf@bad=\count283
+\inf@bad=\count195
 LaTeX Info: Redefining \frac on input line 234.
-\uproot@=\count284
-\leftroot@=\count285
+\uproot@=\count196
+\leftroot@=\count197
 LaTeX Info: Redefining \overline on input line 399.
-\classnum@=\count286
-\DOTSCASE@=\count287
+\classnum@=\count198
+\DOTSCASE@=\count199
 LaTeX Info: Redefining \ldots on input line 496.
 LaTeX Info: Redefining \dots on input line 499.
 LaTeX Info: Redefining \cdots on input line 620.
-\Mathstrutbox@=\box63
-\strutbox@=\box64
-\big@size=\dimen198
+\Mathstrutbox@=\box52
+\strutbox@=\box53
+\big@size=\dimen146
 LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
 LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
-\macc@depth=\count288
-\c@MaxMatrixCols=\count289
+\macc@depth=\count266
+\c@MaxMatrixCols=\count267
 \dotsspace@=\muskip16
-\c@parentequation=\count290
-\dspbrk@lvl=\count291
-\tag@help=\toks30
-\row@=\count292
-\column@=\count293
-\maxfields@=\count294
-\andhelp@=\toks31
-\eqnshift@=\dimen199
-\alignsep@=\dimen256
-\tagshift@=\dimen257
-\tagwidth@=\dimen258
-\totwidth@=\dimen259
-\lineht@=\dimen260
-\@envbody=\toks32
+\c@parentequation=\count268
+\dspbrk@lvl=\count269
+\tag@help=\toks18
+\row@=\count270
+\column@=\count271
+\maxfields@=\count272
+\andhelp@=\toks19
+\eqnshift@=\dimen147
+\alignsep@=\dimen148
+\tagshift@=\dimen149
+\tagwidth@=\dimen150
+\totwidth@=\dimen151
+\lineht@=\dimen152
+\@envbody=\toks20
 \multlinegap=\skip61
 \multlinetaggap=\skip62
-\mathdisplay@stack=\toks33
+\mathdisplay@stack=\toks21
 LaTeX Info: Redefining \[ on input line 2938.
 LaTeX Info: Redefining \] on input line 2939.
 ) (amssymb.sty
@@ -350,131 +135,123 @@ LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
 (Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
 )) (booktabs.sty
 Package: booktabs 2020/01/12 v1.61803398 Publication quality tables
-\heavyrulewidth=\dimen261
-\lightrulewidth=\dimen262
-\cmidrulewidth=\dimen263
-\belowrulesep=\dimen264
-\belowbottomsep=\dimen265
-\aboverulesep=\dimen266
-\abovetopsep=\dimen267
-\cmidrulesep=\dimen268
-\cmidrulekern=\dimen269
-\defaultaddspace=\dimen270
-\@cmidla=\count295
-\@cmidlb=\count296
-\@aboverulesep=\dimen271
-\@belowrulesep=\dimen272
-\@thisruleclass=\count297
-\@lastruleclass=\count298
-\@thisrulewidth=\dimen273
+\heavyrulewidth=\dimen153
+\lightrulewidth=\dimen154
+\cmidrulewidth=\dimen155
+\belowrulesep=\dimen156
+\belowbottomsep=\dimen157
+\aboverulesep=\dimen158
+\abovetopsep=\dimen159
+\cmidrulesep=\dimen160
+\cmidrulekern=\dimen161
+\defaultaddspace=\dimen162
+\@cmidla=\count273
+\@cmidlb=\count274
+\@aboverulesep=\dimen163
+\@belowrulesep=\dimen164
+\@thisruleclass=\count275
+\@lastruleclass=\count276
+\@thisrulewidth=\dimen165
+) (graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+ (graphics.sty
+Package: graphics 2021/03/04 v1.4d Standard LaTeX Graphics (DPC,SPQR)
+ (trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+)
+(graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: xetex.def on input line 107.
+)
+\Gin@req@height=\dimen166
+\Gin@req@width=\dimen167
 ) (multirow.sty
 Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
 \multirow@colwidth=\skip63
-\multirow@cntb=\count299
+\multirow@cntb=\count277
 \multirow@dima=\skip64
-\bigstrutjot=\dimen274
-) (results_iclr)
-(l3backend-xetex.def
+\bigstrutjot=\dimen168
+) (results_iclr) (l3backend-xetex.def
 File: l3backend-xetex.def 2022-02-07 L3 backend support: XeTeX
-\c__kernel_sys_dvipdfmx_version_int=\count300
-\l__color_backend_stack_int=\count301
-\g__color_backend_stack_int=\count302
-\g__graphics_track_int=\count303
-\l__pdf_internal_box=\box65
-\g__pdf_backend_object_int=\count304
-\g__pdf_backend_annotation_int=\count305
-\g__pdf_backend_link_int=\count306
-) (main_iclr.aux)
+\c__kernel_sys_dvipdfmx_version_int=\count278
+\l__color_backend_stack_int=\count279
+\g__color_backend_stack_int=\count280
+\g__graphics_track_int=\count281
+\l__pdf_internal_box=\box54
+\g__pdf_backend_object_int=\count282
+\g__pdf_backend_annotation_int=\count283
+\g__pdf_backend_link_int=\count284
+)
+(main_iclr.aux)
 \openout1 = `main_iclr.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 36.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 3
-6.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 29.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 2
+9.
  (ts1cmr.fd
 File: ts1cmr.fd 2019/12/16 v2.5j Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 36.
-LaTeX Font Info:    ... okay on input line 36.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 37.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 29.
+LaTeX Font Info:    ... okay on input line 29.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 30.
 
  (umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 37.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 30.
 
  (umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-)
-File: teaser.pdf Graphic file (type pdf)
-<use teaser.pdf>
+) [1
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [1
-
-]
-[2]
-Underfull \vbox (badness 5316) has occurred while \output is active []
-
- [3]
-[4]
-File: content.pdf Graphic file (type pdf)
-<use content.pdf>
-
-Underfull \hbox (badness 1194) in paragraph at lines 402--407
- \TU/lmr/bx/n/10 Pre-registered decision rule. \TU/lmr/m/n/10 Written before an
-y shuffled number existed: the
- []
-
-[5]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [6]
-[7]
-File: frontier.pdf Graphic file (type pdf)
-<use frontier.pdf>
-File: ladder.pdf Graphic file (type pdf)
-<use ladder.pdf>
- [8] [9]
-Underfull \hbox (badness 7888) in paragraph at lines 672--682
-\TU/lmr/m/n/10 All code, manifests, and per-run JSONs are in the anonymized rep
-ository
- []
-
-
-Underfull \hbox (badness 3735) in paragraph at lines 672--682
-\TU/lmr/m/n/10 (\TU/lmtt/m/n/10 https://anonymous.4open.science/r/chemical-tran
-sformer-BB35\TU/lmr/m/n/10 ). Every table
- []
-
-
-Underfull \hbox (badness 7869) in paragraph at lines 672--682
-\TU/lmr/m/n/10 and figure generated in this repository regenerates from committ
-ed artifacts
- []
-
-(main_iclr.bbl [10] [11]) [12]
+] [2] [3] [4] [5]
+(main_iclr.bbl [6] [7]) [8]
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[13]
-Underfull \hbox (badness 1895) in paragraph at lines 807--819
-[]\TU/lmr/m/n/10 Billing conventions, stated precisely. At 1.4B the counter bil
-ls FFN at $\OT1/cmr/m/n/10 134\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 22$
+
+Underfull \hbox (badness 5175) in paragraph at lines 559--560
+\TU/lmr/m/n/9 ations; use hard Top-$\OML/cmm/m/it/9 B$
  []
 
-[14] [15] (main_iclr.aux) )
-Output written on main_iclr.xdv (15 pages, 492964 bytes).
+
+Underfull \hbox (badness 10000) in paragraph at lines 560--560
+[]\TU/lmr/m/n/9 Starved-150M causal
+ []
+
+
+Underfull \hbox (badness 2229) in paragraph at lines 562--562
+[]\TU/lmr/m/n/9 A causality problem invali-
+ []
+
+
+Underfull \hbox (badness 1077) in paragraph at lines 565--566
+[]\TU/lmr/m/n/9 Do not use affected eval-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 566--566
+[]\TU/lmr/m/n/9 1.4B total-cost ac-
+ []
+
+
+Underfull \hbox (badness 7777) in paragraph at lines 569--570
+\TU/lmr/m/n/9 ical forward-and-backward
+ []
+
+[9] [10] (main_iclr.aux) )
+Output written on main_iclr.xdv (10 pages, 331744 bytes).
